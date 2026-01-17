@@ -13,15 +13,13 @@ import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
   const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  const { logout, loading } = useAuth();
+  const { user, logout, loading } = useAuth();
 
   const handleLogout = () => {
-    console.log("log out");
     logout();
     navigate("/login");
   };
+
   return (
     <div
       className="fixed top-0 left-0 h-screen w-60 from-slate-900 to-slate-800 text-white shadow-xl z-50"
