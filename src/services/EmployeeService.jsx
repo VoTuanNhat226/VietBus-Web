@@ -14,3 +14,8 @@ export const updateEmployee = async (params) => {
     const response = await api.post("/employee/update", params);
     return response.data;
 };
+
+export const deleteEmployee = async (params) => {
+    const response = await api.post("/employee/delete", params);
+    return response.data;
+};
