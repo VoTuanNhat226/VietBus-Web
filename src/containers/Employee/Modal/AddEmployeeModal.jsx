@@ -1,10 +1,13 @@
 import { Button, Col, Form, Input, Modal, Row, Select, message } from "antd";
-import { VietBusTheme } from "../../constants/VietBusTheme.js";
-import { createEmployee } from "../../services/EmployeeService.jsx";
-import { getApiErrorMessage } from "../../utils/Utils.js";
+import { VietBusTheme } from "../../../constants/VietBusTheme.js";
+import { createEmployee } from "../../../services/EmployeeService.js";
+import { getApiErrorMessage } from "../../../utils/Utils.js";
+import { useEffect, useState } from "react";
+import { getAllByRole } from "../../../services/AccountService.js";
 
 const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
+  const [listAccount, setListAccount] = useState([]);
 
   const handleSubmit = async () => {
     try {
@@ -13,6 +16,8 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
         firstName: form.getFieldValue("firstName"),
         phoneNumber: form.getFieldValue("phoneNumber"),
         position: form.getFieldValue("position"),
+        active: form.getFieldValue("active"),
+        accountId: form.getFieldValue("account"),
       };
       const res = await createEmployee(payload);
       message.success("Thêm nhân viên thành công");
@@ -24,12 +29,34 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
     }
   };
 
+  const position = Form.useWatch("position", form);
+  useEffect(() => {
+    if (!position) return;
+
+    const fetchAccount = async () => {
+      try {
+        const res = await getAllByRole({ role: position });
+
+        const options = (res?.data || []).map((acc) => ({
+          label: `${acc.username} - ${acc.role}`,
+          value: acc.accountId,
+        }));
+
+        setListAccount(options);
+      } catch (error) {
+        setListAccount([]);
+      }
+    };
+
+    fetchAccount();
+  }, [position]);
+
   return (
     <Modal
       title="Thêm nhân viên"
       open={open}
       onCancel={() => {
-        form.resetFields(), onClose();
+        form.resetFields(), setListAccount([]), onClose();
       }}
       footer={null}
       width={700}
@@ -78,7 +105,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
                 options={[
                   { value: "ADMIN", label: "Admin" },
                   { value: "STAFF", label: "Nhân viên" },
-                  { value: "DRIVER", label: "Tài xế" },
+                  { value: "DRIVER", label: "Lái xe" },
                   { value: "MANAGER", label: "Quản lý" },
                 ]}
               />
@@ -86,8 +113,36 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
           </Col>
         </Row>
 
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Trạng thái"
+              name="active"
+              rules={[{ required: true }]}
+            >
+              <Select
+                options={[
+                  { value: true, label: "Hoạt động" },
+                  { value: false, label: "Không hoạt động" },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Tài khoản" name="account">
+              <Select options={listAccount} />
+            </Form.Item>
+          </Col>
+        </Row>
+
         <div className="flex justify-end gap-2">
-          <Button onClick={onClose}>Hủy</Button>
+          <Button
+            onClick={() => {
+              form.resetFields(), setListAccount([]), onClose();
+            }}
+          >
+            Hủy
+          </Button>
           <Button
             type="primary"
             style={{

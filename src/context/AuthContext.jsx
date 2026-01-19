@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { loginService } from "../services/AuthService";
+import { loginService } from "../services/AuthService.js";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();

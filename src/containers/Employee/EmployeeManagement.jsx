@@ -16,11 +16,11 @@ import { useEffect, useState } from "react";
 import {
   deleteEmployee,
   getAllEmployee,
-} from "../../services/EmployeeService.jsx";
+} from "../../services/EmployeeService.js";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext.jsx";
-import AddEmployeeModal from "./AddEmployeeModal.jsx";
-import UpdateEmployeeModal from "./UpdateEmployeeModal.jsx";
+import AddEmployeeModal from "./Modal/AddEmployeeModal.jsx";
+import UpdateEmployeeModal from "./Modal/UpdateEmployeeModal.jsx";
 
 const EmployeeManagement = () => {
   const [formInstance] = Form.useForm();
@@ -203,7 +203,7 @@ const EmployeeManagement = () => {
                   options={[
                     { value: "ADMIN", label: "Admin" },
                     { value: "STAFF", label: "Nhân viên" },
-                    { value: "DRIVER", label: "Tài xế" },
+                    { value: "DRIVER", label: "Lái xe" },
                     { value: "MANAGER", label: "Quản lý" },
                   ]}
                 ></Select>

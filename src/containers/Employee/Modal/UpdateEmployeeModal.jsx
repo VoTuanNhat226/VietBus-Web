@@ -1,8 +1,8 @@
 import { Button, Col, Form, Input, Modal, Row, Select, message } from "antd";
-import { VietBusTheme } from "../../constants/VietBusTheme.js";
-import { updateEmployee } from "../../services/EmployeeService.jsx";
+import { VietBusTheme } from "../../../constants/VietBusTheme.js";
+import { updateEmployee } from "../../../services/EmployeeService.js";
 import { useEffect } from "react";
-import { getApiErrorMessage } from "../../utils/Utils.js";
+import { getApiErrorMessage } from "../../../utils/Utils.js";
 
 const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
@@ -90,7 +90,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
                 options={[
                   { value: "ADMIN", label: "Admin" },
                   { value: "STAFF", label: "Nhân viên" },
-                  { value: "DRIVER", label: "Tài xế" },
+                  { value: "DRIVER", label: "Lái xe" },
                   { value: "MANAGER", label: "Quản lý" },
                 ]}
               />
