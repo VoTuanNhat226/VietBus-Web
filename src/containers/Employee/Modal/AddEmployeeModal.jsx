@@ -3,7 +3,8 @@ import { VietBusTheme } from "../../../constants/VietBusTheme.js";
 import { createEmployee } from "../../../services/EmployeeService.js";
 import { getApiErrorMessage } from "../../../utils/Utils.js";
 import { useEffect, useState } from "react";
-import { getAllByRole } from "../../../services/AccountService.js";
+import { getAllAccountByRole } from "../../../services/AccountService.js";
+import { ACTIVE, ROLE } from "../../../constants/Contans.js";
 
 const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
@@ -35,7 +36,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
 
     const fetchAccount = async () => {
       try {
-        const res = await getAllByRole({ role: position });
+        const res = await getAllAccountByRole({ role: position });
 
         const options = (res?.data || []).map((acc) => ({
           label: `${acc.username} - ${acc.role}`,
@@ -101,14 +102,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
               name="position"
               rules={[{ required: true }]}
             >
-              <Select
-                options={[
-                  { value: "ADMIN", label: "Admin" },
-                  { value: "STAFF", label: "Nhân viên" },
-                  { value: "DRIVER", label: "Lái xe" },
-                  { value: "MANAGER", label: "Quản lý" },
-                ]}
-              />
+              <Select options={ROLE} />
             </Form.Item>
           </Col>
         </Row>
@@ -120,12 +114,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
               name="active"
               rules={[{ required: true }]}
             >
-              <Select
-                options={[
-                  { value: true, label: "Hoạt động" },
-                  { value: false, label: "Không hoạt động" },
-                ]}
-              />
+              <Select options={ACTIVE} />
             </Form.Item>
           </Col>
           <Col span={12}>

@@ -22,6 +22,7 @@ import moment from "moment";
 import { useAuth } from "../../context/AuthContext.jsx";
 import AddEmployeeModal from "./Modal/AddEmployeeModal.jsx";
 import UpdateEmployeeModal from "./Modal/UpdateEmployeeModal.jsx";
+import { ROLE } from "../../constants/Contans.js";
 
 const EmployeeManagement = () => {
   const [formInstance] = Form.useForm();
@@ -114,7 +115,15 @@ const EmployeeManagement = () => {
       title: "Trạng thái",
       dataIndex: "active",
       key: "active",
-      render: (value) => (value === true ? "Hoạt động" : "Không hoạt động"),
+      render: (value) => (
+        <span
+          style={{
+            color: value === false ? VietBusTheme.error : VietBusTheme.success,
+          }}
+        >
+          {value === true ? "Hoạt động" : "Không hoạt động"}
+        </span>
+      ),
     },
     {
       title: "Người tạo",
@@ -201,15 +210,7 @@ const EmployeeManagement = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="position">
-                <Select
-                  placeholder="Chọn chức vụ"
-                  options={[
-                    { value: "ADMIN", label: "Admin" },
-                    { value: "STAFF", label: "Nhân viên" },
-                    { value: "DRIVER", label: "Lái xe" },
-                    { value: "MANAGER", label: "Quản lý" },
-                  ]}
-                ></Select>
+                <Select placeholder="Chức vụ" options={ROLE}></Select>
               </Form.Item>
             </Col>
             <Col span={6}>

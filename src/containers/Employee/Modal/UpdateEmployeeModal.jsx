@@ -3,6 +3,7 @@ import { VietBusTheme } from "../../../constants/VietBusTheme.js";
 import { updateEmployee } from "../../../services/EmployeeService.js";
 import { useEffect } from "react";
 import { getApiErrorMessage } from "../../../utils/Utils.js";
+import { ACTIVE, ROLE } from "../../../constants/Contans.js";
 
 const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
@@ -86,14 +87,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
               name="position"
               rules={[{ required: true }]}
             >
-              <Select
-                options={[
-                  { value: "ADMIN", label: "Admin" },
-                  { value: "STAFF", label: "Nhân viên" },
-                  { value: "DRIVER", label: "Lái xe" },
-                  { value: "MANAGER", label: "Quản lý" },
-                ]}
-              />
+              <Select options={ROLE} />
             </Form.Item>
           </Col>
         </Row>
@@ -105,12 +99,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
               name="active"
               rules={[{ required: true }]}
             >
-              <Select
-                options={[
-                  { value: true, label: "Hoạt động" },
-                  { value: false, label: "Không hoạt động" },
-                ]}
-              />
+              <Select options={ACTIVE} />
             </Form.Item>
           </Col>
         </Row>
