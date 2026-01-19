@@ -38,6 +38,10 @@ const Menu = () => {
           <i className="fa-solid fa-list px-2"></i>
           Quản lý
         </li>
+        <li className="cursor-pointer rounded-lg px-8 py-2 transition-transform duration-200 hover:scale-110">
+          <i className="fa-solid fa-user px-2"></i>
+          Tài khoản
+        </li>
         <li
           className="cursor-pointer rounded-lg px-8 py-2 transition-transform duration-200 hover:scale-110"
           onClick={() => navigate("/employee")}

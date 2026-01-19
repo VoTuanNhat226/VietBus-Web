@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   Col,
+  DatePicker,
   Form,
   Input,
   message,
@@ -47,6 +48,8 @@ const EmployeeManagement = () => {
       lastName: formInstance.getFieldValue("lastName"),
       phoneNumber: formInstance.getFieldValue("phoneNumber"),
       position: formInstance.getFieldValue("position"),
+      createdBy: formInstance.getFieldValue("createdBy"),
+      updatedBy: formInstance.getFieldValue("updatedBy"),
     };
     const res = await getAllEmployee(payload);
     setListEmployee(res?.data);
@@ -115,24 +118,24 @@ const EmployeeManagement = () => {
     },
     {
       title: "Người tạo",
-      dataIndex: "created_by",
+      dataIndex: "createdBy",
       key: "created_by",
     },
     {
       title: "Ngày tạo",
-      dataIndex: "created_at",
+      dataIndex: "createdAt",
       key: "createdAt",
       render: (value) =>
         value ? moment(value).format("HH:mm:ss DD-MM-YYYY") : "",
     },
     {
       title: "Người cập nhật",
-      dataIndex: "updated_by",
+      dataIndex: "updatedBy",
       key: "updatedBy",
     },
     {
       title: "Ngày cập nhật",
-      dataIndex: "updated_at",
+      dataIndex: "updatedAt",
       key: "updatedAt",
       render: (value) =>
         value ? moment(value).format("HH:mm:ss DD-MM-YYYY") : "",
@@ -207,6 +210,16 @@ const EmployeeManagement = () => {
                     { value: "MANAGER", label: "Quản lý" },
                   ]}
                 ></Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="createdBy">
+                <Input placeholder="Người tạo" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="updatedBy">
+                <Input placeholder="Người cập nhật" />
               </Form.Item>
             </Col>
           </Row>
