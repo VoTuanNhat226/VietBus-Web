@@ -5,11 +5,13 @@ import { VietBusTheme } from "../../constants/VietBusTheme";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
 import AddAccountModal from "./Modal/AddAccountModal";
-import { ACTIVE, ROLE } from "../../constants/Contans";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Contans";
+import UpdateAccountModal from "./Modal/UpdateAccountModal";
 
 const AccountManagement = () => {
   const [formInstance] = Form.useForm();
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const [listAccount, setListAccount] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -114,6 +116,10 @@ const AccountManagement = () => {
               fontSize: 18,
               cursor: "pointer",
             }}
+            onClick={() => {
+              setSelectedAccount(record);
+              setOpenUpdateModal(true);
+            }}
           />
         </div>
       ),
@@ -133,7 +139,7 @@ const AccountManagement = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="role">
-                <Select placeholder="Vai trò" options={ROLE}></Select>
+                <Select placeholder="Vai trò" options={ROLE_OPTIONS}></Select>
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -148,7 +154,10 @@ const AccountManagement = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="active">
-                <Select placeholder="Trạng thái" options={ACTIVE}></Select>
+                <Select
+                  placeholder="Trạng thái"
+                  options={ACTIVE_OPTIONS}
+                ></Select>
               </Form.Item>
             </Col>
           </Row>
@@ -196,6 +205,18 @@ const AccountManagement = () => {
       <AddAccountModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
+        onSuccess={async () => {
+          const res = await getAllAccount({});
+          setListAccount(res?.data);
+        }}
+      />
+      {/* UPDATE Modal */}
+      <UpdateAccountModal
+        open={openUpdateModal}
+        account={selectedAccount}
+        onClose={() => {
+          setOpenUpdateModal(false), setSelectedAccount(null);
+        }}
         onSuccess={async () => {
           const res = await getAllAccount({});
           setListAccount(res?.data);

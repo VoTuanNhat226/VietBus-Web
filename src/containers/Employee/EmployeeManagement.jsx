@@ -2,12 +2,10 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   message,
   Modal,
-  Popconfirm,
   Row,
   Select,
   Table,
@@ -22,7 +20,7 @@ import moment from "moment";
 import { useAuth } from "../../context/AuthContext.jsx";
 import AddEmployeeModal from "./Modal/AddEmployeeModal.jsx";
 import UpdateEmployeeModal from "./Modal/UpdateEmployeeModal.jsx";
-import { ROLE } from "../../constants/Contans.js";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Contans.js";
 
 const EmployeeManagement = () => {
   const [formInstance] = Form.useForm();
@@ -49,6 +47,7 @@ const EmployeeManagement = () => {
       lastName: formInstance.getFieldValue("lastName"),
       phoneNumber: formInstance.getFieldValue("phoneNumber"),
       position: formInstance.getFieldValue("position"),
+      active: formInstance.getFieldValue("active"),
       createdBy: formInstance.getFieldValue("createdBy"),
       updatedBy: formInstance.getFieldValue("updatedBy"),
     };
@@ -58,11 +57,6 @@ const EmployeeManagement = () => {
 
   const handlAddEmployee = () => {
     setOpenAddModal(true);
-  };
-
-  const handleEditEmployee = (employee) => {
-    setSelectedEmployee(employee);
-    setOpenUpdateModal(true);
   };
 
   const handleDeleteEmployee = async () => {
@@ -162,7 +156,10 @@ const EmployeeManagement = () => {
               fontSize: 18,
               cursor: "pointer",
             }}
-            onClick={() => handleEditEmployee(record)}
+            onClick={() => {
+              setSelectedEmployee(record);
+              setOpenUpdateModal(true);
+            }}
           />
           {user.role === "ROLE_ADMIN" ? (
             <i
@@ -210,7 +207,15 @@ const EmployeeManagement = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="position">
-                <Select placeholder="Chức vụ" options={ROLE}></Select>
+                <Select placeholder="Chức vụ" options={ROLE_OPTIONS}></Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="active">
+                <Select
+                  placeholder="Trạng thái"
+                  options={ACTIVE_OPTIONS}
+                ></Select>
               </Form.Item>
             </Col>
             <Col span={6}>
