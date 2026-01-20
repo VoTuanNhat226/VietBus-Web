@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import AddAccountModal from "./Modal/AddAccountModal";
 import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Contans";
 import UpdateAccountModal from "./Modal/UpdateAccountModal";
+import { usePageTitle } from "../../context/PageTitleContext.jsx";
 
 const AccountManagement = () => {
   const [formInstance] = Form.useForm();
@@ -17,6 +18,12 @@ const AccountManagement = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const { user } = useAuth();
+
+  const { setTitle } = usePageTitle();
+
+  useEffect(() => {
+    setTitle("QUẢN LÝ TÀI KHOẢN");
+  }, []);
 
   useEffect(() => {
     const fetchAllAccount = async () => {
