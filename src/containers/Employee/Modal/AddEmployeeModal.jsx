@@ -54,7 +54,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="Thêm nhân viên"
+      title="THÊM NHÂN VIÊN"
       open={open}
       onCancel={() => {
         form.resetFields(), setListAccount([]), onClose();

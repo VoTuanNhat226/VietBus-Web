@@ -6,10 +6,9 @@ import { useEffect } from "react";
 const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
 
-  console.log(account);
-
   useEffect(() => {
     if (account && open) {
+      console.log(account?.role);
       form.setFieldsValue({
         role: account?.role,
         active: account?.active,
@@ -19,7 +18,7 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="Cập nhật tài khoản"
+      title="CẬP NHẬT TÀI KHOẢN"
       open={open}
       onCancel={onClose}
       footer={null}

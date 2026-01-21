@@ -40,7 +40,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="Cập nhật nhân viên"
+      title="CẬP NHẬT NHÂN VIÊN"
       open={open}
       onCancel={onClose}
       footer={null}

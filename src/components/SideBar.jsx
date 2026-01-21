@@ -43,26 +43,32 @@ const SideBar = () => {
         >
           QUẢN LÝ
         </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/account")}
-        >
-          <i className="fa-solid fa-circle-user px-2"></i>
-          Tài khoản
-        </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/employee")}
-        >
-          <i className="fa-solid fa-user-group px-2"></i>
-          Nhân viên
-        </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/route")}
-        >
-          <i className="fa-solid fa-route px-2"></i>Tuyến xe
-        </li>
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <li
+            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+            onClick={() => navigate("/account")}
+          >
+            <i className="fa-solid fa-circle-user px-2"></i>
+            Tài khoản
+          </li>
+        ) : null}
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <li
+            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+            onClick={() => navigate("/employee")}
+          >
+            <i className="fa-solid fa-user-group px-2"></i>
+            Nhân viên
+          </li>
+        ) : null}
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <li
+            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+            onClick={() => navigate("/route")}
+          >
+            <i className="fa-solid fa-route px-2"></i>Tuyến xe
+          </li>
+        ) : null}
         <li
           className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
           onClick={() => navigate("/trip")}
@@ -75,13 +81,15 @@ const SideBar = () => {
         >
           <i className="fa-solid fa-ticket px-2"></i>Vé xe
         </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/vehicle")}
-        >
-          <i className="fa-solid fa-bus-simple px-2"></i>
-          Xe
-        </li>
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <li
+            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+            onClick={() => navigate("/vehicle")}
+          >
+            <i className="fa-solid fa-bus-simple px-2"></i>
+            Xe
+          </li>
+        ) : null}
         <li
           className="rounded-lg px-4 py-2 text-xs"
           style={{ color: VietBusTheme.secondary }}
@@ -95,21 +103,23 @@ const SideBar = () => {
           <i className="fa-regular fa-credit-card px-2"></i>
           Thanh toán
         </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/statistic")}
-        >
-          <i className="fa-solid fa-chart-column px-2"></i>
-          Thống kê
-        </li>
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <li
+            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+            onClick={() => navigate("/statistic")}
+          >
+            <i className="fa-solid fa-chart-column px-2"></i>
+            Thống kê
+          </li>
+        ) : null}
       </ul>
       <ul className="p-4 space-y-2 fixed bottom-0">
-        <li className="cursor-pointer rounded-lg px-2 py-2 transition-transform duration-200 hover:scale-110">
+        <li className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110">
           <i className="fa-solid fa-user px-2"></i>
           <span className="flex-1">Profile: {user?.username}</span>
         </li>
         <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-transform duration-200 hover:scale-110"
+          className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
           onClick={handleLogout}
         >
           <i className="fa-solid fa-arrow-right-from-bracket px-2"></i>

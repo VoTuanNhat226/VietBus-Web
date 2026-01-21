@@ -1,4 +1,14 @@
-import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Table,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { usePageTitle } from "../../context/PageTitleContext";
@@ -6,11 +16,18 @@ import { getAllRoute } from "../../services/RouteService";
 import moment from "moment";
 import { VietBusTheme } from "../../constants/VietBusTheme";
 import { ACTIVE_OPTIONS } from "../../constants/Contans";
+import { getAllStation } from "../../services/StationService";
+import AddRouteModal from "./Modal/AddRouteModal";
+import UpdateRouteModal from "./Modal/UpdateRouteModal";
 
 const RouteManagement = () => {
   const [formInstance] = Form.useForm();
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const [listRoute, setListRoute] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [listStation, setListStation] = useState([]);
 
   const { user } = useAuth();
 
@@ -28,10 +45,18 @@ const RouteManagement = () => {
     fetchAllRoute();
   }, []);
 
+  useEffect(() => {
+    const fetchAllStation = async () => {
+      const res = await getAllStation({});
+      setListStation(res?.data);
+    };
+    fetchAllStation();
+  }, []);
+
   const handleSearch = async () => {
     const payload = {
-      fromStation: formInstance.getFieldValue("fromStation"),
-      toStation: formInstance.getFieldValue("toStation"),
+      fromStationId: formInstance.getFieldValue("fromStationId"),
+      toStationId: formInstance.getFieldValue("toStationId"),
       distanceKm: formInstance.getFieldValue("distanceKm"),
       durationMinutes: formInstance.getFieldValue("durationMinutes"),
       active: formInstance.getFieldValue("active"),
@@ -54,11 +79,13 @@ const RouteManagement = () => {
       title: "Điểm đi",
       dataIndex: "fromStation",
       key: "fromStation",
+      render: (value) => <span>{value?.name}</span>,
     },
     {
       title: "Điểm đến",
       dataIndex: "toStation",
       key: "toStation",
+      render: (value) => <span>{value?.name}</span>,
     },
     {
       title: "Khoảng cách",
@@ -123,10 +150,10 @@ const RouteManagement = () => {
               fontSize: 18,
               cursor: "pointer",
             }}
-            // onClick={() => {
-            //   setSelectedAccount(record);
-            //   setOpenUpdateModal(true);
-            // }}
+            onClick={() => {
+              setSelectedRoute(record);
+              setOpenUpdateModal(true);
+            }}
           />
         </div>
       ),
@@ -140,13 +167,25 @@ const RouteManagement = () => {
         <Form form={formInstance}>
           <Row gutter={[16, 0]}>
             <Col span={6}>
-              <Form.Item name="fromStation">
-                <Input placeholder="Điểm đi" />
+              <Form.Item name="fromStationId">
+                <Select
+                  placeholder="Điểm đi"
+                  options={listStation.map((station) => ({
+                    label: station.name,
+                    value: station.stationId,
+                  }))}
+                ></Select>
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="toStation">
-                <Input placeholder="Điểm đến" />
+              <Form.Item name="toStationId">
+                <Select
+                  placeholder="Điểm đến"
+                  options={listStation.map((station) => ({
+                    label: station.name,
+                    value: station.stationId,
+                  }))}
+                ></Select>
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -203,7 +242,44 @@ const RouteManagement = () => {
           </Row>
         </Form>
       </Card>
+      {user?.role === "ROLE_ADMIN" ? (
+        <div className="pt-4 flex justify-end">
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: VietBusTheme.primary,
+              color: VietBusTheme.white,
+            }}
+            onClick={() => setOpenAddModal(true)}
+          >
+            Tạo tuyến xe
+          </Button>
+        </div>
+      ) : null}
       <Table className="pt-4" dataSource={listRoute} columns={columns} />
+      {/* ADD Modal */}
+      <AddRouteModal
+        open={openAddModal}
+        listStation={listStation}
+        onClose={() => setOpenAddModal(false)}
+        onSuccess={async () => {
+          const res = await getAllRoute({});
+          setListRoute(res?.data);
+        }}
+      />
+      {/* UPDATE Modal */}
+      <UpdateRouteModal
+        open={openUpdateModal}
+        route={selectedRoute}
+        onClose={() => {
+          setOpenUpdateModal(false);
+          setSelectedRoute(null);
+        }}
+        onSuccess={async () => {
+          const res = await getAllRoute({});
+          setListRoute(res?.data);
+        }}
+      />
     </div>
   );
 };

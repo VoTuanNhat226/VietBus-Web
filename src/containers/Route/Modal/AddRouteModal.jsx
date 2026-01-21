@@ -1,26 +1,26 @@
 import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
+import { ACTIVE_OPTIONS } from "../../../constants/Contans";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
-import { createAccount } from "../../../services/AccountService";
+import { createRoute } from "../../../services/RouteService";
 import { getApiErrorMessage } from "../../../utils/Utils";
-import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Contans";
 
-const AddAccountModal = ({ open, onClose, onSuccess }) => {
+const AddRouteModal = ({ listStation, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
     try {
-      const values = await form.validateFields();
       const payload = {
-        username: values?.username,
-        password: values?.password,
-        role: values?.role,
-        active: values?.active,
+        fromStationId: form.getFieldValue("fromStationId"),
+        toStationId: form.getFieldValue("toStationId"),
+        distanceKm: form.getFieldValue("distanceKm"),
+        durationMinutes: form.getFieldValue("durationMinutes"),
+        active: form.getFieldValue("active"),
       };
-      const res = await createAccount(payload);
-      message.success("Tạo tài khoản thành công");
+      const res = await createRoute(payload);
+      message.success("Tạo tuyến xe thành công");
       form.resetFields();
       onClose();
-      onSuccess?.();
+      onSuccess();
     } catch (err) {
       message.error(getApiErrorMessage(err));
     }
@@ -28,7 +28,7 @@ const AddAccountModal = ({ open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="TẠO TÀI KHOẢN"
+      title="TẠO TUYẾN XE"
       open={open}
       onCancel={() => {
         form.resetFields(), onClose();
@@ -40,42 +40,61 @@ const AddAccountModal = ({ open, onClose, onSuccess }) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Tên đăng nhập"
-              name="username"
-              rules={[{ required: true, message: "Bắt buộc" }]}
-            >
-              <Input placeholder="Nhập tên đăng nhập" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Mật khẩu"
-              name="password"
-              rules={[{ required: true, message: "Bắt buộc" }]}
-            >
-              <Input placeholder="Nhập mật khẩu" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Vai trò"
-              name="role"
+              label="Điểm đi"
+              name="fromStationId"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Select
-                placeholder="Chọn vai trò"
-                options={ROLE_OPTIONS}
+                placeholder="Chọn điểm đi"
+                options={listStation?.map((station) => ({
+                  label: station.name,
+                  value: station.stationId,
+                }))}
               ></Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
+              label="Điểm đến"
+              name="toStationId"
+              rules={[{ required: true, message: "Bắt buộc" }]}
+            >
+              <Select
+                placeholder="Chọn điểm đến"
+                options={listStation?.map((station) => ({
+                  label: station.name,
+                  value: station.stationId,
+                }))}
+              ></Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Khoảng cách (km)"
+              name="distanceKm"
+              rules={[{ required: true, message: "Bắt buộc" }]}
+            >
+              <Input placeholder="Nhập khoảng cách"></Input>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Thời gian (phút)"
+              name="durationMinutes"
+              rules={[{ required: true, message: "Bắt buộc" }]}
+            >
+              <Input placeholder="Nhập thời gian"></Input>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
               label="Trạng thái"
               name="active"
-              rules={[{ required: true, message: "Bắt buộc" }]}
+              rules={[{ required: true }]}
             >
               <Select placeholder="Chọn trạng thái" options={ACTIVE_OPTIONS} />
             </Form.Item>
@@ -105,4 +124,4 @@ const AddAccountModal = ({ open, onClose, onSuccess }) => {
   );
 };
 
-export default AddAccountModal;
+export default AddRouteModal;
