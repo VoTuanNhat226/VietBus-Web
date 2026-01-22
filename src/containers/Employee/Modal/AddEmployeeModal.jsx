@@ -24,7 +24,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
       message.success("Thêm nhân viên thành công");
       form.resetFields();
       onClose();
-      onSuccess?.();
+      onSuccess();
     } catch (err) {
       message.error(getApiErrorMessage(err));
     }

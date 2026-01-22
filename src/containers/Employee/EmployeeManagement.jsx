@@ -273,74 +273,80 @@ const EmployeeManagement = () => {
       ) : null}
       <Table className="pt-4" dataSource={listEmployee} columns={columns} />
       {/* ADD Modal*/}
-      <AddEmployeeModal
-        open={openAddModal}
-        onClose={() => setOpenAddModal(false)}
-        onSuccess={async () => {
-          const res = await getAllEmployee({});
-          setListEmployee(res?.data);
-        }}
-      />
+      {openAddModal && (
+        <AddEmployeeModal
+          open={openAddModal}
+          onClose={() => setOpenAddModal(false)}
+          onSuccess={async () => {
+            const res = await getAllEmployee({});
+            setListEmployee(res?.data);
+          }}
+        />
+      )}
       {/* UPDATE Modal*/}
-      <UpdateEmployeeModal
-        open={openUpdateModal}
-        employee={selectedEmployee}
-        onClose={() => {
-          setOpenUpdateModal(false);
-          setSelectedEmployee(null);
-        }}
-        onSuccess={async () => {
-          const res = await getAllEmployee({});
-          setListEmployee(res?.data);
-        }}
-      />
+      {openUpdateModal && (
+        <UpdateEmployeeModal
+          open={openUpdateModal}
+          employee={selectedEmployee}
+          onClose={() => {
+            setOpenUpdateModal(false);
+            setSelectedEmployee(null);
+          }}
+          onSuccess={async () => {
+            const res = await getAllEmployee({});
+            setListEmployee(res?.data);
+          }}
+        />
+      )}
       {/* DELETE MODAL */}
-      <Modal
-        open={openDeleteModal}
-        footer={
-          <div className="flex justify-center">
-            <Button
-              className="mr-2"
-              onClick={() => {
-                setOpenDeleteModal(false);
-              }}
-            >
-              Đóng
-            </Button>
-            <Button
-              type="primary"
-              className="ml-2"
-              style={{
-                backgroundColor: VietBusTheme.primary,
-                color: VietBusTheme.white,
-              }}
-              onClick={handleDeleteEmployee}
-            >
-              Xóa
-            </Button>
+      {openDeleteModal && (
+        <Modal
+          open={openDeleteModal}
+          footer={
+            <div className="flex justify-center">
+              <Button
+                className="mr-2"
+                onClick={() => {
+                  setOpenDeleteModal(false);
+                }}
+              >
+                Đóng
+              </Button>
+              <Button
+                type="primary"
+                className="ml-2"
+                style={{
+                  backgroundColor: VietBusTheme.primary,
+                  color: VietBusTheme.white,
+                }}
+                onClick={handleDeleteEmployee}
+              >
+                Xóa
+              </Button>
+            </div>
+          }
+          onCancel={() => {
+            setOpenDeleteModal(false);
+            setSelectedEmployee(null);
+          }}
+          width={400}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <h2>
+              <i
+                class="fa-solid fa-triangle-exclamation pr-2"
+                style={{
+                  color: VietBusTheme.error,
+                  fontSize: 14,
+                  cursor: "pointer",
+                }}
+              />
+              Cảnh báo
+            </h2>
+            <p>Bạn có chắc chắn xóa không?</p>
           </div>
-        }
-        onCancel={() => {
-          setOpenDeleteModal(false);
-          setSelectedEmployee(null);
-        }}
-        width={400}
-      >
-        <div className="flex flex-col items-center gap-2">
-          <h2>
-            <i
-              class="fa-solid fa-triangle-exclamation pr-2"
-              style={{
-                color: VietBusTheme.error,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-            />
-            Cảnh báo
-          </h2>
-          <p>Bạn có chắc chắn xóa không?</p>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 };

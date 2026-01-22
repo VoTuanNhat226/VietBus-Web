@@ -21,10 +21,10 @@ const Login = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-100">
       <Card style={{ width: 360 }}>
         <Title level={3} className="text-center">
-          Đăng nhập
+          ĐĂNG NHẬP
         </Title>
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
