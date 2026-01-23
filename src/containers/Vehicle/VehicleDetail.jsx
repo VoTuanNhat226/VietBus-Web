@@ -28,27 +28,13 @@ const VehicleDetail = () => {
 
   return (
     <div className="flex justify-evenly">
-      <Card
-        className=" w-3/12
-          rounded-xl
-          hover:shadow-xl"
-      >
+      <Card className="w-3/12 mr-5  rounded-xl hover:shadow-xl">
         <div>
-          <SeatMap title={"SƠ ĐỒ GHẾ"}/>
+          <SeatMap title={"SƠ ĐỒ GHẾ"} />
         </div>
       </Card>
-      <Card
-        className=" w-8/12
-          rounded-xl
-          hover:shadow-xl
-          pl-4"
-      >
-        <Card
-          className=" w-full
-          rounded-xl
-          hover:shadow-xl
-          mb-2"
-        >
+      <div className="w-9/12">
+        <Card className="rounded-xl hover:shadow-xl mb-5">
           <div className="h-8">
             <span className="text-xl font-bold">
               <i
@@ -133,11 +119,7 @@ const VehicleDetail = () => {
             </Row>
           </div>
         </Card>
-        <Card
-          className=" w-full
-          rounded-xl
-          hover:shadow-xl"
-        >
+        <Card className="rounded-xl hover:shadow-xl mb-5">
           <div className="h-8">
             <span className="text-xl font-bold">
               <i
@@ -150,7 +132,7 @@ const VehicleDetail = () => {
           <hr />
           <div></div>
         </Card>
-      </Card>
+      </div>
     </div>
   );
 };

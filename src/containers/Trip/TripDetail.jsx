@@ -61,11 +61,11 @@ const TripDetail = () => {
   return (
     <>
       <div className="flex justify-evenly">
-        <div className="w-3/12">
-          <Card className="rounded-xl">
+        <div className="w-3/12 mr-5">
+          <Card className="rounded-xl hover:shadow-xl">
             <SeatMap listTripSeat={listTripSeat} title={"TÌNH TRẠNG VÉ"} />
           </Card>
-          <Card className="rounded-xl">
+          <Card className="rounded-xl hover:shadow-xl">
             <div className="flex justify-between">
               <div className="flex flex-col justify-center items-center">
                 <CarOutlined className="text-2xl text-gray-400" />
@@ -83,7 +83,7 @@ const TripDetail = () => {
           </Card>
         </div>
         <div className="w-9/12">
-          <Card className="">
+          <Card className="rounded-xl hover:shadow-xl mb-5">
             <div className="flex justify-between">
               <div className="flex">
                 <div>
@@ -141,7 +141,7 @@ const TripDetail = () => {
               </div>
             </div>
           </Card>
-          <Card className="p-0">
+          <Card className="rounded-xl hover:shadow-xl mb-5">
             <div className="flex">
               <div className="w-full h-full">
                 <div className="flex justify-between h-full items-center">
@@ -222,6 +222,7 @@ const TripDetail = () => {
               </div>
             </div>
           </Card>
+          <Card></Card>
         </div>
       </div>
       {/* <div className="flex mb-4">

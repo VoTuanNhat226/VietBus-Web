@@ -39,7 +39,7 @@ const SeatMap = ({ listTripSeat = [], title }) => {
           </div>
         ))}
 
-        <div className="grid grid-cols-5 gap-x-6 justify-items-center">
+        <div className="grid grid-cols-5 gap-x-2 justify-items-center">
           {["A11", "A13", "B11", "C13", "C11"].map(renderSeat)}
         </div>
       </div>
@@ -62,7 +62,7 @@ const SeatMap = ({ listTripSeat = [], title }) => {
           </div>
         ))}
 
-        <div className="grid grid-cols-5 gap-x-6 justify-items-center">
+        <div className="grid grid-cols-5 gap-x-2 justify-items-center">
           {["A12", "A14", "B12", "C14", "C12"].map(renderSeat)}
         </div>
       </div>
