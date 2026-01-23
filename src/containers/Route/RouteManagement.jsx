@@ -15,7 +15,7 @@ import { usePageTitle } from "../../context/PageTitleContext";
 import { getAllRoute } from "../../services/RouteService";
 import moment from "moment";
 import { VietBusTheme } from "../../constants/VietBusTheme";
-import { ACTIVE_OPTIONS } from "../../constants/Contans";
+import { ACTIVE_OPTIONS } from "../../constants/Constants.js";
 import { getAllStation } from "../../services/StationService";
 import AddRouteModal from "./Modal/AddRouteModal";
 import UpdateRouteModal from "./Modal/UpdateRouteModal";

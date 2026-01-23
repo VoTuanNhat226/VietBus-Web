@@ -13,6 +13,7 @@ import Payment from "./containers/Payment/Payment.jsx";
 import Statistic from "./containers/Statistic/Statistic.jsx";
 import AccountManagement from "./containers/Account/AccountManagement.jsx";
 import VehicleDetail from "./containers/Vehicle/VehicleDetail.jsx";
+import TripDetail from "./containers/Trip/TripDetail.jsx";
 
 function App() {
   return (
@@ -69,6 +70,16 @@ function App() {
           <PrivateRoute>
             <MainLayout>
               <TripManagement />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/trip/:tripId"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <TripDetail />
             </MainLayout>
           </PrivateRoute>
         }

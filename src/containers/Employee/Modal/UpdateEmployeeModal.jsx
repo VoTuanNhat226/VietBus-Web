@@ -3,7 +3,7 @@ import { VietBusTheme } from "../../../constants/VietBusTheme.js";
 import { updateEmployee } from "../../../services/EmployeeService.js";
 import { useEffect } from "react";
 import { getApiErrorMessage } from "../../../utils/Utils.js";
-import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Contans.js";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Constants.js";
 
 const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();

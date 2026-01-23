@@ -5,7 +5,7 @@ const Home = () => {
     const {setTitle} = usePageTitle();
 
     useEffect(() => {
-        setTitle("TRANG CHỦ");
+        setTitle("TỔNG QUAN");
     }, []);
     return (
         <>

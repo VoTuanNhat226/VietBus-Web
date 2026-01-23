@@ -25,7 +25,7 @@ const SideBar = () => {
       className="fixed top-0 left-0 h-screen w-60 from-slate-900 to-slate-800 text-white shadow-xl z-50"
       style={{ backgroundColor: VietBusTheme.primary }}
     >
-      <div className="text-center text-3xl font-bold mt-4">
+      <div className="text-center text-3xl font-bold mt-4 mb-4">
         <i className="fa-solid fa-bus-simple px-2"></i>VIETBUS
       </div>
       {/* SideBar items */}
@@ -35,7 +35,7 @@ const SideBar = () => {
           onClick={() => navigate("/")}
         >
           <i className="fa-solid fa-house px-2"></i>
-          Trang chủ
+          Tổng quan
         </li>
         <li
           className="rounded-lg px-4 py-2 text-xs"
@@ -94,7 +94,7 @@ const SideBar = () => {
           className="rounded-lg px-4 py-2 text-xs"
           style={{ color: VietBusTheme.secondary }}
         >
-          BÁO CÁO
+          TÀI CHÍNH
         </li>
         <li
           className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
@@ -104,13 +104,21 @@ const SideBar = () => {
           Thanh toán
         </li>
         {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/statistic")}
-          >
-            <i className="fa-solid fa-chart-column px-2"></i>
-            Thống kê
-          </li>
+          <>
+            <li
+              className="rounded-lg px-4 py-2 text-xs"
+              style={{ color: VietBusTheme.secondary }}
+            >
+              PHÂN TÍCH
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/statistic")}
+            >
+              <i className="fa-solid fa-chart-column px-2"></i>
+              Thống kê
+            </li>
+          </>
         ) : null}
       </ul>
       <ul className="p-4 space-y-2 fixed bottom-0">

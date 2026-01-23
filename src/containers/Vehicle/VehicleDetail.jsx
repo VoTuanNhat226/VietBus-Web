@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getVehicleId } from "../../services/VehicleService";
+import { getVehicleIById } from "../../services/VehicleService";
 import { getSeatByVehicleId } from "../../services/SeatService";
 import SeatMap from "./Seat/SeatMap";
 import { Card, Col, Row } from "antd";
@@ -16,16 +16,12 @@ const VehicleDetail = () => {
     setTitle("CHI TIẾT XE");
   }, []);
 
-  //   const [listSeat, setListSeat] = useState([]);
   const [vehicle, setVehicle] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const vehicle = await getVehicleId({ vehicleId: vehicleId });
+      const vehicle = await getVehicleIById({ vehicleId: vehicleId });
       setVehicle(vehicle?.data);
-      // console.log("vehicle: ", vehicle?.data);
-      //   const seats = await getSeatByVehicleId({ vehicleId: vehicleId });
-      // console.log("seats: ", seats?.data);
     };
     fetchData();
   }, []);
@@ -38,7 +34,7 @@ const VehicleDetail = () => {
           hover:shadow-xl"
       >
         <div>
-          <SeatMap />
+          <SeatMap title={"SƠ ĐỒ GHẾ"}/>
         </div>
       </Card>
       <Card

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { useAuth } from "../../context/AuthContext";
-import { Button, Card, Col, Form, Row, Select, Table } from "antd";
+import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
 import moment from "moment";
 import { VietBusTheme } from "../../constants/VietBusTheme.js";
 import AddTripModal from "./Modal/AddTripModal.jsx";
@@ -9,7 +9,8 @@ import { getAllTrip } from "../../services/TripService.js";
 import { getAllStation } from "../../services/StationService.js";
 import { getAllEmployee } from "../../services/EmployeeService.js";
 import { getAllVehicle } from "../../services/VehicleService.js";
-import { STATUS_TRIP_OPTIONS } from "../../constants/Contans.js";
+import { STATUS_TRIP_OPTIONS } from "../../constants/Constants.js";
+import { useNavigate } from "react-router-dom";
 
 const TripManagement = () => {
   const [formInstance] = Form.useForm();
@@ -22,8 +23,8 @@ const TripManagement = () => {
   const [listVehicle, setListVehicle] = useState([]);
 
   const { user } = useAuth();
-
   const { setTitle } = usePageTitle();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTitle("QUẢN LÝ CHUYẾN XE");
@@ -62,6 +63,7 @@ const TripManagement = () => {
       driverId: formInstance.getFieldValue("driverId"),
       vehicleId: formInstance.getFieldValue("vehicleId"),
       status: formInstance.getFieldValue("status"),
+      tripCode: formInstance.getFieldValue("tripCode"),
     };
     const res = await getAllTrip(payload);
     setListTrip(res?.data);
@@ -78,6 +80,11 @@ const TripManagement = () => {
       width: 60,
       align: "center",
       render: (_text, _record, index) => index + 1,
+    },
+    {
+      title: "Mã chuyến",
+      dataIndex: "tripCode",
+      key: "tripCode",
     },
     {
       title: "Điểm đi",
@@ -136,7 +143,7 @@ const TripManagement = () => {
               fontSize: 18,
               cursor: "pointer",
             }}
-            // onClick={() => navigate(`/vehicle/${record.vehicleId}`)}
+            onClick={() => navigate(`/trip/${record.tripId}`)}
           />
         </div>
       ),
@@ -198,6 +205,11 @@ const TripManagement = () => {
                   placeholder="Chọn trạng thái"
                   options={STATUS_TRIP_OPTIONS}
                 ></Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="tripCode">
+                <Input placeholder="Nhập mã chuyến"></Input>
               </Form.Item>
             </Col>
           </Row>

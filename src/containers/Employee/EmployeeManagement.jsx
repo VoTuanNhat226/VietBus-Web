@@ -20,7 +20,7 @@ import moment from "moment";
 import { useAuth } from "../../context/AuthContext.jsx";
 import AddEmployeeModal from "./Modal/AddEmployeeModal.jsx";
 import UpdateEmployeeModal from "./Modal/UpdateEmployeeModal.jsx";
-import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Contans.js";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Constants.js";
 import { usePageTitle } from "../../context/PageTitleContext.jsx";
 
 const EmployeeManagement = () => {

@@ -2,7 +2,7 @@ import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import { createAccount } from "../../../services/AccountService";
 import { getApiErrorMessage } from "../../../utils/Utils";
-import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Contans";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Constants.js";
 
 const AddAccountModal = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();

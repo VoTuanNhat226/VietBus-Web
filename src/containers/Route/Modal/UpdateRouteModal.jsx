@@ -2,7 +2,7 @@ import { Button, Col, Form, message, Modal, Row, Select } from "antd";
 import { useEffect } from "react";
 import { updateRoute } from "../../../services/RouteService";
 import { getApiErrorMessage } from "../../../utils/Utils";
-import { ACTIVE_OPTIONS } from "../../../constants/Contans";
+import { ACTIVE_OPTIONS } from "../../../constants/Constants.js";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 
 const UpdateRouteModal = ({ route, open, onClose, onSuccess }) => {

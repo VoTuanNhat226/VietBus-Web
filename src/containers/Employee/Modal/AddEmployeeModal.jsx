@@ -4,7 +4,7 @@ import { createEmployee } from "../../../services/EmployeeService.js";
 import { getApiErrorMessage } from "../../../utils/Utils.js";
 import { useEffect, useState } from "react";
 import { getAllAccountByRole } from "../../../services/AccountService.js";
-import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Contans.js";
+import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Constants.js";
 
 const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
