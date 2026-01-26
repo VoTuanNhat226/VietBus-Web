@@ -98,10 +98,17 @@ const SideBar = () => {
         </li>
         <li
           className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+          // onClick={() => navigate("/payment")}
+        >
+          <i className="fa-regular fa-clock px-2"></i>
+          Vé chưa thanh toán
+        </li>
+        <li
+          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
           onClick={() => navigate("/payment")}
         >
           <i className="fa-regular fa-credit-card px-2"></i>
-          Thanh toán
+          Lịch sử thanh toán
         </li>
         {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
           <>

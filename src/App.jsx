@@ -9,7 +9,7 @@ import RouteManagement from "./containers/Route/RouteManagement.jsx";
 import TripManagement from "./containers/Trip/TripManagement.jsx";
 import TicketManagement from "./containers/Ticket/TicketManagement.jsx";
 import VehicleManagement from "./containers/Vehicle/VehicleManagement.jsx";
-import Payment from "./containers/Payment/Payment.jsx";
+import PaymentHistory from "./containers/Payment/PaymentHistory.jsx";
 import Statistic from "./containers/Statistic/Statistic.jsx";
 import AccountManagement from "./containers/Account/AccountManagement.jsx";
 import VehicleDetail from "./containers/Vehicle/VehicleDetail.jsx";
@@ -122,7 +122,7 @@ function App() {
         element={
           <PrivateRoute>
             <MainLayout>
-              <Payment />
+              <PaymentHistory />
             </MainLayout>
           </PrivateRoute>
         }

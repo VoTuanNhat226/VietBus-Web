@@ -28,9 +28,8 @@ export const TRIP_SEAT_STATUS_OPTION = [
 ];
 
 export const TICKET_STATUS_OPTION = [
-  { value: "AVAILABLE", label: "Trống" },
-  { value: "HOLD", label: "Đang giữ" },
-  { value: "SOLD", label: "Đã bán" },
+  { value: "PAID", label: "Đã trả tiền" },
+  { value: "UNPAID", label: "Chưa trả tiền" },
 ];
 
 export const PAYMENT_METHOD_OPTION = [
@@ -39,4 +38,16 @@ export const PAYMENT_METHOD_OPTION = [
   { value: "MOMO", label: "MOMO" },
   { value: "VNPAY", label: "VNPAY" },
   { value: "ZALOPAY", label: "ZALOPAY" },
+];
+
+export const PAYMENT_TYPE_OPTION = [
+  { value: "PAY_NOW", label: "Trả ngay" },
+  { value: "PAY_LATER", label: "Trả sau" },
+];
+
+export const PAYMENT_STATUS_OPTION = [
+  { value: "PENDING", label: "Đang chờ xử lý" },
+  { value: "SUCCESS", label: "Thành công" },
+  { value: "FAILED", label: "Thất bại" },
+  { value: "REFUNDED", label: "Đã hoàn tiền" },
 ];
