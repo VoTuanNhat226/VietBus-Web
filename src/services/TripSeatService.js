@@ -16,7 +16,7 @@ export const getAllTripSeatByTripId = async (params) => {
   return response.data;
 };
 
-export const getListTripSeatCanSell = async (params) => {
-  const response = await api.post("/trip-seat/get-list-can-sell", params);
+export const getListTripSeatAvailableByTripId = async (params) => {
+  const response = await api.post("/trip-seat/get-all-trip-seat-available-by-trip-id", params);
   return response.data;
 };

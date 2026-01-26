@@ -3,7 +3,7 @@ import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { Button, Form } from "antd";
 import { VietBusTheme } from "../../constants/VietBusTheme.js";
-import { getListTripSeatCanSell } from "../../services/TripSeatService.js";
+import AddTicketModal from "./Modal/AddTicketModal.jsx";
 
 const TicketManagement = () => {
   const [formInstance] = Form.useForm();
@@ -18,15 +18,6 @@ const TicketManagement = () => {
   const { setTitle } = usePageTitle();
   useEffect(() => {
     setTitle("QUẢN LÝ VÉ XE");
-  }, []);
-
-  useEffect(() => {
-    const fetchListTripSeatCanSell = async () => {
-      const res = await getListTripSeatCanSell({});
-      setListTripSeatCanSell(res?.data);
-      console.log(res?.data);
-    };
-    fetchListTripSeatCanSell();
   }, []);
   return (
     <>
@@ -43,6 +34,16 @@ const TicketManagement = () => {
           Tạo vé
         </Button>
       </div>
+      {openAddModal && (
+        <AddTicketModal
+          open={openAddModal}
+          onClose={() => setOpenAddModal(false)}
+          // onSuccess={async () => {
+          //   const res = await getAllEmployee({});
+          //   setListEmployee(res?.data);
+          // }}
+        />
+      )}
     </>
   );
 };

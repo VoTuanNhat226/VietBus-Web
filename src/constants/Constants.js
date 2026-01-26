@@ -20,3 +20,23 @@ export const STATUS_TRIP_OPTIONS = [
   { value: "COMPLETED", label: "Hoàn thành" },
   { value: "CANCELLED", label: "Đã hủy" },
 ];
+
+export const TRIP_SEAT_STATUS_OPTION = [
+  { value: "AVAILABLE", label: "Trống" },
+  { value: "HOLD", label: "Đang giữ" },
+  { value: "SOLD", label: "Đã bán" },
+];
+
+export const TICKET_STATUS_OPTION = [
+  { value: "AVAILABLE", label: "Trống" },
+  { value: "HOLD", label: "Đang giữ" },
+  { value: "SOLD", label: "Đã bán" },
+];
+
+export const PAYMENT_METHOD_OPTION = [
+  { value: "CASH", label: "Tiền mặt" },
+  { value: "BANK_TRANSFER", label: "Chuyến khoản" },
+  { value: "MOMO", label: "MOMO" },
+  { value: "VNPAY", label: "VNPAY" },
+  { value: "ZALOPAY", label: "ZALOPAY" },
+];
