@@ -30,45 +30,56 @@ const SideBar = () => {
       </div>
       {/* SideBar items */}
       <ul className="p-4 space-y-2">
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          onClick={() => navigate("/")}
-        >
-          <i className="fa-solid fa-house px-2"></i>
-          Tổng quan
-        </li>
+        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
+          <>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/")}
+            >
+              <i className="fa-solid fa-house px-2"></i>
+              Tổng quan
+            </li>
+            <li
+              className="rounded-lg px-4 py-2 text-xs"
+              style={{ color: VietBusTheme.secondary }}
+            >
+              QUẢN LÝ
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/account")}
+            >
+              <i className="fa-solid fa-circle-user px-2"></i>
+              Tài khoản
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/employee")}
+            >
+              <i className="fa-solid fa-user-group px-2"></i>
+              Nhân viên
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/route")}
+            >
+              <i className="fa-solid fa-route px-2"></i>Tuyến xe
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              onClick={() => navigate("/vehicle")}
+            >
+              <i className="fa-solid fa-bus-simple px-2"></i>
+              Xe
+            </li>
+          </>
+        ) : null}
         <li
           className="rounded-lg px-4 py-2 text-xs"
           style={{ color: VietBusTheme.secondary }}
         >
-          QUẢN LÝ
+          HOẠT ĐỘNG
         </li>
-        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/account")}
-          >
-            <i className="fa-solid fa-circle-user px-2"></i>
-            Tài khoản
-          </li>
-        ) : null}
-        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/employee")}
-          >
-            <i className="fa-solid fa-user-group px-2"></i>
-            Nhân viên
-          </li>
-        ) : null}
-        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/route")}
-          >
-            <i className="fa-solid fa-route px-2"></i>Tuyến xe
-          </li>
-        ) : null}
         <li
           className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
           onClick={() => navigate("/trip")}
@@ -81,27 +92,18 @@ const SideBar = () => {
         >
           <i className="fa-solid fa-ticket px-2"></i>Vé xe
         </li>
-        {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/vehicle")}
-          >
-            <i className="fa-solid fa-bus-simple px-2"></i>
-            Xe
-          </li>
-        ) : null}
+        <li
+          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+          onClick={() => navigate("/pending-ticket")}
+        >
+          <i className="fa-regular fa-clock px-2"></i>
+          Vé chưa thanh toán
+        </li>
         <li
           className="rounded-lg px-4 py-2 text-xs"
           style={{ color: VietBusTheme.secondary }}
         >
           TÀI CHÍNH
-        </li>
-        <li
-          className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-          // onClick={() => navigate("/payment")}
-        >
-          <i className="fa-regular fa-clock px-2"></i>
-          Vé chưa thanh toán
         </li>
         <li
           className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"

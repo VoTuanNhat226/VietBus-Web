@@ -14,6 +14,7 @@ import Statistic from "./containers/Statistic/Statistic.jsx";
 import AccountManagement from "./containers/Account/AccountManagement.jsx";
 import VehicleDetail from "./containers/Vehicle/VehicleDetail.jsx";
 import TripDetail from "./containers/Trip/TripDetail.jsx";
+import PendingTicket from "./containers/PendingTicket/PendingTicket.jsx";
 
 function App() {
   return (
@@ -91,6 +92,17 @@ function App() {
           <PrivateRoute>
             <MainLayout>
               <TicketManagement />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+      {/* PENDING TIKCET */}
+      <Route
+        path="/pending-ticket"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <PendingTicket />
             </MainLayout>
           </PrivateRoute>
         }

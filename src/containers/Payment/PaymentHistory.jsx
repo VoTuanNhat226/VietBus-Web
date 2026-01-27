@@ -121,11 +121,6 @@ const PaymentHistory = () => {
         <Form form={formInstance}>
           <Row gutter={[16, 0]}>
             <Col span={6}>
-              <Form.Item name="ticketCode">
-                <Input placeholder="Mã vé" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
               <Form.Item name="ticketStatus">
                 <Select
                   placeholder="Trạng thái vé"
@@ -155,6 +150,11 @@ const PaymentHistory = () => {
                   placeholder="Trạng thái thanh toán"
                   options={PAYMENT_STATUS_OPTION}
                 ></Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="ticketCode">
+                <Input placeholder="Mã vé" />
               </Form.Item>
             </Col>
           </Row>
