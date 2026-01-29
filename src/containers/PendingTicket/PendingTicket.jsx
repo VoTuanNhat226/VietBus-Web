@@ -8,11 +8,15 @@ import {
   TICKET_STATUS_OPTION,
 } from "../../constants/Constants";
 import { VietBusTheme } from "../../constants/VietBusTheme";
+import UpdatePendingTicketModal from "./Modal/UpdatePendingTicketModal";
 
 const PendingTicket = () => {
   const [formInstance] = Form.useForm();
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const [listPendingTicket, setListPendingTicket] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const { user } = useAuth();
 
   const { setTitle } = usePageTitle();
@@ -100,6 +104,27 @@ const PendingTicket = () => {
       dataIndex: "ticketSoldBy",
       key: "ticketSoldBy",
     },
+    {
+      title: "Cập nhật",
+      key: "action",
+      align: "center",
+      render: (_, record) => (
+        <div className="flex justify-evenly">
+          <i
+            className="fa-regular fa-pen-to-square"
+            style={{
+              color: VietBusTheme.primary,
+              fontSize: 18,
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setSelectedTicket(record);
+              setOpenUpdateModal(true);
+            }}
+          />
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -162,6 +187,20 @@ const PendingTicket = () => {
         dataSource={listPendingTicket}
         columns={columns}
       />
+      {/* UPDATE Modal */}
+      {openUpdateModal && (
+        <UpdatePendingTicketModal
+          open={openUpdateModal}
+          ticket={selectedTicket}
+          onClose={() => {
+            setOpenUpdateModal(false), setSelectedTicket(null);
+          }}
+          onSuccess={async () => {
+            const res = await getAllTicketsUnpaid({});
+            setListPendingTicket(res?.data);
+          }}
+        />
+      )}
     </>
   );
 };

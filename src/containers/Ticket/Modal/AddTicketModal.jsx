@@ -1,4 +1,14 @@
-import { Button, Col, Form, Input, message, Modal, Radio, Row, Select } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Radio,
+  Row,
+  Select,
+} from "antd";
 import { useEffect, useState } from "react";
 import {
   getAllTripSeatByTripId,
@@ -29,9 +39,9 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
         value: item.tripId,
         label: `${item.tripCode}
         | ${item.route.fromStation.name} - ${item.route.toStation.name}
-        | ${moment(item.tripDepartureTime).format(
+        | ${moment(item.departureTime).format(
           "HH:mm:ss DD-MM-YYYY"
-        )} - ${moment(item.tripArrivalTime).format("HH:mm:ss DD-MM-YYYY")}`,
+        )} - ${moment(item.arrivalTime).format("HH:mm:ss DD-MM-YYYY")}`,
         price: item.price,
       }));
       setListTripCanSell(options);
