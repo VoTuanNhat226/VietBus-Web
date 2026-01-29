@@ -12,15 +12,18 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
 
   const handleSubmit = async () => {
     try {
+      const values = await form.validateFields();
+
       const payload = {
-        lastName: form.getFieldValue("lastName"),
-        firstName: form.getFieldValue("firstName"),
-        phoneNumber: form.getFieldValue("phoneNumber"),
-        position: form.getFieldValue("position"),
-        active: form.getFieldValue("active"),
-        accountId: form.getFieldValue("account"),
+        lastName: values.lastName,
+        firstName: values.firstName,
+        phoneNumber: values.phoneNumber,
+        position: values.position,
+        active: values.active,
+        accountId: values.account,
       };
-      const res = await createEmployee(payload);
+
+      await createEmployee(payload);
       message.success("Thêm nhân viên thành công");
       form.resetFields();
       onClose();
@@ -68,7 +71,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
             <Form.Item
               label="Họ và tên lót"
               name="lastName"
-              rules={[{ required: true, message: "Vui lòng nhập họ" }]}
+              rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Input />
             </Form.Item>
@@ -78,7 +81,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
             <Form.Item
               label="Tên"
               name="firstName"
-              rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+              rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Input />
             </Form.Item>
@@ -90,7 +93,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
             <Form.Item
               label="Số điện thoại"
               name="phoneNumber"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Input maxLength={10} />
             </Form.Item>
@@ -100,7 +103,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
             <Form.Item
               label="Chức vụ"
               name="position"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Select options={ROLE_OPTIONS} />
             </Form.Item>
@@ -112,7 +115,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
             <Form.Item
               label="Trạng thái"
               name="active"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Select options={ACTIVE_OPTIONS} />
             </Form.Item>
