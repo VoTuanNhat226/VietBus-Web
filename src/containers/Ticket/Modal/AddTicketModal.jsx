@@ -69,9 +69,7 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-
       const values = await form.validateFields();
-
       const payload = {
         tripId: values.tripId,
         passengerId: values.passengerId || null,
@@ -81,7 +79,6 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
         paymentMethod: values.paymentMethod,
         note: values.note,
       };
-      console.log(payload);
       const res = await createTicket(payload);
       message.success("Tạo vé thành công");
       form.resetFields();
@@ -93,6 +90,13 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
+
+  const paymentType = Form.useWatch("paymentType", form);
+  useEffect(() => {
+    if (paymentType !== "PAY_NOW") {
+      form.setFieldValue("paymentMethod", undefined);
+    }
+  }, [paymentType]);
 
   return (
     <Modal
@@ -115,6 +119,7 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
               >
                 <Select
                   options={listTripCanSell}
+                  placeholder="Chọn chuyến xe"
                   onChange={(value, option) => {
                     setSelectedTripId(value);
                     const formatVND = (value) =>
@@ -126,7 +131,7 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
             </Col>
             <Col span={12}>
               <Form.Item name="passengerId" label="Khách hàng">
-                <Select options={[]} />
+                <Select options={[]} placeholder="Chọn khách hàng" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -135,7 +140,10 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
                 label="Giường"
                 rules={[{ required: true, message: "Bắt buộc" }]}
               >
-                <Select options={listTripSeatCanSell} />
+                <Select
+                  options={listTripSeatCanSell}
+                  placeholder="Chọn giường"
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -149,16 +157,26 @@ const AddTicketModal = ({ open, onClose, onSuccess }) => {
                 label="Giá vé"
                 rules={[{ required: true, message: "Bắt buộc" }]}
               >
-                <Input />
+                <Input placeholder="Nhập giá vé" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="paymentMethod"
                 label="Phương thức thanh toán"
-                rules={[{ required: true, message: "Bắt buộc" }]}
+                rules={[
+                  { required: paymentType === "PAY_NOW", message: "Bắt buộc" },
+                ]}
               >
-                <Select options={PAYMENT_METHOD_OPTION} />
+                <Select
+                  options={PAYMENT_METHOD_OPTION}
+                  disabled={paymentType !== "PAY_NOW"}
+                  placeholder={
+                    paymentType === "PAY_NOW"
+                      ? "Chọn phương thức thanh toán"
+                      : "Chỉ áp dụng khi trả ngay"
+                  }
+                />
               </Form.Item>
             </Col>
             <Col span={12}>

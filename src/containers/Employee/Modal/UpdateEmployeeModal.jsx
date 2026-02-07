@@ -35,7 +35,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
 
       await updateEmployee(payload);
       message.success("Cập nhật thành công");
-      onSuccess?.();
+      onSuccess();
     } catch (err) {
       message.error(getApiErrorMessage(err));
     }

@@ -19,3 +19,8 @@ export const createTrip = async (params) => {
   const response = await api.post("/trip/create", params);
   return response.data;
 };
+
+export const updateTrip = async (params) => {
+  const response = await api.post("/trip/update", params);
+  return response.data;
+};

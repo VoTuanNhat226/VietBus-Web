@@ -14,7 +14,7 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
         active: account?.active,
       });
     }
-  }, [account, open, form]);
+  }, [account, open]);
 
   return (
     <Modal
@@ -22,21 +22,12 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
       open={open}
       onCancel={onClose}
       footer={null}
-      width={700}
+      width={400}
       destroyOnClose
     >
       <Form layout="vertical" form={form}>
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Vai trò"
-              name="role"
-              rules={[{ required: true, message: "Bắt buộc" }]}
-            >
-              <Select options={ROLE_OPTIONS} />{" "}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label="Trạng thái"
               name="active"

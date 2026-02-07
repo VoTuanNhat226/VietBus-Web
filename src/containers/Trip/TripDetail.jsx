@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { usePageTitle } from "../../context/PageTitleContext";
 import { useEffect, useState } from "react";
-import { Button, Card } from "antd";
+import { Button, Card, Divider } from "antd";
 import { VietBusTheme } from "../../constants/VietBusTheme";
 import { getTripById } from "../../services/TripService";
 import {
@@ -12,6 +12,7 @@ import moment from "moment";
 import SeatMap from "../Vehicle/Seat/SeatMap";
 import { CarOutlined } from "@ant-design/icons";
 import { STATUS_TRIP_OPTIONS } from "../../constants/Constants.js";
+import UpdateTripModal from "./Modal/UpdateTripModal.jsx";
 
 const TripDetail = () => {
   const { tripId } = useParams();
@@ -26,6 +27,7 @@ const TripDetail = () => {
   const [expectedRevenue, setExpectedRevenue] = useState(0);
   const [tripSeatSold, setTripSeatSold] = useState(0);
   const [listTripSeat, setListTripSeat] = useState([]);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -84,6 +86,22 @@ const TripDetail = () => {
         </div>
         <div className="w-9/12">
           <Card className="rounded-xl hover:shadow-xl mb-5">
+            <div className="flex justify-between">
+              <div className="text-xl font-bold">THÔNG TIN</div>
+              <div>
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: VietBusTheme.primary,
+                    color: VietBusTheme.white,
+                  }}
+                  onClick={() => setOpenUpdateModal(true)}
+                >
+                  Cập nhật
+                </Button>
+              </div>
+            </div>
+            <Divider className="my-2" />
             <div className="flex justify-between">
               <div className="flex">
                 <div>
@@ -225,10 +243,18 @@ const TripDetail = () => {
           <Card></Card>
         </div>
       </div>
-      {/* <div className="flex mb-4">
-
-       
-        </div> */}
+      {/* UPDATE Modal */}
+      <UpdateTripModal
+        open={openUpdateModal}
+        trip={trip}
+        onClose={() => {
+          setOpenUpdateModal(false);
+        }}
+        onSuccess={async () => {
+          const res = await getTripById({ tripId });
+          setTrip(res?.data);
+        }}
+      />
     </>
   );
 };

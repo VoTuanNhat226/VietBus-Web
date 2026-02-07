@@ -61,6 +61,13 @@ const SideBar = () => {
             </li>
             <li
               className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
+              // onClick={() => navigate("/employee")}
+            >
+              <i className="fa-solid fa-users px-2"></i>
+              Khách hàng
+            </li>
+            <li
+              className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
               onClick={() => navigate("/route")}
             >
               <i className="fa-solid fa-route px-2"></i>Tuyến xe
