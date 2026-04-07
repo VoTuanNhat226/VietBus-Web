@@ -156,7 +156,7 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
               <Select
                 placeholder="Chọn tài xế"
                 options={listDriverActive?.map((driver) => ({
-                  label: driver.lastName + " " + driver.firstName,
+                  label: driver.fullName,
                   value: driver.employeeId,
                 }))}
               />
