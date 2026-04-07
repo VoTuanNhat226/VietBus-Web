@@ -14,3 +14,8 @@ export const createAccount = async (params) => {
   const response = await api.post("/account/create", params);
   return response.data;
 };
+
+export const updateAccount = async (params) => {
+  const response = await api.post("/account/update", params);
+  return response.data;
+};

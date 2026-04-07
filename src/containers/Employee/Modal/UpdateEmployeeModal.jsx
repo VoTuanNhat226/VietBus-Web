@@ -11,8 +11,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
   useEffect(() => {
     if (employee && open) {
       form.setFieldsValue({
-        lastName: employee?.lastName,
-        firstName: employee?.firstName,
+        fullName: employee?.fullName,
         phoneNumber: employee?.phoneNumber,
         position: employee?.position,
         active: employee?.active,
@@ -26,8 +25,7 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
 
       const payload = {
         employeeId: employee.employeeId,
-        lastName: values.lastName,
-        firstName: values.firstName,
+        fullName: values.fullName,
         phoneNumber: values.phoneNumber,
         position: values.position,
         active: values.active,
@@ -52,20 +50,10 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
     >
       <Form layout="vertical" form={form}>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
-              label="Họ và tên lót"
-              name="lastName"
-              rules={[{ required: true, message: "Bắt buộc" }]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Tên"
-              name="firstName"
+              label="Họ và tên"
+              name="fullName"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
               <Input />

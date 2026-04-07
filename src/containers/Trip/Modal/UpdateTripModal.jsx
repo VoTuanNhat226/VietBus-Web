@@ -42,7 +42,11 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
       <Form layout="vertical" form={form}>
         <Row gutter={16}>
           <Col span={24}>
-            <Form.Item name="status">
+            <Form.Item
+              name="status"
+              label="Trạng thái"
+              rules={[{ required: true }]}
+            >
               <Select options={STATUS_TRIP_OPTIONS} />
             </Form.Item>
           </Col>

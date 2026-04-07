@@ -1,8 +1,8 @@
 export const ROLE_OPTIONS = [
-  { value: "ADMIN", label: "ADMIN" },
-  { value: "STAFF", label: "STAFF" },
-  { value: "DRIVER", label: "DRIVER" },
-  { value: "MANAGER", label: "MANAGER" },
+  { value: "ADMIN", label: "Quản trị viên" },
+  { value: "STAFF", label: "Nhân viên" },
+  { value: "DRIVER", label: "Tài xế" },
+  { value: "MANAGER", label: "Quản lý" },
 ];
 
 export const ACTIVE_OPTIONS = [

@@ -143,6 +143,7 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
                 className="w-full"
                 showTime={{ format: "HH:mm" }}
                 format="YYYY-MM-DD HH:mm"
+                placeholder="Chọn thời gian"
               />
             </Form.Item>
           </Col>
@@ -189,6 +190,7 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
                 disabledDate={(current) =>
                   current && current < dayjs().startOf("day")
                 }
+                placeholder="Chọn thời gian"
               />
             </Form.Item>
           </Col>
@@ -251,6 +253,7 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
 
                   return {};
                 }}
+                placeholder="Chọn thời gian"
               />
             </Form.Item>
           </Col>

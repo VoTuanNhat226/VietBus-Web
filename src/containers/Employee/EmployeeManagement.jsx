@@ -50,8 +50,7 @@ const EmployeeManagement = () => {
 
   const handleSearch = async () => {
     const payload = {
-      firstName: formInstance.getFieldValue("firstName"),
-      lastName: formInstance.getFieldValue("lastName"),
+      fullName: formInstance.getFieldValue("fullName"),
       phoneNumber: formInstance.getFieldValue("phoneNumber"),
       position: formInstance.getFieldValue("position"),
       active: formInstance.getFieldValue("active"),
@@ -89,14 +88,9 @@ const EmployeeManagement = () => {
       render: (_text, _record, index) => index + 1,
     },
     {
-      title: "Họ và tên lót",
-      dataIndex: "lastName",
-      key: "lastName",
-    },
-    {
-      title: "Tên",
-      dataIndex: "firstName",
-      key: "firstName",
+      title: "Họ và tên",
+      dataIndex: "fullName",
+      key: "fullName",
     },
     {
       title: "Số điện thoại",
@@ -190,13 +184,8 @@ const EmployeeManagement = () => {
         <Form form={formInstance}>
           <Row gutter={[16, 0]}>
             <Col span={6}>
-              <Form.Item name="lastName">
-                <Input placeholder="Họ và tên lót" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="firstName">
-                <Input placeholder="Tên" />
+              <Form.Item name="fullName">
+                <Input placeholder="Họ và tên" />
               </Form.Item>
             </Col>
             <Col span={6}>

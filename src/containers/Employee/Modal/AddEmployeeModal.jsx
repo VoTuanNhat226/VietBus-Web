@@ -13,10 +13,8 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-
       const payload = {
-        lastName: values.lastName,
-        firstName: values.firstName,
+        fullName: values.fullName,
         phoneNumber: values.phoneNumber,
         position: values.position,
         active: values.active,
@@ -67,23 +65,13 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
     >
       <Form layout="vertical" form={form}>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
-              label="Họ và tên lót"
-              name="lastName"
+              label="Họ và tên"
+              name="fullName"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Tên"
-              name="firstName"
-              rules={[{ required: true, message: "Bắt buộc" }]}
-            >
-              <Input />
+              <Input placeholder="Nhập họ và tên" />
             </Form.Item>
           </Col>
         </Row>
@@ -95,7 +83,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
               name="phoneNumber"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
-              <Input maxLength={10} />
+              <Input maxLength={10} placeholder="Nhập số điện thoại" />
             </Form.Item>
           </Col>
 
@@ -105,7 +93,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
               name="position"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
-              <Select options={ROLE_OPTIONS} />
+              <Select options={ROLE_OPTIONS} placeholder="Chọn chức vụ" />
             </Form.Item>
           </Col>
         </Row>
@@ -117,12 +105,12 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
               name="active"
               rules={[{ required: true, message: "Bắt buộc" }]}
             >
-              <Select options={ACTIVE_OPTIONS} />
+              <Select options={ACTIVE_OPTIONS} placeholder="Chọn trạng thái" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Tài khoản" name="account">
-              <Select options={listAccount} />
+              <Select options={listAccount} placeholder="Chọn tài khoản" />
             </Form.Item>
           </Col>
         </Row>

@@ -1,7 +1,8 @@
-import { Button, Col, Form, Modal, Row, Select } from "antd";
+import { Button, Col, Form, message, Modal, Row, Select } from "antd";
 import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../../constants/Constants.js";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import { useEffect } from "react";
+import { updateAccount } from "../../../services/AccountService.js";
 
 const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
@@ -15,6 +16,16 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
       });
     }
   }, [account, open]);
+
+  const handleSubmit = async () => {
+    const payload = {
+      accountId: account?.accountId,
+      active: form.getFieldValue("active"),
+    };
+    await updateAccount(payload);
+    message.success("Cập nhật thành công");
+    onSuccess();
+  };
 
   return (
     <Modal
@@ -45,7 +56,7 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
               backgroundColor: VietBusTheme.primary,
               color: VietBusTheme.white,
             }}
-            // onClick={handleSubmit}
+            onClick={handleSubmit}
           >
             Cập nhật
           </Button>
