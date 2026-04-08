@@ -193,22 +193,6 @@ const TripDetail = () => {
                                     </div>
                                     <div>
                                         <div className="text-sm font-bold">
-                                            <i className="fa-solid fa-utensils pr-2"/>
-                                            Trạm dừng chân
-                                        </div>
-                                        <div
-                                            className="text-xl font-bold"
-                                            style={{color: VietBusTheme.primary}}
-                                        >
-                                            {trip?.restStop ?? "—"}
-                                        </div>
-                                        <div className="font-bold">
-                                            {trip?.restTime &&
-                                                moment(trip.restTime).format("HH:mm DD-MM-YYYY")}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="text-sm font-bold">
                                             <i className="fa-solid fa-flag pr-2"/>
                                             Điểm kết thúc
                                         </div>
@@ -224,19 +208,6 @@ const TripDetail = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="text-sm font-bold">Tài xế chính</div>
-                                        <div
-                                            className="text-xl font-bold"
-                                            style={{color: VietBusTheme.primary}}
-                                        >
-                                            {trip?.driver?.lastName} {trip?.driver?.firstName}
-                                        </div>
-                                        <div className="font-bold">
-                                            <i class="fa-solid fa-phone mr-2"/>
-                                            {trip?.driver?.phoneNumber}
-                                        </div>
-                                    </div>
-                                    <div>
                                         <div className="text-sm font-bold">Thông tin xe</div>
                                         <div
                                             className="text-xl font-bold"
@@ -246,6 +217,19 @@ const TripDetail = () => {
                                         </div>
                                         <div className="font-bold">
                                             {trip?.vehicle?.totalSeat} giường
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-bold">Tài xế chính</div>
+                                        <div
+                                            className="text-xl font-bold"
+                                            style={{color: VietBusTheme.primary}}
+                                        >
+                                            {trip?.driver?.fullName}
+                                        </div>
+                                        <div className="font-bold">
+                                            <i className="fa-solid fa-phone mr-2"/>
+                                            {trip?.driver?.phoneNumber}
                                         </div>
                                     </div>
                                 </div>

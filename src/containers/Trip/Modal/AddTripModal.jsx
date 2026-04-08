@@ -63,8 +63,6 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
           ? arrivalTime.format("YYYY-MM-DDTHH:mm:ss")
           : null,
         price: form.getFieldValue("price"),
-        restStop: form.getFieldValue("restStop"),
-        restTime: restTime ? restTime.format("YYYY-MM-DDTHH:mm:ss") : null,
       };
       const res = await createTrip(payload);
       message.success("Tạo chuyến xe thành công");
@@ -100,50 +98,6 @@ const AddTripModal = ({ open, onClose, onSuccess }) => {
                   label: route.fromStation.name + " - " + route.toStation.name,
                   value: route.routeId,
                 }))}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Trạm dừng chân" name="restStop">
-              <Input placeholder="Nhập trạm dừng chân"></Input>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Thời gian dừng"
-              name="restTime"
-              dependencies={["departureTime", "arrivalTime"]}
-              rules={[
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    const departureTime = getFieldValue("departureTime");
-                    const arrivalTime = getFieldValue("arrivalTime");
-
-                    if (!value || !departureTime || !arrivalTime) {
-                      return Promise.resolve();
-                    }
-
-                    if (
-                      value.isBefore(departureTime) ||
-                      value.isAfter(arrivalTime)
-                    ) {
-                      return Promise.reject(
-                        new Error(
-                          "Thời gian dừng phải nằm giữa thời gian xuất bến và thời gian đến"
-                        )
-                      );
-                    }
-
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <DatePicker
-                className="w-full"
-                showTime={{ format: "HH:mm" }}
-                format="YYYY-MM-DD HH:mm"
-                placeholder="Chọn thời gian"
               />
             </Form.Item>
           </Col>
