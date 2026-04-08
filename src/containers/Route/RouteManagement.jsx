@@ -58,7 +58,6 @@ const RouteManagement = () => {
       fromStationId: formInstance.getFieldValue("fromStationId"),
       toStationId: formInstance.getFieldValue("toStationId"),
       distanceKm: formInstance.getFieldValue("distanceKm"),
-      durationMinutes: formInstance.getFieldValue("durationMinutes"),
       active: formInstance.getFieldValue("active"),
       createdBy: formInstance.getFieldValue("createdBy"),
       updatedBy: formInstance.getFieldValue("updatedBy"),
@@ -92,12 +91,6 @@ const RouteManagement = () => {
       dataIndex: "distanceKm",
       key: "distanceKm",
       render: (value) => <span>{value} km</span>,
-    },
-    {
-      title: "Thời gian",
-      dataIndex: "durationMinutes",
-      key: "durationMinutes",
-      render: (value) => <span>{value} phút</span>,
     },
     {
       title: "Trạng thái",
@@ -191,11 +184,6 @@ const RouteManagement = () => {
             <Col span={6}>
               <Form.Item name="distanceKm">
                 <Input placeholder="Khoảng cách" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="durationMinutes">
-                <Input placeholder="Thời gian" />
               </Form.Item>
             </Col>
             <Col span={6}>
