@@ -1,6 +1,6 @@
 import "./App.css";
 import Login from "./pages/Login";
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import PrivateRoute from "./routers/PrivateRoute";
 import Home from "./pages/Home";
 import MainLayout from "./layouts/MainLayout";
@@ -15,143 +15,37 @@ import AccountManagement from "./containers/Account/AccountManagement.jsx";
 import VehicleDetail from "./containers/Vehicle/VehicleDetail.jsx";
 import TripDetail from "./containers/Trip/TripDetail.jsx";
 import PendingTicket from "./containers/PendingTicket/PendingTicket.jsx";
+import PassengerManagement from "./containers/Passenger/PassengerManagement.jsx";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      {/* HOME */}
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <Home />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* ACCOUNT */}
-      <Route
-        path="/account"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <AccountManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* EMPLOYEE */}
-      <Route
-        path="/employee"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <EmployeeManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* ROUTE */}
-      <Route
-        path="/route"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <RouteManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* TRIP */}
-      <Route
-        path="/trip"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <TripManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/trip/:tripId"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <TripDetail />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* TIKCET */}
-      <Route
-        path="/ticket"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <TicketManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* PENDING TIKCET */}
-      <Route
-        path="/pending-ticket"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <PendingTicket />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* VEHICLE */}
-      <Route
-        path="/vehicle"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <VehicleManagement />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/vehicle/:vehicleId"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <VehicleDetail />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* PAYMENT */}
-      <Route
-        path="/payment"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <PaymentHistory />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* STATISTIC */}
-      <Route
-        path="/statistic"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <Statistic />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-    </Routes>
-  );
+    return (
+        <Routes>
+            {/* PUBLIC */}
+            <Route path="/login" element={<Login />} />
+
+            {/* PRIVATE */}
+            <Route element={<PrivateRoute />}>
+
+                {/* LAYOUT */}
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/account" element={<AccountManagement />} />
+                    <Route path="/employee" element={<EmployeeManagement />} />
+                    <Route path="/passenger" element={<PassengerManagement />} />
+                    <Route path="/route" element={<RouteManagement />} />
+                    <Route path="/trip" element={<TripManagement />} />
+                    <Route path="/trip/:tripId" element={<TripDetail />} />
+                    <Route path="/ticket" element={<TicketManagement />} />
+                    <Route path="/pending-ticket" element={<PendingTicket />} />
+                    <Route path="/vehicle" element={<VehicleManagement />} />
+                    <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
+                    <Route path="/payment" element={<PaymentHistory />} />
+                    <Route path="/statistic" element={<Statistic />} />
+                </Route>
+
+            </Route>
+        </Routes>
+    );
 }
 
 export default App;

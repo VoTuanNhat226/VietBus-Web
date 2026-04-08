@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useParams} from "react-router-dom";
 import {getVehicleIById} from "../../services/VehicleService";
 import SeatMap40 from "./Seat/SeatMap40.jsx";
@@ -26,7 +26,7 @@ const VehicleDetail = () => {
         fetchData();
     }, [vehicleId]);
 
-    const renderSeatMap = () => {
+    const renderSeatMap = useMemo(() => {
         switch (vehicle?.totalSeat) {
             case 40:
                 return <SeatMap40 title="SƠ ĐỒ GHẾ"/>;
@@ -35,13 +35,13 @@ const VehicleDetail = () => {
             default:
                 return null;
         }
-    };
+    },[vehicle?.totalSeat]);
 
     return (
         <div className="flex justify-evenly">
             <Card className="w-3/12 mr-5  rounded-xl hover:shadow-xl">
                 <div>
-                    {renderSeatMap()}
+                    {renderSeatMap}
                 </div>
             </Card>
             <div className="w-9/12">

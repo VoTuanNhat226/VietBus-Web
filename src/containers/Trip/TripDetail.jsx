@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {usePageTitle} from "../../context/PageTitleContext";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {Button, Card, Divider} from "antd";
 import {VietBusTheme} from "../../constants/VietBusTheme";
 import {getTripById} from "../../services/TripService";
@@ -17,7 +17,6 @@ import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 
 const TripDetail = () => {
     const {tripId} = useParams();
-
     const {setTitle} = usePageTitle();
 
     useEffect(() => {
@@ -31,25 +30,25 @@ const TripDetail = () => {
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     useEffect(() => {
-        const fetchTrip = async () => {
-            const res = await getTripById({tripId});
-            setTrip(res?.data);
-            setExpectedRevenue(res?.data?.price * res?.data?.vehicle?.totalSeat);
+        const fetchData = async () => {
+            const [tripRes, soldRes, seatRes] = await Promise.all([
+                getTripById({tripId}),
+                countTripSeatSoldByTripId({tripId}),
+                getAllTripSeatByTripId({tripId})
+            ]);
+
+            const tripData = tripRes?.data;
+
+            setTrip(tripData);
+            setTripSeatSold(soldRes?.data || 0);
+            setListTripSeat(seatRes?.data || []);
+
+            const price = tripData?.price || 0;
+            const totalSeat = tripData?.vehicle?.totalSeat || 0;
+            setExpectedRevenue(price * totalSeat);
         };
 
-        const fetchCountTripSeatSold = async () => {
-            const res = await countTripSeatSoldByTripId({tripId: tripId});
-            setTripSeatSold(res?.data || 0);
-        };
-
-        const fetchAllTripSeat = async () => {
-            const res = await getAllTripSeatByTripId({tripId: tripId});
-            setListTripSeat(res?.data);
-        };
-
-        fetchTrip();
-        fetchCountTripSeatSold();
-        fetchAllTripSeat();
+        fetchData();
     }, [tripId]);
 
     const fillRate =
@@ -61,23 +60,23 @@ const TripDetail = () => {
         STATUS_TRIP_OPTIONS.find((opt) => opt.value === trip?.status)?.label ||
         trip?.status;
 
-    const renderSeatMap = () => {
+    const renderSeatMap = useMemo(() => {
         switch (trip?.vehicle?.totalSeat) {
             case 40:
-                return <SeatMap40 listTripSeat={listTripSeat} title={"TÌNH TRẠNG VÉ"}/>;
+                return <SeatMap40 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
             case 34:
-                return <SeatMap34 listTripSeat={listTripSeat} title={"TÌNH TRẠNG VÉ"}/>;
+                return <SeatMap34 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
             default:
                 return null;
         }
-    };
+    }, [trip?.vehicle?.totalSeat, listTripSeat]);
 
     return (
         <>
             <div className="flex justify-evenly">
                 <div className="w-3/12 mr-5">
                     <Card className="rounded-xl hover:shadow-xl">
-                        {renderSeatMap()}
+                        {renderSeatMap}
                     </Card>
                     <Card className="rounded-xl hover:shadow-xl">
                         <div className="flex justify-between">

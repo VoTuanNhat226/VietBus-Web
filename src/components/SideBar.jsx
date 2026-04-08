@@ -1,173 +1,113 @@
-import {
-  CarOutlined,
-  DollarOutlined,
-  HomeOutlined,
-  LineChartOutlined,
-  MenuOutlined,
-  SolutionOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { VietBusTheme } from "../constants/VietBusTheme";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import {VietBusTheme} from "../constants/VietBusTheme";
+import {useAuth} from "../context/AuthContext";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useMemo, useState} from "react";
 import AccountDetailModal from "../containers/Account/Modal/AccountDetailModal";
+import {MenuItem} from "./MenuItem.js";
 
 const SideBar = () => {
-  const navigate = useNavigate();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const {user, logout, loading} = useAuth();
 
-  const { user, logout, loading } = useAuth();
+    const [openProfile, setOpenProfile] = useState(false);
 
-  const [openProfile, setOpenProfile] = useState(false);
+    const handleLogout = async () => {
+        await logout();
+        navigate("/login");
+    };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+    const filteredMenu = useMemo(() => {
+        return MenuItem.filter((item, index) => {
+            const hasPermission =
+                item.roles.includes("ALL") || item.roles.includes(user?.role);
 
-  return (
-    <>
-      <div
-        className="fixed top-0 left-0 h-screen w-60 from-slate-900 to-slate-800 text-white shadow-xl z-50"
-        style={{ backgroundColor: VietBusTheme.primary }}
-      >
-        <div className="text-center text-3xl font-bold mt-4 mb-4">
-          <i className="fa-solid fa-bus-simple px-2"></i>VIETBUS
-        </div>
-        {/* SideBar items */}
-        <ul className="p-4 space-y-2">
-          {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-            <>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/")}
-              >
-                <i className="fa-solid fa-house px-2"></i>
-                Tổng quan
-              </li>
-              <li
-                className="rounded-lg px-4 py-2 text-xs"
-                style={{ color: VietBusTheme.secondary }}
-              >
-                QUẢN LÝ
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/account")}
-              >
-                <i className="fa-solid fa-circle-user px-2"></i>
-                Tài khoản
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/employee")}
-              >
-                <i className="fa-solid fa-user-group px-2"></i>
-                Nhân viên
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                // onClick={() => navigate("/employee")}
-              >
-                <i className="fa-solid fa-users px-2"></i>
-                Khách hàng
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/route")}
-              >
-                <i className="fa-solid fa-route px-2"></i>Tuyến xe
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/vehicle")}
-              >
-                <i className="fa-solid fa-bus-simple px-2"></i>
-                Xe
-              </li>
-            </>
-          ) : null}
-          <li
-            className="rounded-lg px-4 py-2 text-xs"
-            style={{ color: VietBusTheme.secondary }}
-          >
-            HOẠT ĐỘNG
-          </li>
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/trip")}
-          >
-            <i className="fa-solid fa-suitcase-rolling px-2"></i>Chuyến xe
-          </li>
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/ticket")}
-          >
-            <i className="fa-solid fa-ticket px-2"></i>Vé xe
-          </li>
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/pending-ticket")}
-          >
-            <i className="fa-regular fa-clock px-2"></i>
-            Vé chưa thanh toán
-          </li>
-          <li
-            className="rounded-lg px-4 py-2 text-xs"
-            style={{ color: VietBusTheme.secondary }}
-          >
-            TÀI CHÍNH
-          </li>
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-            onClick={() => navigate("/payment")}
-          >
-            <i className="fa-regular fa-credit-card px-2"></i>
-            Lịch sử thanh toán
-          </li>
-          {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
-            <>
-              <li
-                className="rounded-lg px-4 py-2 text-xs"
-                style={{ color: VietBusTheme.secondary }}
-              >
-                PHÂN TÍCH
-              </li>
-              <li
-                className="cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 hover:scale-105 hover:bg-[#71a0cf]"
-                onClick={() => navigate("/statistic")}
-              >
-                <i className="fa-solid fa-chart-column px-2"></i>
-                Thống kê
-              </li>
-            </>
-          ) : null}
-        </ul>
-        <ul className="p-4 space-y-2 fixed bottom-0">
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
-            onClick={() => setOpenProfile(true)}
-          >
-            <i className="fa-solid fa-user px-2"></i>
-            <span className="flex-1">Profile: {user?.username}</span>
-          </li>
-          <li
-            className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
-            onClick={handleLogout}
-          >
-            <i className="fa-solid fa-arrow-right-from-bracket px-2"></i>
-            Đăng xuất
-          </li>
-        </ul>
-      </div>
-      {/* MODAL */}
-      <AccountDetailModal
-        open={openProfile}
-        onClose={() => setOpenProfile(false)}
-        user={user}
-      />
-    </>
-  );
+            if (!hasPermission) return false;
+
+            if (item.type === "section") {
+                const hasChild = MenuItem.slice(index + 1).some(nextItem =>
+                    nextItem.type === "item" &&
+                    (nextItem.roles.includes("ALL") || nextItem.roles.includes(user?.role))
+                );
+                return hasChild;
+            }
+
+            return true;
+        });
+    }, [user]);
+
+    const renderMenu = () => {
+        return filteredMenu.map((item, index) => {
+            if (item.type === "section") {
+                return (
+                    <li
+                        key={item.label}
+                        className="rounded-lg px-4 py-2 text-xs"
+                        style={{color: VietBusTheme.secondary}}
+                    >
+                        {item.label}
+                    </li>
+                );
+            }
+            return (
+                <li
+                    key={item.label}
+                    onClick={() => {
+                        if (location.pathname !== item.path) {
+                            navigate(item.path);
+                        }
+                    }}
+                    className={`cursor-pointer rounded-lg px-2 py-2 transition-all duration-200
+                        ${location.pathname === item.path
+                        ? "bg-[#71a0cf]"
+                        : "hover:bg-[#71a0cf]"
+                    }`}
+                >
+                    <i className={`fa-solid ${item.icon} px-2`}></i>
+                    {item.label}
+                </li>
+            );
+        });
+    };
+
+    return (
+        <>
+            <div
+                className="fixed top-0 left-0 h-screen w-60 flex flex-col text-white shadow-xl z-50"
+                style={{backgroundColor: VietBusTheme.primary}}
+            >
+                <div className="text-center text-3xl font-bold mt-4 mb-4">
+                    <i className="fa-solid fa-bus-simple px-2"></i>VIETBUS
+                </div>
+                {/* SideBar items */}
+                <ul className="flex-1 overflow-y-auto p-4 space-y-2">
+                    {renderMenu()}
+                </ul>
+                <ul className="p-4 space-y-2">
+                    <li
+                        className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
+                        onClick={() => setOpenProfile(true)}
+                    >
+                        <i className="fa-solid fa-user px-2"></i>
+                        <span className="flex-1">Profile: {user?.username}</span>
+                    </li>
+                    <li
+                        className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
+                        onClick={handleLogout}
+                    >
+                        <i className="fa-solid fa-arrow-right-from-bracket px-2"></i>
+                        Đăng xuất
+                    </li>
+                </ul>
+            </div>
+            {/* MODAL */}
+            <AccountDetailModal
+                open={openProfile}
+                onClose={() => setOpenProfile(false)}
+                user={user}
+            />
+        </>
+    );
 };
 
 export default SideBar;
