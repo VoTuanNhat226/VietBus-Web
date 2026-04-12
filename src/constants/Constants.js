@@ -1,9 +1,18 @@
 export const ROLE_OPTIONS = [
   { value: "ADMIN", label: "Quản trị viên" },
+  { value: "MANAGER", label: "Quản lý" },
   { value: "STAFF", label: "Nhân viên" },
   { value: "DRIVER", label: "Tài xế" },
-  { value: "MANAGER", label: "Quản lý" },
+  { value: "ASSISTANT", label: "Phụ xe" },
 ];
+
+export const ROLE = {
+  ADMIN: "ADMIN",
+  MANAGER: "MANAGER",
+  STAFF: "STAFF",
+  DRIVER: "DRIVER",
+  ASSISTANT: "ASSISTANT",
+};
 
 export const ACTIVE_OPTIONS = [
   { value: true, label: "Hoạt động" },

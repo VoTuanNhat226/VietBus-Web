@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import {usePageTitle} from "../../context/PageTitleContext";
 import {useEffect, useMemo, useState} from "react";
-import {Button, Card, Divider} from "antd";
+import {Button, Card, Divider, Spin} from "antd";
 import {VietBusTheme} from "../../constants/VietBusTheme";
 import {getTripById} from "../../services/TripService";
 import {
@@ -18,6 +18,7 @@ import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 const TripDetail = () => {
     const {tripId} = useParams();
     const {setTitle} = usePageTitle();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setTitle("CHI TIẾT CHUYẾN XE");
@@ -31,6 +32,7 @@ const TripDetail = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             const [tripRes, soldRes, seatRes] = await Promise.all([
                 getTripById({tripId}),
                 countTripSeatSoldByTripId({tripId}),
@@ -44,8 +46,9 @@ const TripDetail = () => {
             setListTripSeat(seatRes?.data || []);
 
             const price = tripData?.price || 0;
-            const totalSeat = tripData?.vehicle?.totalSeat || 0;
+            const totalSeat = tripData.totalSeat || 0;
             setExpectedRevenue(price * totalSeat);
+            setIsLoading(false);
         };
 
         fetchData();
@@ -61,18 +64,18 @@ const TripDetail = () => {
         trip?.status;
 
     const renderSeatMap = useMemo(() => {
-        switch (trip?.vehicle?.totalSeat) {
+        switch (trip?.totalSeat) {
             case 40:
-                return <SeatMap40 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
+                return <SeatMap40 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ"/>;
             case 34:
-                return <SeatMap34 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
+                return <SeatMap34 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ"/>;
             default:
                 return null;
         }
     }, [trip?.vehicle?.totalSeat, listTripSeat]);
 
     return (
-        <>
+        <Spin spinning={isLoading}>
             <div className="flex justify-evenly">
                 <div className="w-3/12 mr-5">
                     <Card className="rounded-xl hover:shadow-xl">
@@ -164,7 +167,7 @@ const TripDetail = () => {
                                     className="text-2xl font-bold"
                                     style={{color: VietBusTheme.primary}}
                                 >
-                                    {tripSeatSold}/{trip?.vehicle?.totalSeat}
+                                    {tripSeatSold}/{trip?.totalSeat}
                                     <span>({fillRate}%)</span>
                                 </div>
                             </div>
@@ -183,7 +186,7 @@ const TripDetail = () => {
                                             className="text-xl font-bold"
                                             style={{color: VietBusTheme.primary}}
                                         >
-                                            {trip?.route?.fromStation?.name}
+                                            {trip?.fromStation}
                                         </div>
                                         <div className="font-bold">
                                             {trip?.departureTime &&
@@ -199,7 +202,7 @@ const TripDetail = () => {
                                             className="text-xl font-bold"
                                             style={{color: VietBusTheme.primary}}
                                         >
-                                            {trip?.route?.toStation?.name}
+                                            {trip?.toStation}
                                         </div>
                                         <div className="font-bold">
                                             {trip?.arrivalTime &&
@@ -212,23 +215,36 @@ const TripDetail = () => {
                                             className="text-xl font-bold"
                                             style={{color: VietBusTheme.primary}}
                                         >
-                                            Biển số xe: {trip?.vehicle?.licensePlate}
+                                            Biển số xe: {trip?.licensePlate}
                                         </div>
                                         <div className="font-bold">
-                                            {trip?.vehicle?.totalSeat} giường
+                                            {trip?.totalSeat} giường
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="text-sm font-bold">Tài xế chính</div>
+                                        <div className="text-sm font-bold">Tài xế</div>
                                         <div
                                             className="text-xl font-bold"
                                             style={{color: VietBusTheme.primary}}
                                         >
-                                            {trip?.driver?.fullName}
+                                            <div>
+                                                {trip?.driverNames?.map((driver, index) => (
+                                                    <div key={index}>{driver}</div>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <div className="font-bold">
-                                            <i className="fa-solid fa-phone mr-2"/>
-                                            {trip?.driver?.phoneNumber}
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-bold">Phụ xe</div>
+                                        <div
+                                            className="text-xl font-bold"
+                                            style={{color: VietBusTheme.primary}}
+                                        >
+                                            <div>
+                                                {trip?.assistantNames?.map((assistant, index) => (
+                                                    <div key={index}>{assistant}</div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -250,7 +266,7 @@ const TripDetail = () => {
                     setTrip(res?.data);
                 }}
             />
-        </>
+        </Spin>
     );
 };
 

@@ -15,7 +15,7 @@ const AddRouteModal = ({listStation, open, onClose, onSuccess}) => {
                 distanceKm: form.getFieldValue("distanceKm"),
                 active: form.getFieldValue("active"),
             };
-            const res = await createRoute(payload);
+            await createRoute(payload);
             message.success("Tạo tuyến xe thành công");
             form.resetFields();
             onClose();

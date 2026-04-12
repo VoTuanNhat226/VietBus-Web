@@ -22,7 +22,7 @@ const UpdateRouteModal = ({ route, open, onClose, onSuccess }) => {
         routeId: route?.routeId,
         active: form.getFieldValue("active"),
       };
-      const res = await updateRoute(payload);
+      await updateRoute(payload);
       message.success("Cập nhật thành công");
       onSuccess?.();
     } catch (err) {

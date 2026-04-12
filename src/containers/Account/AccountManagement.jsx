@@ -1,4 +1,4 @@
-import {Button, Card, Col, Form, Input, Row, Select, Table} from "antd";
+import {Button, Card, Col, Form, Input, Row, Select, Spin, Table} from "antd";
 import {useEffect, useState} from "react";
 import {getAllAccount} from "../../services/AccountService";
 import {VietBusTheme} from "../../constants/VietBusTheme";
@@ -11,6 +11,7 @@ import {usePageTitle} from "../../context/PageTitleContext.jsx";
 
 const AccountManagement = () => {
     const [formInstance] = Form.useForm();
+    const [isLoading, setIsLoading] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
@@ -23,20 +24,27 @@ const AccountManagement = () => {
 
     useEffect(() => {
         setTitle("QUẢN LÝ TÀI KHOẢN");
-    }, []);
+    }, [setTitle]);
+
+    const fetchAllAccount = async (payload = {}) => {
+        setIsLoading(true);
+        try {
+            const res = await getAllAccount(payload);
+            setListAccount(res?.data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchAllAccount = async () => {
-            const res = await getAllAccount({});
-            setListAccount(res?.data);
-        };
         fetchAllAccount();
     }, []);
 
     const handleSearch = async () => {
         const payload = formInstance.getFieldsValue();
-        const res = await getAllAccount(payload);
-        setListAccount(res?.data);
+        await fetchAllAccount(payload);
     };
 
     const columns = [
@@ -120,7 +128,7 @@ const AccountManagement = () => {
     ];
 
     return (
-        <div>
+        <>
             <Card>
                 <h2>Search area</h2>
                 <Form form={formInstance}>
@@ -165,8 +173,6 @@ const AccountManagement = () => {
                         </Col>
                         <Col>
                             <Button
-                                type="primary"
-                                htmlType="submit"
                                 style={{
                                     backgroundColor: VietBusTheme.primary,
                                     color: VietBusTheme.white,
@@ -193,14 +199,13 @@ const AccountManagement = () => {
                     </Button>
                 </div>
             ) : null}
-            <Table className="pt-4" dataSource={listAccount} columns={columns}/>
+            <Table rowKey="username" loading={isLoading} className="pt-4" dataSource={listAccount} columns={columns}/>
             {/* ADD Modal */}
             <AddAccountModal
                 open={openAddModal}
                 onClose={() => setOpenAddModal(false)}
-                onSuccess={async () => {
-                    const res = await getAllAccount({});
-                    setListAccount(res?.data);
+                onSuccess={() => {
+                    fetchAllAccount();
                 }}
             />
             {/* UPDATE Modal */}
@@ -208,14 +213,14 @@ const AccountManagement = () => {
                 open={openUpdateModal}
                 account={selectedAccount}
                 onClose={() => {
-                    setOpenUpdateModal(false), setSelectedAccount(null);
+                    setOpenUpdateModal(false);
+                    setSelectedAccount(null);
                 }}
-                onSuccess={async () => {
-                    const res = await getAllAccount({});
-                    setListAccount(res?.data);
+                onSuccess={() => {
+                    fetchAllAccount();
                 }}
             />
-        </div>
+        </>
     );
 };
 
