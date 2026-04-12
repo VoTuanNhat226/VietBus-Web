@@ -14,6 +14,7 @@ import {CarOutlined} from "@ant-design/icons";
 import {STATUS_TRIP_OPTIONS} from "../../constants/Constants.js";
 import UpdateTripModal from "./Modal/UpdateTripModal.jsx";
 import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
+import AddTicketModal from "../Ticket/Modal/AddTicketModal.jsx";
 
 const TripDetail = () => {
     const {tripId} = useParams();
@@ -28,35 +29,36 @@ const TripDetail = () => {
     const [expectedRevenue, setExpectedRevenue] = useState(0);
     const [tripSeatSold, setTripSeatSold] = useState(0);
     const [listTripSeat, setListTripSeat] = useState([]);
+    const [openAddTicketModal, setOpenAddTicketModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        const [tripRes, soldRes, seatRes] = await Promise.all([
+            getTripById({tripId}),
+            countTripSeatSoldByTripId({tripId}),
+            getAllTripSeatByTripId({tripId})
+        ]);
+
+        const tripData = tripRes?.data;
+
+        setTrip(tripData);
+        setTripSeatSold(soldRes?.data || 0);
+        setListTripSeat(seatRes?.data || []);
+
+        const price = tripData?.price || 0;
+        const totalSeat = tripData.totalSeat || 0;
+        setExpectedRevenue(price * totalSeat);
+        setIsLoading(false);
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            const [tripRes, soldRes, seatRes] = await Promise.all([
-                getTripById({tripId}),
-                countTripSeatSoldByTripId({tripId}),
-                getAllTripSeatByTripId({tripId})
-            ]);
-
-            const tripData = tripRes?.data;
-
-            setTrip(tripData);
-            setTripSeatSold(soldRes?.data || 0);
-            setListTripSeat(seatRes?.data || []);
-
-            const price = tripData?.price || 0;
-            const totalSeat = tripData.totalSeat || 0;
-            setExpectedRevenue(price * totalSeat);
-            setIsLoading(false);
-        };
-
         fetchData();
     }, [tripId]);
 
     const fillRate =
-        trip?.vehicle?.totalSeat > 0
-            ? Math.round((tripSeatSold / trip.vehicle.totalSeat) * 100)
+        trip?.totalSeat > 0
+            ? Math.round((tripSeatSold / trip.totalSeat) * 100)
             : 0;
 
     const statusLabel =
@@ -72,7 +74,7 @@ const TripDetail = () => {
             default:
                 return null;
         }
-    }, [trip?.vehicle?.totalSeat, listTripSeat]);
+    }, [trip?.totalSeat, listTripSeat]);
 
     return (
         <Spin spinning={isLoading}>
@@ -251,9 +253,32 @@ const TripDetail = () => {
                             </div>
                         </div>
                     </Card>
+                    {trip?.status === "OPEN_FOR_BOOKING" && (
+                        <div className="pb-4 flex justify-end">
+                            <Button
+                                type="primary"
+                                style={{
+                                    backgroundColor: VietBusTheme.primary,
+                                    color: VietBusTheme.white,
+                                }}
+                                onClick={() => setOpenAddTicketModal(true)}
+                            >
+                                Tạo vé
+                            </Button>
+                        </div>
+                    )}
                     <Card></Card>
                 </div>
             </div>
+            {/* ADD Ticket Modal */}
+            {openAddTicketModal && (
+                <AddTicketModal
+                    open={openAddTicketModal}
+                    onClose={() => setOpenAddTicketModal(false)}
+                    trip={trip}
+                    fetchTripById={fetchData}
+                />
+            )}
             {/* UPDATE Modal */}
             <UpdateTripModal
                 open={openUpdateModal}

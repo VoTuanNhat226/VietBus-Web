@@ -24,7 +24,10 @@ import {getApiErrorMessage} from "../../../utils/Utils";
 import {PAYMENT_METHOD_OPTION} from "../../../constants/Constants";
 import {createTicket} from "../../../services/TicketService";
 
-const AddTicketModal = ({open, onClose, onSuccess}) => {
+const formatVND = (value) =>
+    value.toLocaleString("vi-VN") + " VNĐ";
+
+const AddTicketModal = ({open, onClose, onSuccess, trip, fetchTripById}) => {
     const [form] = Form.useForm();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +51,17 @@ const AddTicketModal = ({open, onClose, onSuccess}) => {
         };
         fetchTripOpenBooking();
     }, []);
+
+    useEffect(() => {
+        if (trip) {
+            setSelectedTripId(trip.tripId);
+            form.setFieldsValue({
+                tripId: trip?.tripId,
+                tripPrice: formatVND(trip?.price),
+            })
+            form.setFieldValue("tripId", trip.tripId);
+        }
+    }, [trip]);
 
     useEffect(() => {
         if (!selectedTripId) return;
@@ -90,7 +104,7 @@ const AddTicketModal = ({open, onClose, onSuccess}) => {
             message.success("Tạo vé thành công");
             form.resetFields();
             onClose();
-            //   onSuccess();
+            fetchTripById && fetchTripById();
         } catch (err) {
             message.error(getApiErrorMessage(err));
         } finally {
@@ -129,8 +143,6 @@ const AddTicketModal = ({open, onClose, onSuccess}) => {
                                     placeholder="Chọn chuyến xe"
                                     onChange={(value, option) => {
                                         setSelectedTripId(value);
-                                        const formatVND = (value) =>
-                                            value.toLocaleString("vi-VN") + " VNĐ";
                                         form.setFieldValue("tripPrice", formatVND(option.price));
                                     }}
                                 />
@@ -155,7 +167,7 @@ const AddTicketModal = ({open, onClose, onSuccess}) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item name="tripPrice" label="Giá niêm yết">
-                                <Input readOnly/>
+                                <Input disabled={true}/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>

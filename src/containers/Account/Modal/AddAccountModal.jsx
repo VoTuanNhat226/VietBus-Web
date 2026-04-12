@@ -36,7 +36,8 @@ const AddAccountModal = ({open, onClose, onSuccess}) => {
             title="TẠO TÀI KHOẢN"
             open={open}
             onCancel={() => {
-                form.resetFields(), onClose();
+                form.resetFields();
+                onClose();
             }}
             footer={null}
             width={700}
@@ -90,7 +91,8 @@ const AddAccountModal = ({open, onClose, onSuccess}) => {
                     <div className="flex justify-end gap-2">
                         <Button
                             onClick={() => {
-                                form.resetFields(), onClose();
+                                form.resetFields();
+                                onClose();
                             }}
                         >
                             Hủy

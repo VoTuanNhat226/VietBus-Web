@@ -1,8 +1,7 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {usePageTitle} from "../../context/PageTitleContext.jsx";
 import {useAuth} from "../../context/AuthContext";
 import {Button, Card, Col, Form, Input, Row, Select, Spin, Table} from "antd";
-import moment from "moment";
 import {VietBusTheme} from "../../constants/VietBusTheme.js";
 import AddTripModal from "./Modal/AddTripModal.jsx";
 import {getAllTrip} from "../../services/TripService.js";
@@ -11,9 +10,14 @@ import {getAllEmployee} from "../../services/EmployeeService.js";
 import {getAllVehicle} from "../../services/VehicleService.js";
 import {STATUS_TRIP_OPTIONS} from "../../constants/Constants.js";
 import {useNavigate} from "react-router-dom";
+import {formatDateTime} from "../../utils/Utils.js";
 
 const TripManagement = () => {
+    const {user} = useAuth();
+    const {setTitle} = usePageTitle();
+    const navigate = useNavigate();
     const [formInstance] = Form.useForm();
+
     const [isLoading, setIsLoading] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -23,13 +27,9 @@ const TripManagement = () => {
     const [listDriver, setListDriver] = useState([]);
     const [listVehicle, setListVehicle] = useState([]);
 
-    const {user} = useAuth();
-    const {setTitle} = usePageTitle();
-    const navigate = useNavigate();
-
     useEffect(() => {
         setTitle("QUẢN LÝ CHUYẾN XE");
-    }, []);
+    }, [setTitle]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,8 +53,9 @@ const TripManagement = () => {
                 );
 
                 setListVehicle(vehicleRes?.data);
-                setIsLoading(false);
             } catch (err) {
+                console.log(err);
+            } finally {
                 setIsLoading(false);
             }
         };
@@ -62,25 +63,34 @@ const TripManagement = () => {
     }, []);
 
     const handleSearch = async () => {
-        setIsLoading(true);
-        const payload = {
-            fromStationId: formInstance.getFieldValue("fromStationId"),
-            toStationId: formInstance.getFieldValue("toStationId"),
-            driverId: formInstance.getFieldValue("driverId"),
-            vehicleId: formInstance.getFieldValue("vehicleId"),
-            status: formInstance.getFieldValue("status"),
-            tripCode: formInstance.getFieldValue("tripCode"),
-        };
-        const res = await getAllTrip(payload);
-        setListTrip(res?.data);
-        setIsLoading(false);
+        try {
+            setIsLoading(true);
+            const values = formInstance.getFieldsValue();
+            const payload = {
+                fromStationId: values.fromStationId,
+                toStationId: values.toStationId,
+                driverId: values.driverId,
+                vehicleId: values.vehicleId,
+                status: values.status,
+                tripCode: values.tripCode,
+            };
+
+            const res = await getAllTrip(payload);
+            setListTrip(res?.data);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const STATUS_TRIP_MAP = Object.fromEntries(
-        STATUS_TRIP_OPTIONS.map((item) => [item.value, item.label])
-    );
+    const STATUS_TRIP_MAP = useMemo(() =>
+            Object.fromEntries(
+                STATUS_TRIP_OPTIONS.map((item) => [item.value, item.label])
+            ),
+        []);
 
-    const columns = [
+    const columns = useMemo(() => [
         {
             title: "STT",
             key: "index",
@@ -96,26 +106,26 @@ const TripManagement = () => {
         {
             title: "Điểm đi",
             key: "fromStation",
-            render: (value) => <span>{value?.fromStation}</span>,
+            render: (_, record) => <span>{record?.fromStation}</span>,
         },
         {
             title: "Điểm đến",
             key: "toStation",
-            render: (value) => <span>{value?.toStation}</span>,
+            render: (_, record) => <span>{record?.toStation}</span>,
         },
         {
             title: "Thời gian xuất bến",
             dataIndex: "departureTime",
             key: "departureTime",
             render: (value) =>
-                value ? moment(value).format("HH:mm DD-MM-YYYY") : "",
+                value ? formatDateTime(value) : "",
         },
         {
             title: "Thời gian đến (dự kiến)",
             dataIndex: "arrivalTime",
             key: "arrivalTime",
             render: (value) =>
-                value ? moment(value).format("HH:mm DD-MM-YYYY") : "",
+                value ? formatDateTime(value) : "",
         },
         {
             title: "Xe (biển số xe)",
@@ -168,7 +178,26 @@ const TripManagement = () => {
                 </div>
             ),
         },
-    ];
+    ], [STATUS_TRIP_MAP, navigate]);
+
+    const stationOptions = useMemo(() =>
+        listStation?.map((station) => ({
+            label: station.name,
+            value: station.stationId,
+        })), [listStation]);
+
+    const driverOptions = useMemo(() =>
+        listDriver?.map((driver) => ({
+            label: driver.fullName,
+            value: driver.employeeId,
+        })), [listDriver]);
+
+    const vehicleOptions = useMemo(() =>
+        listVehicle?.map((vehicle) => ({
+            label: vehicle.licensePlate,
+            value: vehicle.vehicleId,
+        })), [listVehicle]);
+
     return (
         <>
             <Card>
@@ -179,10 +208,7 @@ const TripManagement = () => {
                             <Form.Item name="fromStationId">
                                 <Select
                                     placeholder="Chọn điểm đi"
-                                    options={listStation?.map((station) => ({
-                                        label: station.name,
-                                        value: station.stationId,
-                                    }))}
+                                    options={stationOptions}
                                 ></Select>
                             </Form.Item>
                         </Col>
@@ -190,10 +216,7 @@ const TripManagement = () => {
                             <Form.Item name="toStationId">
                                 <Select
                                     placeholder="Chọn điểm đến"
-                                    options={listStation?.map((station) => ({
-                                        label: station.name,
-                                        value: station.stationId,
-                                    }))}
+                                    options={stationOptions}
                                 ></Select>
                             </Form.Item>
                         </Col>
@@ -201,10 +224,7 @@ const TripManagement = () => {
                             <Form.Item name="driverId">
                                 <Select
                                     placeholder="Chọn tài xế"
-                                    options={listDriver?.map((driver) => ({
-                                        label: driver.fullName,
-                                        value: driver.employeeId,
-                                    }))}
+                                    options={driverOptions}
                                 ></Select>
                             </Form.Item>
                         </Col>
@@ -212,10 +232,7 @@ const TripManagement = () => {
                             <Form.Item name="vehicleId">
                                 <Select
                                     placeholder="Chọn xe"
-                                    options={listVehicle?.map((vehicle) => ({
-                                        label: vehicle.licensePlate,
-                                        value: vehicle.vehicleId,
-                                    }))}
+                                    options={vehicleOptions}
                                 ></Select>
                             </Form.Item>
                         </Col>
@@ -236,7 +253,6 @@ const TripManagement = () => {
                     <Row justify="end" gutter={8}>
                         <Col>
                             <Button
-                                htmlType="reset"
                                 onClick={() => formInstance.resetFields()}
                             >
                                 Reset
@@ -244,8 +260,6 @@ const TripManagement = () => {
                         </Col>
                         <Col>
                             <Button
-                                type="primary"
-                                htmlType="submit"
                                 style={{
                                     backgroundColor: VietBusTheme.primary,
                                     color: VietBusTheme.white,
@@ -261,7 +275,6 @@ const TripManagement = () => {
             {user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" ? (
                 <div className="pt-4 flex justify-end">
                     <Button
-                        type="primary"
                         style={{
                             backgroundColor: VietBusTheme.primary,
                             color: VietBusTheme.white,
@@ -272,8 +285,8 @@ const TripManagement = () => {
                     </Button>
                 </div>
             ) : null}
-            <Table className="pt-4" loading={isLoading} dataSource={listTrip} columns={columns}/>
-            {/* ADD Modal */}
+            <Table rowKey="tripId" className="pt-4" loading={isLoading} dataSource={listTrip} columns={columns}/>
+            {/* ADD Trip Modal */}
             {openAddModal && (
                 <AddTripModal
                     open={openAddModal}

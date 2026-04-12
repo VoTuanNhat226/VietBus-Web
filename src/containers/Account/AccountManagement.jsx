@@ -1,16 +1,19 @@
 import {Button, Card, Col, Form, Input, Row, Select, Spin, Table} from "antd";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {getAllAccount} from "../../services/AccountService";
 import {VietBusTheme} from "../../constants/VietBusTheme";
-import moment from "moment";
 import {useAuth} from "../../context/AuthContext";
 import AddAccountModal from "./Modal/AddAccountModal";
 import {ACTIVE_OPTIONS, ROLE_OPTIONS} from "../../constants/Constants.js";
 import UpdateAccountModal from "./Modal/UpdateAccountModal";
 import {usePageTitle} from "../../context/PageTitleContext.jsx";
+import {formatDateTime} from "../../utils/Utils.js";
 
 const AccountManagement = () => {
+    const {user} = useAuth();
+    const {setTitle} = usePageTitle();
     const [formInstance] = Form.useForm();
+
     const [isLoading, setIsLoading] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -18,17 +21,13 @@ const AccountManagement = () => {
     const [listAccount, setListAccount] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState(null);
 
-    const {user} = useAuth();
-
-    const {setTitle} = usePageTitle();
-
     useEffect(() => {
         setTitle("QUẢN LÝ TÀI KHOẢN");
     }, [setTitle]);
 
     const fetchAllAccount = async (payload = {}) => {
-        setIsLoading(true);
         try {
+            setIsLoading(true);
             const res = await getAllAccount(payload);
             setListAccount(res?.data);
         } catch (error) {
@@ -47,7 +46,7 @@ const AccountManagement = () => {
         await fetchAllAccount(payload);
     };
 
-    const columns = [
+    const columns = useMemo(() => [
         {
             title: "STT",
             key: "index",
@@ -90,7 +89,7 @@ const AccountManagement = () => {
             key: "createdAt",
 
             render: (value) =>
-                value ? moment(value).format("DD-MM-YYYY HH:mm:ss") : "",
+                value ? formatDateTime(value) : "",
         },
         {
             title: "Người cập nhật",
@@ -102,7 +101,7 @@ const AccountManagement = () => {
             dataIndex: "updatedAt",
             key: "updatedAt",
             render: (value) =>
-                value ? moment(value).format("DD-MM-YYYY HH:mm:ss") : "",
+                value ? formatDateTime(value) : "",
         },
         {
             title: "Hành động",
@@ -125,7 +124,7 @@ const AccountManagement = () => {
                 </div>
             ),
         },
-    ];
+    ], []);
 
     return (
         <>
@@ -200,7 +199,7 @@ const AccountManagement = () => {
                 </div>
             ) : null}
             <Table rowKey="username" loading={isLoading} className="pt-4" dataSource={listAccount} columns={columns}/>
-            {/* ADD Modal */}
+            {/* ADD Account Modal */}
             <AddAccountModal
                 open={openAddModal}
                 onClose={() => setOpenAddModal(false)}
@@ -208,7 +207,7 @@ const AccountManagement = () => {
                     fetchAllAccount();
                 }}
             />
-            {/* UPDATE Modal */}
+            {/* UPDATE Account Modal */}
             <UpdateAccountModal
                 open={openUpdateModal}
                 account={selectedAccount}

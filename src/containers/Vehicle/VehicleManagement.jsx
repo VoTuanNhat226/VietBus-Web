@@ -1,116 +1,121 @@
-import { Form, Table } from "antd";
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { getAllVehicle } from "../../services/VehicleService";
-import { VietBusTheme } from "../../constants/VietBusTheme";
-import moment from "moment";
-import { useNavigate } from "react-router-dom";
-import { usePageTitle } from "../../context/PageTitleContext.jsx";
+import {Form, Table} from "antd";
+import {useEffect, useMemo, useState} from "react";
+import {useAuth} from "../../context/AuthContext";
+import {getAllVehicle} from "../../services/VehicleService";
+import {VietBusTheme} from "../../constants/VietBusTheme";
+import {useNavigate} from "react-router-dom";
+import {usePageTitle} from "../../context/PageTitleContext.jsx";
+import {formatDateTime} from "../../utils/Utils.js";
 
 const VehicleManagement = () => {
-  const [formInstance] = Form.useForm();
+    const {user} = useAuth();
+    const {setTitle} = usePageTitle();
+    const navigate = useNavigate();
+    const [formInstance] = Form.useForm();
 
-  const [listVehicle, setListVehicle] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [listVehicle, setListVehicle] = useState([]);
 
-  const { user } = useAuth();
+    useEffect(() => {
+        setTitle("QUẢN LÝ XE");
+    }, [setTitle]);
 
-  const { setTitle } = usePageTitle();
+    useEffect(() => {
+        const fetchAllVehicle = async () => {
+            try {
+                setIsLoading(true);
+                const res = await getAllVehicle({});
+                setListVehicle(res?.data || []);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchAllVehicle();
+    }, []);
 
-  useEffect(() => {
-    setTitle("QUẢN LÝ XE");
-  }, []);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchAllVehicle = async () => {
-      const res = await getAllVehicle({});
-      setListVehicle(res?.data);
-    };
-    fetchAllVehicle();
-  }, []);
-
-  const columns = [
-    {
-      title: "STT",
-      key: "index",
-      width: 60,
-      align: "center",
-      render: (_text, _record, index) => index + 1,
-    },
-    {
-      title: "Biển số xe",
-      dataIndex: "licensePlate",
-      key: "licensePlate",
-    },
-    {
-      title: "Số ghế",
-      dataIndex: "totalSeat",
-      key: "totalSeat",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "active",
-      key: "active",
-      render: (value) => (
-        <span
-          style={{
-            color: value === false ? VietBusTheme.error : VietBusTheme.success,
-          }}
-        >
+    const columns = useMemo(() => [
+        {
+            title: "STT",
+            key: "index",
+            width: 60,
+            align: "center",
+            render: (_text, _record, index) => index + 1,
+        },
+        {
+            title: "Biển số xe",
+            dataIndex: "licensePlate",
+            key: "licensePlate",
+        },
+        {
+            title: "Số ghế",
+            dataIndex: "totalSeat",
+            key: "totalSeat",
+        },
+        {
+            title: "Trạng thái",
+            dataIndex: "active",
+            key: "active",
+            render: (value) => (
+                <span
+                    style={{
+                        color: value === false ? VietBusTheme.error : VietBusTheme.success,
+                    }}
+                >
           {value === true ? "Hoạt động" : "Không hoạt động"}
         </span>
-      ),
-    },
-    {
-      title: "Người tạo",
-      dataIndex: "createdBy",
-      key: "createdBy",
-    },
-    {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (value) =>
-        value ? moment(value).format("HH:mm:ss DD-MM-YYYY") : "",
-    },
-    {
-      title: "Người cập nhật",
-      dataIndex: "updatedBy",
-      key: "updatedBy",
-    },
-    {
-      title: "Ngày cập nhật",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (value) =>
-        value ? moment(value).format("HH:mm:ss DD-MM-YYYY") : "",
-    },
-    {
-      title: "Chi tiết",
-      key: "action",
-      align: "center",
-      render: (_, record) => (
-        <div className="flex justify-evenly">
-          <i
-            className="fa-solid fa-angles-right"
-            style={{
-              color: VietBusTheme.primary,
-              fontSize: 18,
-              cursor: "pointer",
-            }}
-            onClick={() => navigate(`/vehicle/${record.vehicleId}`)}
-          />
-        </div>
-      ),
-    },
-  ];
+            ),
+        },
+        {
+            title: "Người tạo",
+            dataIndex: "createdBy",
+            key: "createdBy",
+        },
+        {
+            title: "Ngày tạo",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (value) =>
+                value ? formatDateTime(value) : "",
+        },
+        {
+            title: "Người cập nhật",
+            dataIndex: "updatedBy",
+            key: "updatedBy",
+        },
+        {
+            title: "Ngày cập nhật",
+            dataIndex: "updatedAt",
+            key: "updatedAt",
+            render: (value) =>
+                value ? formatDateTime(value) : "",
+        },
+        {
+            title: "Chi tiết",
+            key: "action",
+            align: "center",
+            render: (_, record) => (
+                <div className="flex justify-evenly">
+                    <i
+                        className="fa-solid fa-angles-right"
+                        style={{
+                            color: VietBusTheme.primary,
+                            fontSize: 18,
+                            cursor: "pointer",
+                        }}
+                        onClick={() => navigate(`/vehicle/${record.vehicleId}`)}
+                    />
+                </div>
+            ),
+        },
+    ], [navigate]);
 
-  return (
-    <div>
-      <Table className="pt-4" dataSource={listVehicle} columns={columns} />
-    </div>
-  );
+    return (
+        <div>
+            <Table rowKey="vehicleId" className="pt-4" loading={isLoading} dataSource={listVehicle} columns={columns}/>
+        </div>
+    );
 };
 
 export default VehicleManagement;

@@ -10,7 +10,7 @@ export const getAllVehicleActive = async (params) => {
   return response.data;
 };
 
-export const getVehicleIById = async (params) => {
+export const getVehicleById = async (params) => {
   const response = await api.post("/vehicle/get-by-id", params);
   return response.data;
 };

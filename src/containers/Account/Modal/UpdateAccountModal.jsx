@@ -10,24 +10,29 @@ const UpdateAccountModal = ({account, open, onClose, onSuccess}) => {
 
     useEffect(() => {
         if (account && open) {
-            console.log(account?.role);
             form.setFieldsValue({
-                role: account?.role,
+                // role: account?.role,
                 active: account?.active,
             });
         }
     }, [account, open]);
 
     const handleSubmit = async () => {
-        setIsLoading(true);
-        const payload = {
-            accountId: account?.accountId,
-            active: form.getFieldValue("active"),
-        };
-        await updateAccount(payload);
-        message.success("Cập nhật thành công");
-        onSuccess();
-        setIsLoading(false);
+        try {
+            setIsLoading(true);
+            const values = await form.validateFields();
+            const payload = {
+                accountId: account?.accountId,
+                active: values.active,
+            };
+            await updateAccount(payload);
+            message.success("Cập nhật thành công");
+            onSuccess();
+        } catch (err) {
+            message.error("Cập nhật thất bại");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

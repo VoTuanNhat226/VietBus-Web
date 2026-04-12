@@ -38,10 +38,6 @@ const TicketManagement = () => {
         <AddTicketModal
           open={openAddModal}
           onClose={() => setOpenAddModal(false)}
-          // onSuccess={async () => {
-          //   const res = await getAllEmployee({});
-          //   setListEmployee(res?.data);
-          // }}
         />
       )}
     </>
