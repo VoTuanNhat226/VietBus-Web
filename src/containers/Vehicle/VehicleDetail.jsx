@@ -6,6 +6,7 @@ import {Card, Col, Row, Spin} from "antd";
 import {usePageTitle} from "../../context/PageTitleContext.jsx";
 import {VietBusTheme} from "../../constants/VietBusTheme.js";
 import SeatMap34 from "./Seat/SeatMap34.jsx";
+import SeatMap24 from "./Seat/SeatMap24.jsx";
 
 const VehicleDetail = () => {
     const {setTitle} = usePageTitle();
@@ -40,6 +41,8 @@ const VehicleDetail = () => {
                 return <SeatMap40 title="SƠ ĐỒ GHẾ"/>;
             case 34:
                 return <SeatMap34 title="SƠ ĐỒ GHẾ"/>;
+            case 24:
+                return <SeatMap24 title="SƠ ĐỒ GHẾ"/>
             default:
                 return null;
         }

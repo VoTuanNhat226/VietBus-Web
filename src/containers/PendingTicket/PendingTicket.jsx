@@ -135,7 +135,7 @@ const PendingTicket = () => {
                 </div>
             ),
         },
-    ], []);
+    ], [paymentTypeMap, ticketStatusMap]);
 
     return (
         <>

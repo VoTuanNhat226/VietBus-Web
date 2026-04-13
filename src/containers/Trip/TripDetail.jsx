@@ -15,6 +15,7 @@ import {STATUS_TRIP_OPTIONS} from "../../constants/Constants.js";
 import UpdateTripModal from "./Modal/UpdateTripModal.jsx";
 import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 import AddTicketModal from "../Ticket/Modal/AddTicketModal.jsx";
+import SeatMap24 from "../Vehicle/Seat/SeatMap24.jsx";
 
 const TripDetail = () => {
     const {tripId} = useParams();
@@ -71,6 +72,8 @@ const TripDetail = () => {
                 return <SeatMap40 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ"/>;
             case 34:
                 return <SeatMap34 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ"/>;
+            case 24:
+                return <SeatMap24 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ"/>;
             default:
                 return null;
         }
