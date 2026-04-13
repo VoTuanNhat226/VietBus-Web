@@ -1,21 +1,26 @@
-import SideBar from "../components/./SideBar.jsx";
+import {useState} from "react";
+import SideBar from "../components/SideBar.jsx";
 import Headbar from "../components/Headbar";
 import {PageTitleProvider, usePageTitle} from "../context/PageTitleContext.jsx";
 import {Outlet} from "react-router-dom";
 
 const LayoutContent = () => {
     const {title} = usePageTitle();
+    const [collapsed, setCollapsed] = useState(false);
 
     return (
         <>
-            {/* Top headbar */}
-            <Headbar title={title}/>
+            {/* Top headboard */}
+            <Headbar title={title} collapsed={collapsed}/>
 
             {/* Left menu */}
-            <SideBar/>
+            <SideBar collapsed={collapsed} onToggle={() => setCollapsed(prev => !prev)}/>
 
             {/* Content */}
-            <div className="ml-60 pt-20 p-6 min-h-screen bg-gray-100">
+            <div
+                className="pt-20 p-6 min-h-screen bg-gray-100 transition-all duration-300"
+                style={{marginLeft: collapsed ? "4rem" : "15rem"}}
+            >
                 <Outlet/>
             </div>
         </>

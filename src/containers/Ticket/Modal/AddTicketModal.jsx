@@ -14,10 +14,6 @@ import {useEffect, useState} from "react";
 import {
     getListTripSeatAvailableByTripId,
 } from "../../../services/TripSeatService";
-import moment from "moment";
-import {
-    getAllTripOpenBooking,
-} from "../../../services/TripService";
 import TextArea from "antd/es/input/TextArea";
 import {VietBusTheme} from "../../../constants/VietBusTheme";
 import {getApiErrorMessage} from "../../../utils/Utils";
@@ -31,42 +27,19 @@ const AddTicketModal = ({open, onClose, onSuccess, trip, fetchTripById}) => {
     const [form] = Form.useForm();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [selectedTripId, setSelectedTripId] = useState(null);
-    const [listTripCanSell, setListTripCanSell] = useState([]);
     const [listTripSeatCanSell, setListTripSeatCanSell] = useState([]);
 
     useEffect(() => {
-        const fetchTripOpenBooking = async () => {
-            const res = await getAllTripOpenBooking({});
-            const options = (res?.data || []).map((item) => ({
-                value: item.tripId,
-                label: `${item.tripCode}
-        | ${item.fromStation} - ${item.toStation}
-        | ${moment(item.departureTime).format(
-                    "HH:mm:ss DD-MM-YYYY"
-                )} - ${moment(item.arrivalTime).format("HH:mm:ss DD-MM-YYYY")}`,
-                price: item.price,
-            }));
-            setListTripCanSell(options);
-        };
-        fetchTripOpenBooking();
-    }, []);
-
-    useEffect(() => {
-        if (trip) {
-            setSelectedTripId(trip.tripId);
-            form.setFieldsValue({
-                tripId: trip?.tripId,
-                tripPrice: formatVND(trip?.price),
-            })
-            form.setFieldValue("tripId", trip.tripId);
-        }
-    }, [trip]);
-
-    useEffect(() => {
+        const selectedTripId = trip?.tripId;
         if (!selectedTripId) return;
-        setIsLoading(true);
+
+        form.setFieldsValue({
+            tripId: trip?.tripId,
+            tripPrice: formatVND(trip?.price),
+        })
+
         const fetchListTripSeatCanSell = async () => {
+            setIsLoading(true);
             const tripSeats = await getListTripSeatAvailableByTripId({
                 tripId: selectedTripId,
             });
@@ -84,15 +57,16 @@ const AddTicketModal = ({open, onClose, onSuccess, trip, fetchTripById}) => {
             setListTripSeatCanSell(options);
             setIsLoading(false);
         };
+
         fetchListTripSeatCanSell();
-    }, [selectedTripId]);
+    }, [trip?.tripId]);
 
     const handleSubmit = async () => {
         try {
             setIsLoading(true);
             const values = await form.validateFields();
             const payload = {
-                tripId: values.tripId,
+                tripId: trip?.tripId,
                 passengerId: values.passengerId || null,
                 tripSeatId: values.tripSeatId,
                 ticketPrice: values.ticketPrice,
@@ -124,7 +98,8 @@ const AddTicketModal = ({open, onClose, onSuccess, trip, fetchTripById}) => {
             title="TẠO VÉ"
             open={open}
             onCancel={() => {
-                form.resetFields(), onClose();
+                form.resetFields();
+                onClose();
             }}
             footer={null}
             width={750}
@@ -132,22 +107,6 @@ const AddTicketModal = ({open, onClose, onSuccess, trip, fetchTripById}) => {
             <Spin spinning={isLoading}>
                 <Form layout="vertical" form={form} disabled={isLoading}>
                     <Row gutter={16}>
-                        <Col span={24}>
-                            <Form.Item
-                                name="tripId"
-                                label="Chuyến xe"
-                                rules={[{required: true, message: "Bắt buộc"}]}
-                            >
-                                <Select
-                                    options={listTripCanSell}
-                                    placeholder="Chọn chuyến xe"
-                                    onChange={(value, option) => {
-                                        setSelectedTripId(value);
-                                        form.setFieldValue("tripPrice", formatVND(option.price));
-                                    }}
-                                />
-                            </Form.Item>
-                        </Col>
                         <Col span={12}>
                             <Form.Item name="passengerId" label="Khách hàng">
                                 <Select options={[]} placeholder="Chọn khách hàng"/>

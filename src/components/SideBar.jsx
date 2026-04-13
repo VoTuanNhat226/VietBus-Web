@@ -5,10 +5,10 @@ import {useMemo, useState} from "react";
 import AccountDetailModal from "../containers/Account/Modal/AccountDetailModal";
 import {MenuItem} from "./MenuItem.js";
 
-const SideBar = () => {
+const SideBar = ({collapsed, onToggle}) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const {user, logout, loading} = useAuth();
+    const {user, logout} = useAuth();
 
     const [openProfile, setOpenProfile] = useState(false);
 
@@ -37,8 +37,9 @@ const SideBar = () => {
     }, [user]);
 
     const renderMenu = () => {
-        return filteredMenu.map((item, index) => {
+        return filteredMenu.map((item) => {
             if (item.type === "section") {
+                if (collapsed) return null;
                 return (
                     <li
                         key={item.label}
@@ -57,14 +58,16 @@ const SideBar = () => {
                             navigate(item.path);
                         }
                     }}
-                    className={`cursor-pointer rounded-lg px-2 py-2 transition-all duration-200
+                    title={collapsed ? item.label : undefined}
+                    className={`cursor-pointer rounded-lg px-2 py-2 transition-all duration-200 flex items-center
+                        ${collapsed ? "justify-center" : ""}
                         ${location.pathname === item.path
                         ? "bg-[#71a0cf]"
                         : "hover:bg-[#71a0cf]"
                     }`}
                 >
-                    <i className={`fa-solid ${item.icon} px-2`}></i>
-                    {item.label}
+                    <i className={`fa-solid ${item.icon} ${collapsed ? "" : "px-2"}`}></i>
+                    {!collapsed && <span className="ml-1">{item.label}</span>}
                 </li>
             );
         });
@@ -73,33 +76,62 @@ const SideBar = () => {
     return (
         <>
             <div
-                className="fixed top-0 left-0 h-screen w-60 flex flex-col text-white shadow-xl z-50"
-                style={{backgroundColor: VietBusTheme.primary}}
+                className="fixed top-0 left-0 h-screen flex flex-col text-white shadow-xl z-50 transition-all duration-300"
+                style={{
+                    backgroundColor: VietBusTheme.primary,
+                    width: collapsed ? "4rem" : "15rem",
+                }}
             >
-                <div className="text-center text-3xl font-bold mt-4 mb-4">
-                    <i className="fa-solid fa-bus-simple px-2"></i>VIETBUS
+                {/* Logo + Toggle */}
+                <div
+                    className={`flex items-center mt-4 mb-4 px-2 ${collapsed ? "justify-center" : "justify-between px-4"}`}>
+                    {!collapsed && (
+                        <div className="text-2xl font-bold">
+                            <i className="fa-solid fa-bus-simple px-2"></i>VIETBUS
+                        </div>
+                    )}
+                    <button
+                        onClick={onToggle}
+                        className="rounded-lg p-1.5 hover:bg-[#71a0cf] transition-colors duration-200 flex items-center justify-center"
+                        title={collapsed ? "Mở rộng menu" : "Thu gọn menu"}
+                    >
+                        <i className={`fa-solid ${collapsed ? "fa-chevron-right" : "fa-chevron-left"} text-sm`}></i>
+                    </button>
                 </div>
-                {/* SideBar items */}
-                <ul className="flex-1 overflow-y-auto p-4 space-y-2">
+
+                {/* Logo icon only when collapsed */}
+                {collapsed && (
+                    <div className="text-center text-xl font-bold mb-2">
+                        <i className="fa-solid fa-bus-simple"></i>
+                    </div>
+                )}
+
+                {/* Menu items */}
+                <ul className="flex-1 overflow-y-auto p-2 space-y-1">
                     {renderMenu()}
                 </ul>
-                <ul className="p-4 space-y-2">
+
+                {/* Bottom: Profile & Logout */}
+                <ul className="p-2 space-y-1">
                     <li
-                        className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
+                        className={`cursor-pointer rounded-lg px-2 py-2 hover:bg-[#71a0cf] transition-colors duration-200 flex items-center ${collapsed ? "justify-center" : ""}`}
                         onClick={() => setOpenProfile(true)}
+                        title={collapsed ? `Profile: ${user?.username}` : undefined}
                     >
-                        <i className="fa-solid fa-user px-2"></i>
-                        <span className="flex-1">Profile: {user?.username}</span>
+                        <i className="fa-solid fa-user"></i>
+                        {!collapsed && <span className="ml-2 flex-1">Profile: {user?.username}</span>}
                     </li>
                     <li
-                        className="cursor-pointer rounded-lg px-2 py-2 hover:scale-110"
+                        className={`cursor-pointer rounded-lg px-2 py-2 hover:bg-[#71a0cf] transition-colors duration-200 flex items-center ${collapsed ? "justify-center" : ""}`}
                         onClick={handleLogout}
+                        title={collapsed ? "Đăng xuất" : undefined}
                     >
-                        <i className="fa-solid fa-arrow-right-from-bracket px-2"></i>
-                        Đăng xuất
+                        <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                        {!collapsed && <span className="ml-2">Đăng xuất</span>}
                     </li>
                 </ul>
             </div>
+
             {/* MODAL */}
             <AccountDetailModal
                 open={openProfile}
