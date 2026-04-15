@@ -7,7 +7,6 @@ const DeletePassengerModal = ({
   passenger,
   openDeleteModal,
 }) => {
-  console.log("Passenger to delete:", passenger);
   return (
     <Modal
       title={

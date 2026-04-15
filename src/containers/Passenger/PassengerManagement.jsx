@@ -14,13 +14,16 @@ import { useEffect, useState } from "react";
 import { VietBusTheme } from "../../constants/VietBusTheme.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import DeletePassengerModal from "./Modal/DeletePassengerModal.jsx";
+import EditPassengerModal from "./Modal/EditPassengerModal.jsx";
+import CreatePassengerModal from "./Modal/CreatePassengerModal.jsx";
 
 const PassengerManagement = () => {
   const [formInstance] = Form.useForm();
   const { user } = useAuth();
-
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedPassenger, setSelectedPassenger] = useState(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const { setTitle } = usePageTitle();
   useEffect(() => {
@@ -44,6 +47,7 @@ const PassengerManagement = () => {
       phoneNumber: "0901234567",
       email: "nguyenvana@gmail.com",
       idCardNumber: "079123456789",
+      note: "Khách VIP, thường xuyên đặt vé",
     },
     {
       key: 2,
@@ -51,6 +55,7 @@ const PassengerManagement = () => {
       phoneNumber: "0912345678",
       email: "tranthib@gmail.com",
       idCardNumber: "079987654321",
+      note: "Hay hủy vé sát giờ",
     },
     {
       key: 3,
@@ -58,6 +63,7 @@ const PassengerManagement = () => {
       phoneNumber: "0987654321",
       email: "levanc@gmail.com",
       idCardNumber: "012345678901",
+      note: "Ưu tiên ghế đầu",
     },
     {
       key: 4,
@@ -65,6 +71,7 @@ const PassengerManagement = () => {
       phoneNumber: "0934567890",
       email: "phamthid@gmail.com",
       idCardNumber: "098765432109",
+      note: "Yêu cầu hỗ trợ đặc biệt",
     },
     {
       key: 5,
@@ -72,6 +79,7 @@ const PassengerManagement = () => {
       phoneNumber: "0971122334",
       email: "hoangvane@gmail.com",
       idCardNumber: "045612378945",
+      note: "Khách mới",
     },
   ];
 
@@ -107,6 +115,7 @@ const PassengerManagement = () => {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
+      ellipsis: true,
     },
     {
       title: "Hành động",
@@ -121,7 +130,10 @@ const PassengerManagement = () => {
               fontSize: 18,
               cursor: "pointer",
             }}
-            onClick={() => {}}
+            onClick={() => {
+              setSelectedPassenger(record);
+              setOpenEditModal(true);
+            }}
           />
           {user.role === "ROLE_ADMIN" ? (
             <i
@@ -141,7 +153,6 @@ const PassengerManagement = () => {
       ),
     },
   ];
-
 
   return (
     <div>
@@ -202,7 +213,7 @@ const PassengerManagement = () => {
               backgroundColor: VietBusTheme.primary,
               color: VietBusTheme.white,
             }}
-            onClick={() => {}}
+            onClick={() => setOpenCreateModal(true)}
           >
             Thêm khách hàng
           </Button>
@@ -211,7 +222,6 @@ const PassengerManagement = () => {
       <Table className="pt-4" dataSource={mockPassengers} columns={columns} />
       <DeletePassengerModal
         openDeleteModal={openDeleteModal}
-        visible={openDeleteModal}
         onConfirm={() => {
           setOpenDeleteModal(false);
         }}
@@ -220,6 +230,26 @@ const PassengerManagement = () => {
           setSelectedPassenger(null);
         }}
         passenger={selectedPassenger}
+      />
+      <EditPassengerModal
+        openEditModal={openEditModal}
+        onConfirm={() => {
+          setOpenEditModal(false);
+        }}
+        onCancel={() => {
+          setOpenEditModal(false);
+          setSelectedPassenger(null);
+        }}
+        passenger={selectedPassenger}
+      />
+      <CreatePassengerModal
+        openCreateModal={openCreateModal}
+        onConfirm={() => {
+          setOpenCreateModal(false);
+        }}
+        onCancel={() => {
+          setOpenCreateModal(false);
+        }}
       />
     </div>
   );
