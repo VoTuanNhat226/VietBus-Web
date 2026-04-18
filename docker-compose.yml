@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  vietbus-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vietbus-web
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - vietbus-network
+
+networks:
+  vietbus-network:
+    driver: bridge
