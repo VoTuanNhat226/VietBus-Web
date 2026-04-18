@@ -26,7 +26,7 @@ const SeatMap40 = ({listTripSeat = [], title}) => {
             </div>
 
             {/* ===== TẦNG 1 ===== */}
-            <h3 className="font-semibold">TẦNG 1</h3>
+            <h3 className="font-semibold text-sm">TẦNG 1</h3>
             <div className="space-y-1">
                 {[
                     ["A1", "B1", "C1"],
@@ -37,9 +37,13 @@ const SeatMap40 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-3 gap-x-20 justify-items-center"
+                        className="grid grid-cols-5 gap-x-2 justify-items-center"
                     >
-                        {row.map(renderSeat)}
+                        {renderSeat(row[0])}
+                        <div />
+                        {renderSeat(row[1])}
+                        <div />
+                        {renderSeat(row[2])}
                     </div>
                 ))}
 
@@ -49,8 +53,8 @@ const SeatMap40 = ({listTripSeat = [], title}) => {
             </div>
 
             {/* ===== TẦNG 2 ===== */}
-            <h3 className="font-semibold">TẦNG 2</h3>
-            <div className="space-y-3">
+            <h3 className="font-semibold text-sm">TẦNG 2</h3>
+            <div className="space-y-1">
                 {[
                     ["A2", "B2", "C2"],
                     ["A4", "B4", "C4"],
@@ -60,9 +64,13 @@ const SeatMap40 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-3 gap-x-20 justify-items-center"
+                        className="grid grid-cols-5 gap-x-2 justify-items-center"
                     >
-                        {row.map(renderSeat)}
+                        {renderSeat(row[0])}
+                        <div />
+                        {renderSeat(row[1])}
+                        <div />
+                        {renderSeat(row[2])}
                     </div>
                 ))}
 

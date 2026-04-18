@@ -17,7 +17,7 @@ const SeatMap34 = ({listTripSeat = [], title}) => {
     );
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             <div
                 className="text-center text-xl font-bold"
                 style={{color: VietBusTheme.primary}}
@@ -26,10 +26,10 @@ const SeatMap34 = ({listTripSeat = [], title}) => {
             </div>
 
             {/* ===== TẦNG 1 ===== */}
-            <h3 className="font-semibold">TẦNG 1</h3>
-            <div className="space-y-2">
+            <h3 className="font-semibold text-sm">TẦNG 1</h3>
+            <div className="space-y-1">
                 {/* Hàng 1 (không có B) */}
-                <div className="grid grid-cols-3 gap-x-20 justify-items-center">
+                <div className="grid grid-cols-3 gap-x-8 justify-items-center">
                     {renderSeat("A1")}
                     <div/>
                     {/* khoảng trống */}
@@ -45,7 +45,7 @@ const SeatMap34 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-3 gap-x-20 justify-items-center"
+                        className="grid grid-cols-3 gap-x-8 justify-items-center"
                     >
                         {row.map(renderSeat)}
                     </div>
@@ -53,10 +53,10 @@ const SeatMap34 = ({listTripSeat = [], title}) => {
             </div>
 
             {/* ===== TẦNG 2 ===== */}
-            <h3 className="font-semibold">TẦNG 2</h3>
-            <div className="space-y-2">
+            <h3 className="font-semibold text-sm">TẦNG 2</h3>
+            <div className="space-y-1">
                 {/* Hàng 1 (không có B) */}
-                <div className="grid grid-cols-3 gap-x-20 justify-items-center">
+                <div className="grid grid-cols-3 gap-x-8 justify-items-center">
                     {renderSeat("A2")}
                     <div/>
                     {renderSeat("C2")}
@@ -71,7 +71,7 @@ const SeatMap34 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-3 gap-x-20 justify-items-center"
+                        className="grid grid-cols-3 gap-x-8 justify-items-center"
                     >
                         {row.map(renderSeat)}
                     </div>

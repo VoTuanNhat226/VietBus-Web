@@ -38,7 +38,7 @@ const SeatMap24 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-2 gap-x-20 justify-items-center"
+                        className="grid grid-cols-2 gap-x-12 justify-items-center"
                     >
                         {row.map(renderSeat)}
                     </div>
@@ -47,7 +47,7 @@ const SeatMap24 = ({listTripSeat = [], title}) => {
 
             {/* ===== TẦNG 2 ===== */}
             <h3 className="font-semibold">TẦNG 2</h3>
-            <div className="space-y-3">
+            <div className="space-y-1">
                 {[
                     ["A2", "B2"],
                     ["A4", "B4"],
@@ -58,7 +58,7 @@ const SeatMap24 = ({listTripSeat = [], title}) => {
                 ].map((row, idx) => (
                     <div
                         key={idx}
-                        className="grid grid-cols-2 gap-x-20 justify-items-center"
+                        className="grid grid-cols-2 gap-x-12 justify-items-center"
                     >
                         {row.map(renderSeat)}
                     </div>
