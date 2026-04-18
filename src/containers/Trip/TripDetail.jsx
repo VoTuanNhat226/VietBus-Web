@@ -1,8 +1,10 @@
 import {useParams} from "react-router-dom";
 import {usePageTitle} from "../../context/PageTitleContext";
+import {useAuth} from "../../context/AuthContext";
 import {useEffect, useMemo, useState} from "react";
-import {Button, Card, Divider, Spin} from "antd";
 import {VietBusTheme} from "../../constants/VietBusTheme";
+import {Button, Card, Divider, Spin, Table} from "antd";
+
 import {getTripById} from "../../services/TripService";
 import {
     countTripSeatSoldByTripId,
@@ -11,34 +13,46 @@ import {
 import moment from "moment";
 import SeatMap40 from "../Vehicle/Seat/SeatMap40.jsx";
 import {CarOutlined} from "@ant-design/icons";
-import {STATUS_TRIP_OPTIONS} from "../../constants/Constants.js";
+import {
+    STATUS_TRIP_OPTIONS,
+    TICKET_STATUS_OPTION
+} from "../../constants/Constants.js";
 import UpdateTripModal from "./Modal/UpdateTripModal.jsx";
 import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 import AddTicketModal from "../Ticket/Modal/AddTicketModal.jsx";
 import SeatMap24 from "../Vehicle/Seat/SeatMap24.jsx";
+import {getAllTicketsByTripId} from "../../services/TicketService.js";
+import {formatDateTime} from "../../utils/Utils.js";
 
 const TripDetail = () => {
     const {tripId} = useParams();
-    const {setTitle} = usePageTitle();
+    const {setTitle, setHeaderAction} = usePageTitle();
+    const {user} = useAuth();
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        setTitle("CHI TIẾT CHUYẾN XE");
-    }, []);
-
-    const [trip, setTrip] = useState(null);
-    const [expectedRevenue, setExpectedRevenue] = useState(0);
-    const [tripSeatSold, setTripSeatSold] = useState(0);
-    const [listTripSeat, setListTripSeat] = useState([]);
     const [openAddTicketModal, setOpenAddTicketModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
+    const [trip, setTrip] = useState(null);
+    const [listTripSeat, setListTripSeat] = useState([]);
+    const [listTickets, setListTickets] = useState([]);
+    const [expectedRevenue, setExpectedRevenue] = useState(0);
+    const [tripSeatSold, setTripSeatSold] = useState(0);
+
+    useEffect(() => {
+        setTitle("CHI TIẾT CHUYẾN XE");
+        return () => {
+            setHeaderAction(null);
+        };
+    }, []);
+
     const fetchData = async () => {
         setIsLoading(true);
-        const [tripRes, soldRes, seatRes] = await Promise.all([
+        const [tripRes, soldRes, seatRes, ticketRes] = await Promise.all([
             getTripById({tripId}),
             countTripSeatSoldByTripId({tripId}),
-            getAllTripSeatByTripId({tripId})
+            getAllTripSeatByTripId({tripId}),
+            getAllTicketsByTripId({tripId})
         ]);
 
         const tripData = tripRes?.data;
@@ -46,6 +60,7 @@ const TripDetail = () => {
         setTrip(tripData);
         setTripSeatSold(soldRes?.data || 0);
         setListTripSeat(seatRes?.data || []);
+        setListTickets(ticketRes?.data || []);
 
         const price = tripData?.price || 0;
         const totalSeat = tripData.totalSeat || 0;
@@ -56,6 +71,40 @@ const TripDetail = () => {
     useEffect(() => {
         fetchData();
     }, [tripId]);
+
+    const canUpdate = user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER";
+    const canCreateTicket = user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER" || user?.role === "ROLE_STAFF";
+
+    useEffect(() => {
+        setHeaderAction(
+            <div style={{display: "flex", gap: "8px"}}>
+                {canCreateTicket && trip?.status === "OPEN_FOR_BOOKING" && (
+                    <Button
+                        type="primary"
+                        style={{
+                            backgroundColor: VietBusTheme.primary,
+                            color: VietBusTheme.white,
+                        }}
+                        onClick={() => setOpenAddTicketModal(true)}
+                    >
+                        Tạo vé
+                    </Button>
+                )}
+                {canUpdate && (
+                    <Button
+                        type="primary"
+                        style={{
+                            backgroundColor: VietBusTheme.primary,
+                            color: VietBusTheme.white,
+                        }}
+                        onClick={() => setOpenUpdateModal(true)}
+                    >
+                        Cập nhật
+                    </Button>
+                )}
+            </div>
+        );
+    }, [trip?.status, canUpdate, canCreateTicket]);
 
     const fillRate =
         trip?.totalSeat > 0
@@ -78,6 +127,52 @@ const TripDetail = () => {
                 return null;
         }
     }, [trip?.totalSeat, listTripSeat]);
+
+    const columns = useMemo(() => [
+        {
+            title: "STT",
+            key: "index",
+            width: 60,
+            align: "center",
+            render: (_text, _record, index) => index + 1,
+        },
+        {
+            title: "Mã vé",
+            dataIndex: "ticketCode",
+            key: "ticketCode",
+        },
+        {
+            title: "Số ghế",
+            dataIndex: "seatNumber",
+            key: "seatNumber",
+        },
+        {
+            title: "Giá vé",
+            dataIndex: "ticketPrice",
+            key: "ticketPrice",
+            render: (price) => `${new Intl.NumberFormat("vi-VN").format(price)} VNĐ`,
+        },
+        {
+            title: "Trạng thái vé",
+            dataIndex: "ticketStatus",
+            key: "ticketStatus",
+            render: (status) =>
+                TICKET_STATUS_OPTION.find((opt) => opt.value === status)?.label ||
+                status,
+        },
+        {
+            title: "Người bán",
+            dataIndex: "ticketSoldBy",
+            key: "ticketSoldBy",
+        },
+        {
+            title: "Ngày ngày bán",
+            dataIndex: "ticketSoldAt",
+            key: "ticketSoldAt",
+            render: (value) =>
+                value ? formatDateTime(value) : "",
+        },
+    ], []);
 
     return (
         <Spin spinning={isLoading}>
@@ -104,23 +199,8 @@ const TripDetail = () => {
                     </Card>
                 </div>
                 <div className="w-9/12">
-                    <Card className="rounded-xl hover:shadow-xl mb-5">
-                        <div className="flex justify-between">
-                            <div className="text-xl font-bold">THÔNG TIN</div>
-                            <div>
-                                <Button
-                                    type="primary"
-                                    style={{
-                                        backgroundColor: VietBusTheme.primary,
-                                        color: VietBusTheme.white,
-                                    }}
-                                    onClick={() => setOpenUpdateModal(true)}
-                                >
-                                    Cập nhật
-                                </Button>
-                            </div>
-                        </div>
-                        <Divider className="my-2"/>
+                    <Card className="rounded-xl hover:shadow-xl mb-2">
+
                         <div className="flex justify-between">
                             <div className="flex">
                                 <div>
@@ -178,7 +258,7 @@ const TripDetail = () => {
                             </div>
                         </div>
                     </Card>
-                    <Card className="rounded-xl hover:shadow-xl mb-5">
+                    <Card className="rounded-xl hover:shadow-xl mb-2">
                         <div className="flex">
                             <div className="w-full h-full">
                                 <div className="flex justify-between h-full items-center">
@@ -256,21 +336,7 @@ const TripDetail = () => {
                             </div>
                         </div>
                     </Card>
-                    {trip?.status === "OPEN_FOR_BOOKING" && (
-                        <div className="pb-4 flex justify-end">
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: VietBusTheme.primary,
-                                    color: VietBusTheme.white,
-                                }}
-                                onClick={() => setOpenAddTicketModal(true)}
-                            >
-                                Tạo vé
-                            </Button>
-                        </div>
-                    )}
-                    <Card></Card>
+                    <Table rowKey="username" loading={isLoading} columns={columns} dataSource={listTickets}/>
                 </div>
             </div>
             {/* ADD Ticket Modal */}

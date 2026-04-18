@@ -14,3 +14,8 @@ export const getAllTicketsUnpaid = async (params) => {
   const response = await api.post("/ticket/get-all-ticket-unpaid", params);
   return response.data;
 };
+
+export const getAllTicketsByTripId = async (params) => {
+  const response = await api.post("/ticket/get-all-ticket-by-trip-id", params);
+  return response.data;
+};

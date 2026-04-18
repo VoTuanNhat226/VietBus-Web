@@ -11,7 +11,7 @@ const LayoutContent = () => {
     return (
         <>
             {/* Top headboard */}
-            <Headbar title={title} collapsed={collapsed}/>
+            <Headbar collapsed={collapsed}/>
 
             {/* Left menu */}
             <SideBar collapsed={collapsed} onToggle={() => setCollapsed(prev => !prev)}/>

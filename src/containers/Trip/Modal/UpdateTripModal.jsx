@@ -1,5 +1,5 @@
 import { Button, Col, Form, message, Modal, Row, Select } from "antd";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { STATUS_TRIP_OPTIONS } from "../../../constants/Constants";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import { updateTrip } from "../../../services/TripService";
@@ -15,6 +15,15 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
       });
     }
   }, [trip, open]);
+
+  // Chỉ cho phép chọn trạng thái từ hiện tại trở đi (không được chọn ngược lại)
+  const allowedStatusOptions = useMemo(() => {
+    const currentIndex = STATUS_TRIP_OPTIONS.findIndex(
+      (opt) => opt.value === trip?.status
+    );
+    if (currentIndex === -1) return STATUS_TRIP_OPTIONS;
+    return STATUS_TRIP_OPTIONS.slice(currentIndex);
+  }, [trip?.status]);
 
   const handleSubmit = async () => {
     try {
@@ -47,7 +56,7 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
               label="Trạng thái"
               rules={[{ required: true }]}
             >
-              <Select options={STATUS_TRIP_OPTIONS} />
+              <Select options={allowedStatusOptions} />
             </Form.Item>
           </Col>
         </Row>
