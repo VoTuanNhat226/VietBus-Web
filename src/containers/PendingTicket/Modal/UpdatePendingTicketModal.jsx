@@ -53,12 +53,12 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Mã vé" name="ticketCode">
-              <Input readOnly />
+              <Input disabled />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Mã chuyến" name="tripCode">
-              <Input readOnly />
+              <Input disabled />
             </Form.Item>
           </Col>
           <Col span={12}>

@@ -63,7 +63,9 @@ const SideBar = ({ collapsed, onToggle }) => {
           title={collapsed ? item.label : undefined}
           className={`cursor-pointer rounded-lg mx-2 my-1 py-2 transition-all duration-300 flex items-center
                         ${
-                          location.pathname === item.path
+                          (item.path === "/"
+                            ? location.pathname === "/"
+                            : location.pathname.startsWith(item.path))
                             ? "bg-[#71a0cf]"
                             : "hover:bg-[#71a0cf]"
                         }`}

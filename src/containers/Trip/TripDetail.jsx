@@ -43,6 +43,7 @@ const TripDetail = () => {
   const [listTickets, setListTickets] = useState([]);
   const [expectedRevenue, setExpectedRevenue] = useState(0);
   const [tripSeatSold, setTripSeatSold] = useState(0);
+
   const actualRevenue = useMemo(() => {
     return listTickets.reduce(
       (sum, ticket) => sum + (ticket.ticketPrice || 0),
