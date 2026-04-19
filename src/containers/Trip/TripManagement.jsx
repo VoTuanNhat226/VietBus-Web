@@ -210,40 +210,70 @@ const TripManagement = () => {
                         <Col span={6}>
                             <Form.Item name="fromStationId">
                                 <Select
+                                    showSearch
                                     placeholder="Chọn điểm đi"
                                     options={stationOptions}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "")
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
                                 ></Select>
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item name="toStationId">
                                 <Select
+                                    showSearch
                                     placeholder="Chọn điểm đến"
                                     options={stationOptions}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "")
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
                                 ></Select>
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item name="driverId">
                                 <Select
+                                    showSearch
                                     placeholder="Chọn tài xế"
                                     options={driverOptions}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "")
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
                                 ></Select>
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item name="vehicleId">
                                 <Select
+                                    showSearch
                                     placeholder="Chọn xe"
                                     options={vehicleOptions}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "")
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
                                 ></Select>
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item name="status">
                                 <Select
+                                    showSearch
                                     placeholder="Chọn trạng thái"
                                     options={STATUS_TRIP_OPTIONS}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? "")
+                                            .toLowerCase()
+                                            .includes(input.toLowerCase())
+                                    }
                                 ></Select>
                             </Form.Item>
                         </Col>

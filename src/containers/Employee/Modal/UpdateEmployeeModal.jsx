@@ -166,6 +166,12 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
                   options={listAccount}
                   placeholder="Chọn tài khoản"
                   allowClear
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
                 />
               </Form.Item>
             </Col>
