@@ -52,16 +52,19 @@ const AccountManagement = () => {
             title: "Tên đăng nhập",
             dataIndex: "username",
             key: "username",
+            align: "center",
         },
         {
             title: "Vai trò",
             dataIndex: "role",
             key: "role",
+            align: "center",
         },
         {
             title: "Trạng thái",
             dataIndex: "active",
             key: "active",
+            align: "center",
             render: (value) => (
                 <span
                     style={{
@@ -76,11 +79,13 @@ const AccountManagement = () => {
             title: "Người tạo",
             dataIndex: "createdBy",
             key: "createdBy",
+            align: "center",
         },
         {
             title: "Ngày tạo",
             dataIndex: "createdAt",
             key: "createdAt",
+            align: "center",
 
             render: (value) =>
                 value ? formatDateTime(value) : "",
@@ -89,11 +94,13 @@ const AccountManagement = () => {
             title: "Người cập nhật",
             dataIndex: "updatedBy",
             key: "updatedBy",
+            align: "center",
         },
         {
             title: "Ngày cập nhật",
             dataIndex: "updatedAt",
             key: "updatedAt",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },

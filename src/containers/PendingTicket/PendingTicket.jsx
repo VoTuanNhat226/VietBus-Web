@@ -64,49 +64,58 @@ const PendingTicket = () => {
             title: "Mã vé",
             dataIndex: "ticketCode",
             key: "ticketCode",
+            align: "center",
         },
         {
             title: "Mã chuyến",
             dataIndex: "tripCode",
             key: "tripCode",
+            align: "center",
         },
         {
             title: "Giá vé",
             dataIndex: "ticketPrice",
             key: "ticketPrice",
+            align: "center",
             render: (price) => `${new Intl.NumberFormat("vi-VN").format(price)} VNĐ`,
         },
         {
             title: "Trạng thái vé",
             dataIndex: "ticketStatus",
             key: "ticketStatus",
+            align: "center",
             render: (status) => ticketStatusMap[status] || status
         },
         {
             title: "Hình thức thanh toán",
             dataIndex: "ticketPaymentType",
             key: "ticketPaymentType",
+            align: "center",
             render: (status) => paymentTypeMap[status] || status
         },
         {
             title: "Số ghế",
             dataIndex: "seatNumber",
             key: "seatNumber",
+            align: "center",
         },
         {
             title: "Điểm đi",
             dataIndex: "fromStation",
             key: "fromStation",
+            align: "center",
         },
         {
             title: "Điểm đến",
             dataIndex: "toStation",
             key: "toStation",
+            align: "center",
         },
         {
             title: "Người bán",
             dataIndex: "ticketSoldBy",
             key: "ticketSoldBy",
+            align: "center",
         },
         {
             title: "Cập nhật",

@@ -79,24 +79,28 @@ const RouteManagement = () => {
                     title: "Điểm đi",
                     dataIndex: "fromStation",
                     key: "fromStation",
+                    align: "center",
                     render: (value) => <span>{value?.name}</span>,
                 },
                 {
                     title: "Điểm đến",
                     dataIndex: "toStation",
                     key: "toStation",
+                    align: "center",
                     render: (value) => <span>{value?.name}</span>,
                 },
                 {
                     title: "Khoảng cách",
                     dataIndex: "distanceKm",
                     key: "distanceKm",
+                    align: "center",
                     render: (value) => <span>{value} km</span>,
                 },
                 {
                     title: "Trạng thái",
                     dataIndex: "active",
                     key: "active",
+                    align: "center",
                     render: (value) => (
                         <span
                             style={{
@@ -111,11 +115,13 @@ const RouteManagement = () => {
                     title: "Người tạo",
                     dataIndex: "createdBy",
                     key: "createdBy",
+                    align: "center",
                 },
                 {
                     title: "Ngày tạo",
                     dataIndex: "createdAt",
                     key: "createdAt",
+                    align: "center",
                     render: (value) =>
                         value ? formatDateTime(value) : "",
                 },
@@ -123,11 +129,13 @@ const RouteManagement = () => {
                     title: "Người cập nhật",
                     dataIndex: "updatedBy",
                     key: "updatedBy",
+                    align: "center",
                 },
                 {
                     title: "Ngày cập nhật",
                     dataIndex: "updatedAt",
                     key: "updatedAt",
+                    align: "center",
                     render: (value) =>
                         value ? formatDateTime(value) : "",
                 },

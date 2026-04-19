@@ -43,16 +43,19 @@ const VehicleManagement = () => {
             title: "Biển số xe",
             dataIndex: "licensePlate",
             key: "licensePlate",
+            align: "center",
         },
         {
             title: "Số ghế",
             dataIndex: "totalSeat",
             key: "totalSeat",
+            align: "center",
         },
         {
             title: "Trạng thái",
             dataIndex: "active",
             key: "active",
+            align: "center",
             render: (value) => (
                 <span
                     style={{
@@ -67,11 +70,13 @@ const VehicleManagement = () => {
             title: "Người tạo",
             dataIndex: "createdBy",
             key: "createdBy",
+            align: "center",
         },
         {
             title: "Ngày tạo",
             dataIndex: "createdAt",
             key: "createdAt",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },
@@ -79,11 +84,13 @@ const VehicleManagement = () => {
             title: "Người cập nhật",
             dataIndex: "updatedBy",
             key: "updatedBy",
+            align: "center",
         },
         {
             title: "Ngày cập nhật",
             dataIndex: "updatedAt",
             key: "updatedAt",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },

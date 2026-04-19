@@ -89,27 +89,32 @@ const PassengerManagement = () => {
       title: "Họ và tên",
       dataIndex: "fullName",
       key: "fullName",
+      align: "center",
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      align: "center",
     },
     {
       title: "Số điện thoại",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
+      align: "center",
     },
     {
       title: "Số CMND/CCCD",
       dataIndex: "idCardNumber",
       key: "idCardNumber",
+      align: "center",
     },
     {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
       ellipsis: true,
+      align: "center",
     },
     {
       title: "Hành động",

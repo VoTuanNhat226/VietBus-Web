@@ -87,21 +87,25 @@ const EmployeeManagement = () => {
             title: "Họ và tên",
             dataIndex: "fullName",
             key: "fullName",
+            align: "center",
         },
         {
             title: "Số điện thoại",
             dataIndex: "phoneNumber",
             key: "phoneNumber",
+            align: "center",
         },
         {
             title: "Chức vụ",
             dataIndex: "position",
             key: "position",
+            align: "center",
         },
         {
             title: "Trạng thái",
             dataIndex: "active",
             key: "active",
+            align: "center",
             render: (value) => (
                 <span
                     style={{
@@ -116,11 +120,13 @@ const EmployeeManagement = () => {
             title: "Người tạo",
             dataIndex: "createdBy",
             key: "createdBy",
+            align: "center",
         },
         {
             title: "Ngày tạo",
             dataIndex: "createdAt",
             key: "createdAt",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },
@@ -128,11 +134,13 @@ const EmployeeManagement = () => {
             title: "Người cập nhật",
             dataIndex: "updatedBy",
             key: "updatedBy",
+            align: "center",
         },
         {
             title: "Ngày cập nhật",
             dataIndex: "updatedAt",
             key: "updatedAt",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },

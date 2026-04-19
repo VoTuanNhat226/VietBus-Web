@@ -96,21 +96,25 @@ const TripManagement = () => {
             title: "Mã chuyến",
             dataIndex: "tripCode",
             key: "tripCode",
+            align: "center",
         },
         {
             title: "Điểm đi",
             key: "fromStation",
+            align: "center",
             render: (_, record) => <span>{record?.fromStation}</span>,
         },
         {
             title: "Điểm đến",
             key: "toStation",
+            align: "center",
             render: (_, record) => <span>{record?.toStation}</span>,
         },
         {
             title: "Thời gian xuất bến",
             dataIndex: "departureTime",
             key: "departureTime",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },
@@ -118,17 +122,20 @@ const TripManagement = () => {
             title: "Thời gian đến (dự kiến)",
             dataIndex: "arrivalTime",
             key: "arrivalTime",
+            align: "center",
             render: (value) =>
                 value ? formatDateTime(value) : "",
         },
         {
             title: "Xe (biển số xe)",
             key: "bus",
+            align: "center",
             render: (value) => <span>{value?.licensePlate}</span>,
         },
         {
             title: "Tài xế",
             key: "driver",
+            align: "center",
             render: (value) => (
                 <div>
                     {value?.driverNames?.map((driver, index) => (
@@ -140,6 +147,7 @@ const TripManagement = () => {
         {
             title: "Phụ xe",
             key: "assistant",
+            align: "center",
             render: (value) => (
                 <div>
                     {value?.assistantNames?.map((assistant, index) => (
@@ -152,6 +160,7 @@ const TripManagement = () => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
+            align: "center",
             render: (status) => <span>{STATUS_TRIP_MAP[status] || status}</span>,
         },
         {

@@ -62,11 +62,13 @@ const PaymentHistory = () => {
         title: "Mã vé",
         dataIndex: "ticketCode",
         key: "ticketCode",
+        align: "center",
       },
       {
         title: "Giá vé",
         dataIndex: "ticketPrice",
         key: "ticketPrice",
+        align: "center",
         render: (price) =>
           `${new Intl.NumberFormat("vi-VN").format(price)} VNĐ`,
       },
@@ -74,6 +76,7 @@ const PaymentHistory = () => {
         title: "Hình thức thanh toán",
         dataIndex: "ticketPaymentType",
         key: "ticketPaymentType",
+        align: "center",
         render: (status) =>
           PAYMENT_TYPE_OPTION.find((opt) => opt.value === status)?.label ||
           status,
@@ -82,6 +85,7 @@ const PaymentHistory = () => {
         title: "Phương thức thanh toán",
         dataIndex: "method",
         key: "method",
+        align: "center",
         render: (status) =>
           PAYMENT_METHOD_OPTION.find((opt) => opt.value === status)?.label ||
           status,
@@ -90,6 +94,7 @@ const PaymentHistory = () => {
         title: "Tiền đã thanh toán",
         dataIndex: "amount",
         key: "amount",
+        align: "center",
         render: (price) =>
           `${new Intl.NumberFormat("vi-VN").format(price)} VNĐ`,
       },
@@ -97,6 +102,7 @@ const PaymentHistory = () => {
         title: "Ngày thanh toán",
         dataIndex: "paidAt",
         key: "paidAt",
+        align: "center",
         render: (value) => (value ? formatDateTime(value) : ""),
       },
     ],
