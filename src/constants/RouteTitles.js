@@ -1,0 +1,15 @@
+export const ROUTE_TITLES = {
+    "/": "TỔNG QUAN",
+    "/account": "QUẢN LÝ TÀI KHOẢN",
+    "/employee": "QUẢN LÝ NHÂN VIÊN",
+    "/passenger": "QUẢN LÝ KHÁCH HÀNG",
+    "/route": "QUẢN LÝ TUYẾN XE",
+    "/vehicle": "QUẢN LÝ XE",
+    "/vehicle/:vehicleId": "CHI TIẾT XE",
+    "/trip": "QUẢN LÝ CHUYẾN XE",
+    "/trip/:tripId": "CHI TIẾT CHUYẾN XE",
+    "/ticket": "QUẢN LÝ VÉ XE",
+    "/pending-ticket": "VÉ CHƯA THANH TOÁN",
+    "/payment": "LỊCH SỬ THANH TOÁN",
+    "/statistic": "THỐNG KÊ",
+};

@@ -6,12 +6,10 @@ import {useAuth} from "../../context/AuthContext";
 import AddAccountModal from "./Modal/AddAccountModal";
 import {ACTIVE_OPTIONS, ROLE_OPTIONS} from "../../constants/Constants.js";
 import UpdateAccountModal from "./Modal/UpdateAccountModal";
-import {usePageTitle} from "../../context/PageTitleContext.jsx";
 import {formatDateTime} from "../../utils/Utils.js";
 
 const AccountManagement = () => {
     const {user} = useAuth();
-    const {setTitle} = usePageTitle();
     const [formInstance] = Form.useForm();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -20,10 +18,6 @@ const AccountManagement = () => {
 
     const [listAccount, setListAccount] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState(null);
-
-    useEffect(() => {
-        setTitle("QUẢN LÝ TÀI KHOẢN");
-    }, [setTitle]);
 
     const fetchAllAccount = async (payload = {}) => {
         try {

@@ -17,10 +17,6 @@ const VehicleDetail = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        setTitle("CHI TIẾT XE");
-    }, [setTitle]);
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);

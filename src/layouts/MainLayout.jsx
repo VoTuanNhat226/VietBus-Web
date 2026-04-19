@@ -1,15 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SideBar from "../components/SideBar.jsx";
 import Headbar from "../components/Headbar";
 import {
   PageTitleProvider,
   usePageTitle,
 } from "../context/PageTitleContext.jsx";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, matchPath } from "react-router-dom";
+import { ROUTE_TITLES } from "../constants/RouteTitles.js";
 
 const LayoutContent = () => {
-  const { title } = usePageTitle();
+  const { setTitle } = usePageTitle();
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    let foundTitle = "";
+
+    // Find matching title from ROUTE_TITLES
+    for (const pathPattern in ROUTE_TITLES) {
+      if (matchPath(pathPattern, currentPath)) {
+        foundTitle = ROUTE_TITLES[pathPattern];
+        break;
+      }
+    }
+
+    if (foundTitle) {
+      setTitle(foundTitle);
+    }
+  }, [location.pathname, setTitle]);
 
   return (
     <>

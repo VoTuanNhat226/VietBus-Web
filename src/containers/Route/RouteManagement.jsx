@@ -11,7 +11,6 @@ import {
 } from "antd";
 import {useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../context/AuthContext";
-import {usePageTitle} from "../../context/PageTitleContext";
 import {getAllRoute} from "../../services/RouteService";
 import moment from "moment";
 import {VietBusTheme} from "../../constants/VietBusTheme";
@@ -23,7 +22,6 @@ import {formatDateTime} from "../../utils/Utils.js";
 
 const RouteManagement = () => {
     const {user} = useAuth();
-    const {setTitle} = usePageTitle();
     const [formInstance] = Form.useForm();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +31,6 @@ const RouteManagement = () => {
     const [listRoute, setListRoute] = useState([]);
     const [selectedRoute, setSelectedRoute] = useState(null);
     const [listStation, setListStation] = useState([]);
-
-
-    useEffect(() => {
-        setTitle("QUẢN LÝ TUYẾN XE");
-    }, [setTitle]);
 
     const fetchRoutes = async (payload = {}) => {
         try {

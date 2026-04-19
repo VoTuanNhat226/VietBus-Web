@@ -1,5 +1,4 @@
 import {useEffect, useMemo, useState} from "react";
-import {usePageTitle} from "../../context/PageTitleContext.jsx";
 import {useAuth} from "../../context/AuthContext";
 import {Button, Card, Col, Form, Input, Row, Select, Spin, Table} from "antd";
 import {VietBusTheme} from "../../constants/VietBusTheme.js";
@@ -14,7 +13,6 @@ import {formatDateTime} from "../../utils/Utils.js";
 
 const TripManagement = () => {
     const {user} = useAuth();
-    const {setTitle} = usePageTitle();
     const navigate = useNavigate();
     const [formInstance] = Form.useForm();
 
@@ -26,10 +24,6 @@ const TripManagement = () => {
     const [listStation, setListStation] = useState([]);
     const [listDriver, setListDriver] = useState([]);
     const [listVehicle, setListVehicle] = useState([]);
-
-    useEffect(() => {
-        setTitle("QUẢN LÝ CHUYẾN XE");
-    }, [setTitle]);
 
     useEffect(() => {
         const fetchData = async () => {

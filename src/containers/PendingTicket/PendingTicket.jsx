@@ -1,6 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../context/AuthContext";
-import {usePageTitle} from "../../context/PageTitleContext";
 import {getAllTicketsUnpaid} from "../../services/TicketService";
 import {Button, Card, Col, Form, Input, Row, Select, Table} from "antd";
 import {
@@ -12,7 +11,6 @@ import UpdatePendingTicketModal from "./Modal/UpdatePendingTicketModal";
 
 const PendingTicket = () => {
     const {user} = useAuth();
-    const {setTitle} = usePageTitle();
     const [formInstance] = Form.useForm();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -20,10 +18,6 @@ const PendingTicket = () => {
 
     const [listPendingTicket, setListPendingTicket] = useState([]);
     const [selectedTicket, setSelectedTicket] = useState(null);
-
-    useEffect(() => {
-        setTitle("VÉ CHƯA THANH TOÁN");
-    }, [setTitle]);
 
     const fetchPendingTicket = async (payload = {}) => {
         try {

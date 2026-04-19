@@ -9,7 +9,6 @@ import {
   Select,
   Table,
 } from "antd";
-import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { useEffect, useState } from "react";
 import { VietBusTheme } from "../../constants/VietBusTheme.js";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -24,11 +23,6 @@ const PassengerManagement = () => {
   const [selectedPassenger, setSelectedPassenger] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
-
-  const { setTitle } = usePageTitle();
-  useEffect(() => {
-    setTitle("QUẢN LÝ KHÁCH HÀNG");
-  }, []);
 
   const handleSearch = () => {
     const payload = {

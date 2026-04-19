@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
 import { getAllPayment } from "../../services/PaymentService.js";
 import {
@@ -12,7 +11,6 @@ import { VietBusTheme } from "../../constants/VietBusTheme.js";
 import { formatDateTime } from "../../utils/Utils.js";
 
 const PaymentHistory = () => {
-  const { setTitle } = usePageTitle();
   const [formInstance] = Form.useForm();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -22,10 +20,6 @@ const PaymentHistory = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [listPayment, setListPayment] = useState([]);
-
-  useEffect(() => {
-    setTitle("LỊCH SỬ THANH TOÁN");
-  }, [setTitle]);
 
   useEffect(() => {
     const fetchAllPayment = async () => {

@@ -17,10 +17,6 @@ const VehicleManagement = () => {
     const [listVehicle, setListVehicle] = useState([]);
 
     useEffect(() => {
-        setTitle("QUẢN LÝ XE");
-    }, [setTitle]);
-
-    useEffect(() => {
         const fetchAllVehicle = async () => {
             try {
                 setIsLoading(true);

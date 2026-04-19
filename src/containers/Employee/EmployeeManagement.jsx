@@ -36,10 +36,6 @@ const EmployeeManagement = () => {
     const [listEmployee, setListEmployee] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-    useEffect(() => {
-        setTitle("QUẢN LÝ NHÂN VIÊN");
-    }, [setTitle]);
-
     const fetchEmployees = async (payload = {}) => {
         try {
             setIsLoading(true);

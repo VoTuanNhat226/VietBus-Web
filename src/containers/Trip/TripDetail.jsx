@@ -52,7 +52,6 @@ const TripDetail = () => {
   }, [listTickets]);
 
   useEffect(() => {
-    setTitle("CHI TIẾT CHUYẾN XE");
     return () => {
       setHeaderAction(null);
     };
