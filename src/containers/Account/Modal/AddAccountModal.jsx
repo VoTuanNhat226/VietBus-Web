@@ -56,18 +56,6 @@ const AddAccountModal = ({open, onClose, onSuccess}) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="Mật khẩu"
-                                name="password"
-                                rules={[{required: true, message: "Bắt buộc"}]}
-                            >
-                                <Input placeholder="Nhập mật khẩu"/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
-                    <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item
                                 label="Vai trò"
                                 name="role"
                                 rules={[{required: true, message: "Bắt buộc"}]}
@@ -78,6 +66,41 @@ const AddAccountModal = ({open, onClose, onSuccess}) => {
                                 ></Select>
                             </Form.Item>
                         </Col>
+                    </Row>
+
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[{required: true, message: "Bắt buộc"}]}
+                            >
+                                <Input.Password placeholder="Nhập mật khẩu"/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Nhập lại mật khẩu"
+                                name="confirmPassword"
+                                dependencies={['password']}
+                                rules={[
+                                    {required: true, message: "Bắt buộc"},
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Mật khẩu không khớp!'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password placeholder="Nhập lại mật khẩu"/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
                                 label="Trạng thái"
