@@ -1,3 +1,4 @@
+import { Button, Modal } from "antd";
 import { VietBusTheme } from "../constants/VietBusTheme";
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,8 +12,13 @@ const SideBar = ({ collapsed, onToggle }) => {
   const { user, logout } = useAuth();
 
   const [openProfile, setOpenProfile] = useState(false);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setOpenLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
     await logout();
     navigate("/login");
   };
@@ -63,9 +69,11 @@ const SideBar = ({ collapsed, onToggle }) => {
           title={collapsed ? item.label : undefined}
           className={`cursor-pointer rounded-lg mx-2 my-1 py-2 transition-all duration-300 flex items-center
                         ${
-                          (item.path === "/"
-                            ? location.pathname === "/"
-                            : location.pathname.startsWith(item.path))
+                          (
+                            item.path === "/"
+                              ? location.pathname === "/"
+                              : location.pathname.startsWith(item.path)
+                          )
                             ? "bg-[#71a0cf]"
                             : "hover:bg-[#71a0cf]"
                         }`}
@@ -161,6 +169,52 @@ const SideBar = ({ collapsed, onToggle }) => {
         onClose={() => setOpenProfile(false)}
         user={user}
       />
+
+      {/* LOGOUT MODAL */}
+      <Modal
+        open={openLogoutModal}
+        footer={
+          <div className="flex justify-center">
+            <Button
+              className="mr-2"
+              onClick={() => {
+                setOpenLogoutModal(false);
+              }}
+            >
+              Đóng
+            </Button>
+            <Button
+              type="primary"
+              className="ml-2"
+              style={{
+                backgroundColor: VietBusTheme.primary,
+                color: VietBusTheme.white,
+              }}
+              onClick={confirmLogout}
+            >
+              Đăng xuất
+            </Button>
+          </div>
+        }
+        onCancel={() => {
+          setOpenLogoutModal(false);
+        }}
+        width={400}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <h2>
+            <i
+              className="fa-solid fa-triangle-exclamation pr-2"
+              style={{
+                color: VietBusTheme.error,
+                fontSize: 14,
+              }}
+            />
+            Cảnh báo
+          </h2>
+          <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+        </div>
+      </Modal>
     </>
   );
 };

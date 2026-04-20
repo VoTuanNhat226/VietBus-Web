@@ -125,7 +125,7 @@ const Login = () => {
                       htmlType="submit"
                       block
                       loading={loading}
-                      className="h-12 text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20"
+                      className="h-12 text-base font-bold rounded-xl shadow-lg shadow-blue-500/20"
                       style={{ backgroundColor: VietBusTheme.primary }}
                     >
                       ĐĂNG NHẬP
