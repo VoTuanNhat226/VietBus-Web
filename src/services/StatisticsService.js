@@ -29,3 +29,8 @@ export const getAllTripDeparted = async (data) => {
   const response = await api.post("/statistics/get-all-trip-departed", data);
   return response.data;
 };
+
+export const getTotalTicketPerRoute = async (data) => {
+  const response = await api.post("/statistics/total-ticket-per-route", data);
+  return response.data;
+};

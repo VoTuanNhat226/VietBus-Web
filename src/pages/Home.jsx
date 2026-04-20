@@ -54,6 +54,7 @@ const Home = () => {
   });
 
   const [tripDeparted, setTripDeparted] = useState([]);
+  const [topRoutes, setTopRoutes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +68,7 @@ const Home = () => {
           tripDepartedRes,
           passengerRes,
           vehicleRes,
+          ticketPerRouteRes,
         ] = await Promise.all([
           StatisticsService.getRevenueByMonth({ month: currentMonth }),
           StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
@@ -74,6 +76,7 @@ const Home = () => {
           StatisticsService.getAllTripDeparted({}),
           StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
           StatisticsService.getTotalVehicle({}),
+          StatisticsService.getTotalTicketPerRoute({ month: currentMonth }),
         ]);
 
         setStatistics((prev) => {
@@ -132,6 +135,14 @@ const Home = () => {
         });
         if (tripDepartedRes?.data) {
           setTripDeparted(tripDepartedRes.data);
+        }
+        if (ticketPerRouteRes?.data) {
+          setTopRoutes(
+            ticketPerRouteRes.data.map((item) => ({
+              name: `${item.fromStation} - ${item.toStation}`,
+              bookings: item.total,
+            })),
+          );
         }
       } catch (error) {
         console.error("Lấy dữ liệu thống kê thất bại:", error);
@@ -252,15 +263,9 @@ const Home = () => {
     },
   ];
 
-  const topRoutes = [
-    { name: "Hà Nội - Hải Phòng", bookings: 450, growth: 15 },
-    { name: "Sài Gòn - Đà Lạt", bookings: 380, growth: 10 },
-    { name: "Đà Nẵng - Huế", bookings: 290, growth: -5 },
-  ];
-
   return (
     <Spin spinning={isLoading}>
-      <div className="p-6 bg-[#f8fafc] min-h-full">
+      <div className="p-6 min-h-full">
         {/* Stats Cards */}
         <Row gutter={[24, 24]} className="mb-8">
           {stats.map((item, index) => (
@@ -435,17 +440,6 @@ const Home = () => {
                           <Text strong>{item.name}</Text>
                           <Text type="secondary">{item.bookings} vé</Text>
                         </div>
-                        <Progress
-                          percent={80 + item.growth}
-                          showInfo={false}
-                          strokeColor={
-                            item.growth > 0
-                              ? VietBusTheme.primary
-                              : VietBusTheme.error
-                          }
-                          strokeWidth={8}
-                          className="m-0"
-                        />
                       </div>
                     </List.Item>
                   )}
