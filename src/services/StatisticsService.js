@@ -19,3 +19,8 @@ export const getTotalPassengerByMonth = async (data) => {
   const response = await api.post("/statistics/total-passenger-by-month", data);
   return response.data;
 };
+
+export const getTotalVehicle = async (data) => {
+  const response = await api.post("/statistics/total-vehicle", data);
+  return response.data;
+};

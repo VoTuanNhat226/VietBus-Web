@@ -49,6 +49,8 @@ const Home = () => {
     totalPassenger: 0,
     totalPassengerPrev: 0,
     growthPassengerPercent: 0,
+    totalVehicleActive: 0,
+    totalVehicleInActive: 0,
   });
 
   useEffect(() => {
@@ -56,12 +58,13 @@ const Home = () => {
       try {
         setIsLoading(true);
         const currentMonth = moment().format("YYYY-MM");
-        const [revenueRes, ticketRes, tripRes, passengerRes] =
+        const [revenueRes, ticketRes, tripRes, passengerRes, vehicleRes] =
           await Promise.all([
             StatisticsService.getRevenueByMonth({ month: currentMonth }),
             StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
             StatisticsService.getTotalTripByMonth({ month: currentMonth }),
             StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
+            StatisticsService.getTotalVehicle({}),
           ]);
 
         setStatistics((prev) => {
@@ -106,6 +109,16 @@ const Home = () => {
               }
             });
           }
+          if (vehicleRes?.data) {
+            Object.keys(vehicleRes.data).forEach((key) => {
+              if (
+                vehicleRes.data[key] !== null &&
+                vehicleRes.data[key] !== undefined
+              ) {
+                newState[key] = vehicleRes.data[key];
+              }
+            });
+          }
           return newState;
         });
       } catch (error) {
@@ -146,6 +159,14 @@ const Home = () => {
       prefix: <UserOutlined />,
       color: "#722ed1",
       trend: `${statistics.growthPassengerPercent > 0 ? "+" : ""}${statistics.growthPassengerPercent}%`,
+    },
+    {
+      title: "Tình trạng đội xe",
+      value: statistics.totalVehicleActive,
+      suffix: "hoạt động",
+      prefix: <CarOutlined />,
+      color: "#fa8c16",
+      trend: `${statistics.totalVehicleInActive} bảo trì`,
     },
   ];
 
@@ -246,7 +267,14 @@ const Home = () => {
         {/* Stats Cards */}
         <Row gutter={[24, 24]} className="mb-8">
           {stats.map((item, index) => (
-            <Col xs={24} sm={12} lg={6} key={index}>
+            <Col
+              xs={24}
+              sm={12}
+              lg={index < 3 ? 8 : 12}
+              xl={4}
+              key={index}
+              style={{ flex: "0 0 20%", maxWidth: "20%" }}
+            >
               <Card
                 bordered={false}
                 className="rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
@@ -288,9 +316,11 @@ const Home = () => {
                       >
                         {item.trend}
                       </Tag>
-                      <Text className="text-[12px] text-gray-400 ml-1">
-                        tháng này
-                      </Text>
+                      {item.title !== "Tình trạng đội xe" && (
+                        <Text className="text-[12px] text-gray-400 ml-1">
+                          tháng này
+                        </Text>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -300,107 +330,32 @@ const Home = () => {
         </Row>
 
         <Row gutter={[24, 24]}>
-          {/* Left Column */}
+          {/* Left Column: Recent Bookings */}
           <Col xs={24} xl={16}>
-            <Space direction="vertical" size={24} style={{ width: "100%" }}>
-              {/* Recent Bookings Table */}
-              <Card
-                title={
-                  <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                    Giao dịch gần đây
-                  </Title>
-                }
-                bordered={false}
-                className="rounded-3xl shadow-sm"
-                extra={
-                  <Button type="link" className="font-bold">
-                    Tất cả <ArrowRightOutlined />
-                  </Button>
-                }
-              >
-                <Table
-                  columns={columns}
-                  dataSource={recentBookings}
-                  pagination={false}
-                  className="custom-table"
-                />
-              </Card>
-
-              {/* Top Routes & Performance */}
-              <Row gutter={[24, 24]}>
-                <Col span={12}>
-                  <Card
-                    title={
-                      <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                        Tuyến xe phổ biến
-                      </Title>
-                    }
-                    bordered={false}
-                    className="rounded-3xl shadow-sm h-full"
-                  >
-                    <List
-                      dataSource={topRoutes}
-                      renderItem={(item) => (
-                        <List.Item className="border-none px-0">
-                          <div className="w-full">
-                            <div className="flex justify-between mb-1">
-                              <Text strong>{item.name}</Text>
-                              <Text type="secondary">{item.bookings} vé</Text>
-                            </div>
-                            <Progress
-                              percent={80 + item.growth}
-                              showInfo={false}
-                              strokeColor={
-                                item.growth > 0
-                                  ? VietBusTheme.primary
-                                  : VietBusTheme.error
-                              }
-                              strokeWidth={8}
-                              className="m-0"
-                            />
-                          </div>
-                        </List.Item>
-                      )}
-                    />
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card
-                    title={
-                      <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                        Tình trạng đội xe
-                      </Title>
-                    }
-                    bordered={false}
-                    className="rounded-3xl shadow-sm h-full flex flex-col justify-center items-center py-8"
-                  >
-                    <Progress
-                      type="dashboard"
-                      percent={92}
-                      strokeColor={VietBusTheme.success}
-                      format={(percent) => (
-                        <div className="flex flex-col">
-                          <span style={{ fontSize: "24px", fontWeight: 800 }}>
-                            {percent}%
-                          </span>
-                          <span style={{ fontSize: "12px", color: "#8c8c8c" }}>
-                            Hoạt động
-                          </span>
-                        </div>
-                      )}
-                    />
-                    <div className="mt-4 flex gap-4">
-                      <Tag color="success">32 Sẵn sàng</Tag>
-                      <Tag color="warning">3 Bảo trì</Tag>
-                      <Tag color="error">1 Hỏng</Tag>
-                    </div>
-                  </Card>
-                </Col>
-              </Row>
-            </Space>
+            <Card
+              title={
+                <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
+                  Giao dịch gần đây
+                </Title>
+              }
+              bordered={false}
+              className="rounded-3xl shadow-sm"
+              extra={
+                <Button type="link" className="font-bold">
+                  Tất cả <ArrowRightOutlined />
+                </Button>
+              }
+            >
+              <Table
+                columns={columns}
+                dataSource={recentBookings}
+                pagination={false}
+                className="custom-table"
+              />
+            </Card>
           </Col>
 
-          {/* Right Column */}
+          {/* Right Column: Statistics & Status */}
           <Col xs={24} xl={8}>
             <Space direction="vertical" size={24} style={{ width: "100%" }}>
               {/* Active Trips List */}
@@ -453,43 +408,37 @@ const Home = () => {
                 />
               </Card>
 
-              {/* Announcements */}
+              {/* Top Routes */}
               <Card
                 title={
                   <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                    Thông báo
+                    Tuyến xe phổ biến
                   </Title>
                 }
                 bordered={false}
-                className="rounded-3xl shadow-sm bg-gradient-to-br from-white to-gray-50"
+                className="rounded-3xl shadow-sm"
               >
                 <List
-                  itemLayout="horizontal"
-                  dataSource={announcements}
+                  dataSource={topRoutes}
                   renderItem={(item) => (
-                    <List.Item className="px-0">
-                      <List.Item.Meta
-                        avatar={
-                          <Avatar
-                            icon={<PieChartOutlined />}
-                            style={{
-                              backgroundColor:
-                                item.type === "warning" ? "#faad14" : "#52c41a",
-                            }}
-                          />
-                        }
-                        title={<Text strong>{item.title}</Text>}
-                        description={
-                          <div>
-                            <div className="text-[11px] text-gray-400 mb-1">
-                              {item.time}
-                            </div>
-                            <div className="text-gray-600 text-xs">
-                              {item.content}
-                            </div>
-                          </div>
-                        }
-                      />
+                    <List.Item className="border-none px-0">
+                      <div className="w-full">
+                        <div className="flex justify-between mb-1">
+                          <Text strong>{item.name}</Text>
+                          <Text type="secondary">{item.bookings} vé</Text>
+                        </div>
+                        <Progress
+                          percent={80 + item.growth}
+                          showInfo={false}
+                          strokeColor={
+                            item.growth > 0
+                              ? VietBusTheme.primary
+                              : VietBusTheme.error
+                          }
+                          strokeWidth={8}
+                          className="m-0"
+                        />
+                      </div>
                     </List.Item>
                   )}
                 />
