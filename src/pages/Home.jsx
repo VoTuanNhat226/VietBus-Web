@@ -53,19 +53,28 @@ const Home = () => {
     totalVehicleInActive: 0,
   });
 
+  const [tripDeparted, setTripDeparted] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const currentMonth = moment().format("YYYY-MM");
-        const [revenueRes, ticketRes, tripRes, passengerRes, vehicleRes] =
-          await Promise.all([
-            StatisticsService.getRevenueByMonth({ month: currentMonth }),
-            StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
-            StatisticsService.getTotalTripByMonth({ month: currentMonth }),
-            StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
-            StatisticsService.getTotalVehicle({}),
-          ]);
+        const [
+          revenueRes,
+          ticketRes,
+          tripRes,
+          tripDepartedRes,
+          passengerRes,
+          vehicleRes,
+        ] = await Promise.all([
+          StatisticsService.getRevenueByMonth({ month: currentMonth }),
+          StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
+          StatisticsService.getTotalTripByMonth({ month: currentMonth }),
+          StatisticsService.getAllTripDeparted({}),
+          StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
+          StatisticsService.getTotalVehicle({}),
+        ]);
 
         setStatistics((prev) => {
           const newState = { ...prev };
@@ -121,6 +130,9 @@ const Home = () => {
           }
           return newState;
         });
+        if (tripDepartedRes?.data) {
+          setTripDeparted(tripDepartedRes.data);
+        }
       } catch (error) {
         console.error("Lấy dữ liệu thống kê thất bại:", error);
       } finally {
@@ -246,21 +258,6 @@ const Home = () => {
     { name: "Đà Nẵng - Huế", bookings: 290, growth: -5 },
   ];
 
-  const announcements = [
-    {
-      title: "Bảo trì hệ thống",
-      time: "2 giờ trước",
-      type: "warning",
-      content: "Hệ thống sẽ bảo trì vào lúc 00:00 ngày mai.",
-    },
-    {
-      title: "Khuyến mãi lễ 30/4",
-      time: "5 giờ trước",
-      type: "success",
-      content: "Chương trình giảm giá 20% cho tất cả các tuyến.",
-    },
-  ];
-
   return (
     <Spin spinning={isLoading}>
       <div className="p-6 bg-[#f8fafc] min-h-full">
@@ -367,40 +364,51 @@ const Home = () => {
                 }
                 bordered={false}
                 className="rounded-3xl shadow-sm"
-                extra={<Tag color="processing">8 chuyến</Tag>}
+                extra={
+                  <Tag color="processing">{tripDeparted.length} chuyến</Tag>
+                }
               >
                 <List
-                  dataSource={[
-                    {
-                      route: "Hà Nội - Vinh",
-                      time: "11:30",
-                      driver: "A. Tuấn",
-                    },
-                    {
-                      route: "Đà Nẵng - Quy Nhơn",
-                      time: "12:00",
-                      driver: "A. Hùng",
-                    },
-                    {
-                      route: "Sài Gòn - Vũng Tàu",
-                      time: "12:45",
-                      driver: "A. Nam",
-                    },
-                  ]}
+                  dataSource={tripDeparted}
                   renderItem={(item) => (
                     <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
                       <div className="flex justify-between items-start mb-2">
                         <Text strong className="text-base">
-                          {item.route}
+                          {item.fromStation} - {item.toStation}
                         </Text>
                         <Text className="text-blue-600 font-bold">
-                          {item.time}
+                          {moment(item.departureTime).format("HH:mm")} -{" "}
+                          {moment(item.arrivalTime).format("HH:mm")}
+                        </Text>
+                      </div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Avatar
+                          size="small"
+                          icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                          className="bg-blue-50"
+                        />
+                        <Text className="text-xs font-medium text-gray-700">
+                          Tài xế: {item.driverNames?.join(", ")}
+                        </Text>
+                      </div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Avatar
+                          size="small"
+                          icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                          className="bg-blue-50"
+                        />
+                        <Text className="text-xs font-medium text-gray-700">
+                          Phụ xe: {item.assistantNames?.join(", ")}
                         </Text>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Avatar size="small" icon={<UserOutlined />} />
-                        <Text type="secondary" className="text-xs">
-                          Tài xế: {item.driver}
+                        <Avatar
+                          size="small"
+                          icon={<CarOutlined style={{ color: "#1890ff" }} />}
+                          className="bg-orange-50"
+                        />
+                        <Text className="text-xs font-medium text-gray-700">
+                          Biển số: {item.licensePlate}
                         </Text>
                       </div>
                     </div>

@@ -24,3 +24,8 @@ export const getTotalVehicle = async (data) => {
   const response = await api.post("/statistics/total-vehicle", data);
   return response.data;
 };
+
+export const getAllTripDeparted = async (data) => {
+  const response = await api.post("/statistics/get-all-trip-departed", data);
+  return response.data;
+};

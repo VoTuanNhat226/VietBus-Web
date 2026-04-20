@@ -19,7 +19,7 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
   // Chỉ cho phép chọn trạng thái từ hiện tại trở đi (không được chọn ngược lại)
   const allowedStatusOptions = useMemo(() => {
     const currentIndex = STATUS_TRIP_OPTIONS.findIndex(
-      (opt) => opt.value === trip?.status
+      (opt) => opt.value === trip?.status,
     );
     if (currentIndex === -1) return STATUS_TRIP_OPTIONS;
     return STATUS_TRIP_OPTIONS.slice(currentIndex);
@@ -27,13 +27,20 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
 
   const handleSubmit = async () => {
     try {
+      const currentStatus = form.getFieldValue("status");
+      if (currentStatus === trip?.status) {
+        message.warning("Trạng thái không thay đổi");
+        return;
+      }
+
       const payload = {
         tripId: trip?.tripId,
-        status: form.getFieldValue("status"),
+        status: currentStatus,
       };
       await updateTrip(payload);
       message.success("Cập nhật thành công");
       onSuccess();
+      onClose();
     } catch (err) {
       message.error(getApiErrorMessage(err));
     }
