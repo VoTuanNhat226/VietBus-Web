@@ -1,5 +1,5 @@
-import { Button, Col, Form, message, Modal, Row, Select } from "antd";
-import { useEffect } from "react";
+import { Button, Col, Form, message, Modal, Row, Select, Spin } from "antd";
+import { useEffect, useState } from "react";
 
 import { STATUS_TRIP_OPTIONS } from "../../../constants/Constants";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
@@ -8,6 +8,7 @@ import { getApiErrorMessage } from "../../../utils/Utils";
 
 const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (trip && open) {
@@ -30,9 +31,11 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
       const currentStatus = form.getFieldValue("status");
       if (currentStatus === trip?.status) {
-        message.warning("Trạng thái không thay đổi");
+        message.warning("Không có thay đổi nào để cập nhật");
+        setIsLoading(false);
         return;
       }
 
@@ -46,6 +49,8 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
       onClose();
     } catch (err) {
       message.error(getApiErrorMessage(err));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,32 +63,35 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
       width={400}
       destroyOnClose
     >
-      <Form layout="vertical" form={form}>
-        <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              name="status"
-              label="Trạng thái"
-              rules={[{ required: true }]}
+      <Spin spinning={isLoading}>
+        <Form layout="vertical" form={form}>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                name="status"
+                label="Trạng thái"
+                rules={[{ required: true }]}
+              >
+                <Select options={allowedStatusOptions} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <div className="flex justify-end gap-2">
+            <Button onClick={onClose}>Đóng</Button>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: VietBusTheme.primary,
+                color: VietBusTheme.white,
+              }}
+              onClick={handleSubmit}
+              loading={isLoading}
             >
-              <Select options={allowedStatusOptions} />
-            </Form.Item>
-          </Col>
-        </Row>
-        <div className="flex justify-end gap-2">
-          <Button onClick={onClose}>Đóng</Button>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: VietBusTheme.primary,
-              color: VietBusTheme.white,
-            }}
-            onClick={handleSubmit}
-          >
-            Cập nhật
-          </Button>
-        </div>
-      </Form>
+              Cập nhật
+            </Button>
+          </div>
+        </Form>
+      </Spin>
     </Modal>
   );
 };

@@ -1,6 +1,6 @@
-import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
+import { Button, Col, Form, Input, message, Modal, Row, Select, Spin } from "antd";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   PAYMENT_METHOD_OPTION,
   TICKET_STATUS_OPTION,
@@ -10,6 +10,7 @@ import { getApiErrorMessage } from "../../../utils/Utils";
 
 const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (ticket && open) {
@@ -23,7 +24,19 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
       const values = await form.validateFields();
+
+      // Check if there are any changes
+      const isChanged =
+        values.ticketStatus !== ticket?.ticketStatus ||
+        values.paymentMethod !== ticket?.paymentMethod;
+
+      if (!isChanged) {
+        message.warning("Không có thay đổi nào để cập nhật");
+        setIsLoading(false);
+        return;
+      }
 
       const payload = {
         ticketCode: values.ticketCode,
@@ -35,8 +48,11 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
       await updateTicket(payload);
       message.success("Cập nhật thành công");
       onSuccess();
+      onClose();
     } catch (err) {
       message.error(getApiErrorMessage(err));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,77 +65,80 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
       width={700}
       destroyOnClose
     >
-      <Form layout="vertical" form={form}>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Mã vé" name="ticketCode">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Mã chuyến" name="tripCode">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Trạng thái vé" name="ticketStatus">
-              <Select options={TICKET_STATUS_OPTION} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              shouldUpdate={(prev, cur) =>
-                prev.ticketStatus !== cur.ticketStatus
-              }
-              noStyle
-            >
-              {({ getFieldValue }) => {
-                const isPaid = getFieldValue("ticketStatus") === "PAID";
+      <Spin spinning={isLoading}>
+        <Form layout="vertical" form={form}>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Mã vé" name="ticketCode">
+                <Input disabled />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Mã chuyến" name="tripCode">
+                <Input disabled />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Trạng thái vé" name="ticketStatus">
+                <Select options={TICKET_STATUS_OPTION} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                shouldUpdate={(prev, cur) =>
+                  prev.ticketStatus !== cur.ticketStatus
+                }
+                noStyle
+              >
+                {({ getFieldValue }) => {
+                  const isPaid = getFieldValue("ticketStatus") === "PAID";
 
-                return (
-                  <Form.Item
-                    label="Phương thức thanh toán"
-                    name="paymentMethod"
-                    rules={
-                      isPaid
-                        ? [
-                            {
-                              required: true,
-                              message: "Vui lòng chọn phương thức thanh toán",
-                            },
-                          ]
-                        : []
-                    }
-                  >
-                    <Select
-                      options={PAYMENT_METHOD_OPTION}
-                      disabled={!isPaid}
-                      placeholder={
+                  return (
+                    <Form.Item
+                      label="Phương thức thanh toán"
+                      name="paymentMethod"
+                      rules={
                         isPaid
-                          ? "Chọn phương thức thanh toán"
-                          : "Chỉ chọn khi vé đã thanh toán"
+                          ? [
+                              {
+                                required: true,
+                                message: "Vui lòng chọn phương thức thanh toán",
+                              },
+                            ]
+                          : []
                       }
-                    />
-                  </Form.Item>
-                );
+                    >
+                      <Select
+                        options={PAYMENT_METHOD_OPTION}
+                        disabled={!isPaid}
+                        placeholder={
+                          isPaid
+                            ? "Chọn phương thức thanh toán"
+                            : "Chỉ chọn khi vé đã thanh toán"
+                        }
+                      />
+                    </Form.Item>
+                  );
+                }}
+              </Form.Item>
+            </Col>
+          </Row>
+          <div className="flex justify-end gap-2">
+            <Button onClick={onClose}>Đóng</Button>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: VietBusTheme.primary,
+                color: VietBusTheme.white,
               }}
-            </Form.Item>
-          </Col>
-        </Row>
-        <div className="flex justify-end gap-2">
-          <Button onClick={onClose}>Đóng</Button>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: VietBusTheme.primary,
-              color: VietBusTheme.white,
-            }}
-            onClick={handleSubmit}
-          >
-            Cập nhật
-          </Button>
-        </div>
-      </Form>
+              onClick={handleSubmit}
+              loading={isLoading}
+            >
+              Cập nhật
+            </Button>
+          </div>
+        </Form>
+      </Spin>
     </Modal>
   );
 };
