@@ -137,8 +137,11 @@ const Home = () => {
           setTripDeparted(tripDepartedRes.data);
         }
         if (ticketPerRouteRes?.data) {
+          const sortedRoutes = [...ticketPerRouteRes.data].sort(
+            (a, b) => b.total - a.total,
+          );
           setTopRoutes(
-            ticketPerRouteRes.data.map((item) => ({
+            sortedRoutes.map((item) => ({
               name: `${item.fromStation} - ${item.toStation}`,
               bookings: item.total,
             })),

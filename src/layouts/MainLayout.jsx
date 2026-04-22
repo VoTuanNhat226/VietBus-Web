@@ -11,7 +11,14 @@ import { ROUTE_TITLES } from "../constants/RouteTitles.js";
 const LayoutContent = () => {
   const { setTitle } = usePageTitle();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebar_collapsed");
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sidebar_collapsed", JSON.stringify(collapsed));
+  }, [collapsed]);
 
   useEffect(() => {
     const currentPath = location.pathname;
