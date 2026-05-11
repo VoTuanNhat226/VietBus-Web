@@ -1,16 +1,42 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Spin, Table } from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row, Spin, message, Table } from "antd";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import TextArea from "antd/es/input/TextArea";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { updatePassenger } from "../../../services/PassengerService";
 
 const EditPassengerModal = ({
-  onConfirm,
+  onSuccess,
   onCancel,
   passenger,
   openEditModal,
 }) => {
-  const handleSubmit = () => {};
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const values = await form.validateFields();
+      const payload = {
+        passengerId: passenger.passengerId,
+        fullName: values.fullName?.trim(),
+        phoneNumber: values.phoneNumber?.trim(),
+        email: values.email?.trim().toLowerCase(),
+        idCardNumber: values.idCardNumber?.trim(),
+        note: values.note || "",
+      };
+
+      await updatePassenger(payload);
+      message.success("Cập nhật hành khách thành công");
+      form.resetFields();
+      onSuccess();
+    } catch (error) {
+      console.error("Error occurred while submitting form:", error);
+      message.error("Có lỗi xảy ra khi cập nhật hành khách. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (passenger) {
@@ -22,7 +48,7 @@ const EditPassengerModal = ({
     <Modal
       title="CẬP NHẬT HÀNH KHÁCH"
       open={openEditModal}
-      onOk={onConfirm}
+      onOk={handleSubmit}
       onCancel={onCancel}
       footer={
         <div className="flex justify-end gap-2">
@@ -40,7 +66,7 @@ const EditPassengerModal = ({
         </div>
       }
     >
-      <Spin spinning={false}>
+      <Spin spinning={isLoading}>
         <Form layout="vertical" form={form}>
           <Row gutter={16}>
             <Col span={12}>

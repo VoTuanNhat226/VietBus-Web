@@ -15,6 +15,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import DeletePassengerModal from "./Modal/DeletePassengerModal.jsx";
 import EditPassengerModal from "./Modal/EditPassengerModal.jsx";
 import CreatePassengerModal from "./Modal/CreatePassengerModal.jsx";
+import { searchPassenger } from "../../services/PassengerService.js";
 
 const PassengerManagement = () => {
   const [formInstance] = Form.useForm();
@@ -24,58 +25,52 @@ const PassengerManagement = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
 
-  const handleSearch = () => {
-    const payload = {
-      fullName: formInstance.getFieldValue("fullName"),
-      phoneNumber: formInstance.getFieldValue("phoneNumber"),
-      email: formInstance.getFieldValue("email"),
-      IdCardNumber: formInstance.getFieldValue("IdCardNumber"),
-    };
-    console.log("Search payload:", payload);
+  const [passengers, setPassengers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+
+  const fetchPassengers = async (page = 1, size = 10, searchParams = {}) => {
+    setLoading(true);
+    try {
+      const payload = {
+        page: page - 1,
+        size,
+        ...searchParams,
+      };
+      const response = await searchPassenger(payload);
+      if (response && response.statusCode === 200) {
+        setPassengers(response.data || []);
+        setPagination((prev) => ({
+          ...prev,
+          current: (response.meta?.page?.pageNumber ?? 0) + 1,
+          pageSize: response.meta?.page?.pageSize ?? 10,
+          total: response.meta?.page?.totalElements ?? 0,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching passengers:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const mockPassengers = [
-    {
-      key: 1,
-      fullName: "Nguyễn Văn A",
-      phoneNumber: "0901234567",
-      email: "nguyenvana@gmail.com",
-      idCardNumber: "079123456789",
-      note: "Khách VIP, thường xuyên đặt vé",
-    },
-    {
-      key: 2,
-      fullName: "Trần Thị B",
-      phoneNumber: "0912345678",
-      email: "tranthib@gmail.com",
-      idCardNumber: "079987654321",
-      note: "Hay hủy vé sát giờ",
-    },
-    {
-      key: 3,
-      fullName: "Lê Văn C",
-      phoneNumber: "0987654321",
-      email: "levanc@gmail.com",
-      idCardNumber: "012345678901",
-      note: "Ưu tiên ghế đầu",
-    },
-    {
-      key: 4,
-      fullName: "Phạm Thị D",
-      phoneNumber: "0934567890",
-      email: "phamthid@gmail.com",
-      idCardNumber: "098765432109",
-      note: "Yêu cầu hỗ trợ đặc biệt",
-    },
-    {
-      key: 5,
-      fullName: "Hoàng Văn E",
-      phoneNumber: "0971122334",
-      email: "hoangvane@gmail.com",
-      idCardNumber: "045612378945",
-      note: "Khách mới",
-    },
-  ];
+  useEffect(() => {
+    fetchPassengers(pagination.current, pagination.pageSize);
+  }, []);
+
+  const handleTableChange = (newPagination) => {
+    const searchParams = formInstance.getFieldsValue();
+    fetchPassengers(newPagination.current, newPagination.pageSize, searchParams);
+  };
+
+  const handleSearch = () => {
+    const searchParams = formInstance.getFieldsValue();
+    fetchPassengers(1, pagination.pageSize, searchParams);
+  };
 
   const columns = [
     {
@@ -157,7 +152,8 @@ const PassengerManagement = () => {
     <div>
       <Card>
         <h2>Search area</h2>
-        <Row gutter={[16, 0]}>
+        <Form form={formInstance}>
+          <Row gutter={[16, 0]}>
           <Col span={6}>
             <Form.Item name="fullName">
               <Input placeholder="Họ và tên" />
@@ -178,7 +174,7 @@ const PassengerManagement = () => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="IdCardNumber">
+            <Form.Item name="idCardNumber">
               <Input placeholder="Số CMND/CCCD" inputMode="numeric" />
             </Form.Item>
           </Col>
@@ -203,6 +199,7 @@ const PassengerManagement = () => {
             </Button>
           </Col>
         </Row>
+        </Form>
       </Card>
       {user?.role === "ROLE_ADMIN" ? (
         <div className="pt-4 flex justify-end">
@@ -218,11 +215,20 @@ const PassengerManagement = () => {
           </Button>
         </div>
       ) : null}
-      <Table className="pt-4" dataSource={mockPassengers} columns={columns} />
+      <Table
+        className="pt-4"
+        dataSource={passengers}
+        columns={columns}
+        loading={loading}
+        pagination={pagination}
+        onChange={handleTableChange}
+        rowKey={(record) => record.id || record.idCardNumber || Math.random()}
+      />
       <DeletePassengerModal
         openDeleteModal={openDeleteModal}
-        onConfirm={() => {
+        onSuccess={() => {
           setOpenDeleteModal(false);
+          fetchPassengers(pagination.current, pagination.pageSize);
         }}
         onCancel={() => {
           setOpenDeleteModal(false);
@@ -232,8 +238,9 @@ const PassengerManagement = () => {
       />
       <EditPassengerModal
         openEditModal={openEditModal}
-        onConfirm={() => {
+        onSuccess={() => {
           setOpenEditModal(false);
+          fetchPassengers(pagination.current, pagination.pageSize);
         }}
         onCancel={() => {
           setOpenEditModal(false);
@@ -243,8 +250,9 @@ const PassengerManagement = () => {
       />
       <CreatePassengerModal
         openCreateModal={openCreateModal}
-        onConfirm={() => {
+        onSuccess={() => {
           setOpenCreateModal(false);
+          fetchPassengers();
         }}
         onCancel={() => {
           setOpenCreateModal(false);
