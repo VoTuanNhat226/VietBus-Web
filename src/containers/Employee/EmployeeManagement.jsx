@@ -264,6 +264,7 @@ const EmployeeManagement = () => {
         loading={isLoading}
         dataSource={listEmployee}
         columns={columns}
+        rowKey="employeeId"
       />
       {/* ADD Employee Modal*/}
       {openAddModal && (

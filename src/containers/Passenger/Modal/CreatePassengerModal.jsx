@@ -4,7 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { createPassenger } from "../../../services/PassengerService";
 
-const CreatePassengerModal = ({ onConfirm, onCancel, openCreateModal }) => {
+const CreatePassengerModal = ({ onSuccess, onCancel, openCreateModal }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -15,7 +15,7 @@ const CreatePassengerModal = ({ onConfirm, onCancel, openCreateModal }) => {
         fullName: values.fullName?.trim(),
         phoneNumber: values.phoneNumber?.trim(),
         email: values.email?.trim().toLowerCase(),
-        idCard: values.idCardNumber?.trim(),
+        idCardNumber: values.idCardNumber?.trim(),
         note: values.note || "",
         // hard by admin
         createdBy: "admin",
@@ -25,7 +25,7 @@ const CreatePassengerModal = ({ onConfirm, onCancel, openCreateModal }) => {
       await createPassenger(payload);
       message.success("Tạo hành khách thành công");
       form.resetFields();
-      onCancel();
+      onSuccess();
     } catch (error) {
       console.error("Error occurred while submitting form:", error);
       message.error("Có lỗi xảy ra khi tạo hành khách. Vui lòng thử lại.");
@@ -39,7 +39,7 @@ const CreatePassengerModal = ({ onConfirm, onCancel, openCreateModal }) => {
     <Modal
       title="THÊM HÀNH KHÁCH MỚI"
       open={openCreateModal}
-      onOk={onConfirm}
+      onOk={handleSubmit}
       onCancel={onCancel}
       footer={
         <div className="flex justify-end gap-2">
