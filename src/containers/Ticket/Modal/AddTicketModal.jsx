@@ -35,41 +35,45 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
       tripPrice: formatVND(trip?.price),
     });
 
-    const fetchListTripSeatCanSell = async () => {
-      setIsLoading(true);
-      const tripSeats = await getListTripSeatAvailableByTripId({
-        tripId: selectedTripId,
-      });
-      const options = (tripSeats?.data || [])
-        .sort((a, b) =>
-          a.seatNumber.localeCompare(b.seatNumber, undefined, {
-            numeric: true,
-            sensitivity: "base",
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        const [tripSeats, passengers] = await Promise.all([
+          getListTripSeatAvailableByTripId({
+            tripId: selectedTripId,
           }),
-        )
-        .map((item) => ({
-          value: item.tripSeatId,
-          label: `${item.seatNumber}`,
-        }));
-      setListTripSeatCanSell(options);
-      setIsLoading(false);
-    };
+          getAllPassenger({}),
+        ]);
 
-    const fetchListPassenger = async () => {
-      setIsLoading(true);
-      const response = await getAllPassenger({});
-      if (response && response.statusCode === 200) {
-        const options = (response.data || []).map((item) => ({
-          value: item.passengerId,
-          label: `${item.fullName} - ${item.phoneNumber}`,
-        }));
-        setListPassenger(options);
+        const seatOptions = (tripSeats?.data || [])
+          .sort((a, b) =>
+            a.seatNumber.localeCompare(b.seatNumber, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            }),
+          )
+          .map((item) => ({
+            value: item.tripSeatId,
+            label: item.seatNumber,
+          }));
+
+        setListTripSeatCanSell(seatOptions);
+
+        if (passengers?.statusCode === 200) {
+          const passengerOptions = (passengers.data || []).map((item) => ({
+            value: item.passengerId,
+            label: `${item.fullName} - ${item.phoneNumber}`,
+          }));
+
+          setListPassenger(passengerOptions);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
-    fetchListTripSeatCanSell();
-    fetchListPassenger();
+    fetchData();
   }, [trip?.tripId]);
 
   const handleSubmit = async () => {
@@ -201,7 +205,8 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
           <div className="flex justify-end gap-2">
             <Button
               onClick={() => {
-                (form.resetFields(), onClose());
+                form.resetFields();
+                onClose();
               }}
             >
               Hủy
