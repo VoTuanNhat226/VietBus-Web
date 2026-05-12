@@ -1,5 +1,10 @@
 import api from "../api/api";
 
+export const getAllPassenger = async () => {
+  const response = await api.post("/passenger/get-all");
+  return response.data;
+};
+
 export const getPassenger = async (params) => {
   const response = await api.post("/passenger/get", params);
   return response.data;
