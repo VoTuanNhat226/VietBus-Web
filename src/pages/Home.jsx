@@ -25,12 +25,14 @@ import {
   ArrowRightOutlined,
   PieChartOutlined,
   NumberOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { VietBusTheme } from "../constants/VietBusTheme";
 import { useAuth } from "../context/AuthContext";
 import * as StatisticsService from "../services/StatisticsService";
 import * as TripService from "../services/TripService";
 import * as TripSeatService from "../services/TripSeatService";
+import * as TicketService from "../services/TicketService";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -51,12 +53,11 @@ const Home = () => {
     totalPassenger: 0,
     totalPassengerPrev: 0,
     growthPassengerPercent: 0,
-    totalVehicleActive: 0,
-    totalVehicleInActive: 0,
   });
 
   const [tripDeparted, setTripDeparted] = useState([]);
   const [tripSelling, setTripSelling] = useState([]);
+  const [totalUnpaidTicket, setTotalUnpaidTicket] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,16 +70,16 @@ const Home = () => {
           tripRes,
           tripDepartedRes,
           passengerRes,
-          vehicleRes,
           tripSellingRes,
+          unpaidTicketRes,
         ] = await Promise.all([
           StatisticsService.getRevenueByMonth({ month: currentMonth }),
           StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
           StatisticsService.getTotalTripByMonth({ month: currentMonth }),
           StatisticsService.getAllTripDeparted({}),
           StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
-          StatisticsService.getTotalVehicle({}),
           TripService.getAllTripOpenBooking({}),
+          TicketService.getAllTicketsUnpaid({}),
         ]);
 
         setStatistics((prev) => {
@@ -123,18 +124,15 @@ const Home = () => {
               }
             });
           }
-          if (vehicleRes?.data) {
-            Object.keys(vehicleRes.data).forEach((key) => {
-              if (
-                vehicleRes.data[key] !== null &&
-                vehicleRes.data[key] !== undefined
-              ) {
-                newState[key] = vehicleRes.data[key];
-              }
-            });
-          }
           return newState;
         });
+        if (unpaidTicketRes?.data) {
+          setTotalUnpaidTicket(
+            Array.isArray(unpaidTicketRes.data)
+              ? unpaidTicketRes.data.length
+              : unpaidTicketRes.data,
+          );
+        }
         if (tripDepartedRes?.data) {
           const tripsWithSeats = await Promise.all(
             tripDepartedRes.data.map(async (trip) => {
@@ -196,6 +194,14 @@ const Home = () => {
       trend: `${statistics.growthTicketPercent > 0 ? "+" : ""}${statistics.growthTicketPercent}%`,
     },
     {
+      title: "Vé chưa thanh toán",
+      value: totalUnpaidTicket,
+      prefix: <ExclamationCircleOutlined />,
+      color: "#faad14",
+      trend: `${totalUnpaidTicket} vé`,
+      trendType: "warning",
+    },
+    {
       title: "Chuyến xe",
       value: statistics.totalTrip,
       prefix: <RocketOutlined />,
@@ -208,14 +214,6 @@ const Home = () => {
       prefix: <UserOutlined />,
       color: "#722ed1",
       trend: `${statistics.growthPassengerPercent > 0 ? "+" : ""}${statistics.growthPassengerPercent}%`,
-    },
-    {
-      title: "Tình trạng đội xe",
-      value: statistics.totalVehicleActive,
-      suffix: "hoạt động",
-      prefix: <CarOutlined />,
-      color: "#fa8c16",
-      trend: `${statistics.totalVehicleInActive} bảo trì`,
     },
   ];
 
@@ -269,16 +267,22 @@ const Home = () => {
                     </div>
                     <div className="mt-2">
                       <Tag
-                        color={item.trend.startsWith("+") ? "success" : "error"}
+                        color={
+                          item.trendType === "warning"
+                            ? "warning"
+                            : item.trend.startsWith("+")
+                              ? "success"
+                              : "error"
+                        }
                         className="rounded-full border-none px-2 font-bold"
                       >
                         {item.trend}
                       </Tag>
-                      {item.title !== "Tình trạng đội xe" && (
-                        <Text className="text-[12px] text-gray-400 ml-1">
-                          tháng này
-                        </Text>
-                      )}
+                      {item.title !== "Vé chưa thanh toán" && (
+                          <Text className="text-[12px] text-gray-400 ml-1">
+                            tháng này
+                          </Text>
+                        )}
                     </div>
                   </div>
                 </div>

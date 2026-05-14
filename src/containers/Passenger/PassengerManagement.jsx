@@ -64,7 +64,11 @@ const PassengerManagement = () => {
 
   const handleTableChange = (newPagination) => {
     const searchParams = formInstance.getFieldsValue();
-    fetchPassengers(newPagination.current, newPagination.pageSize, searchParams);
+    fetchPassengers(
+      newPagination.current,
+      newPagination.pageSize,
+      searchParams,
+    );
   };
 
   const handleSearch = () => {
@@ -154,51 +158,54 @@ const PassengerManagement = () => {
         <h2>Search area</h2>
         <Form form={formInstance}>
           <Row gutter={[16, 0]}>
-          <Col span={6}>
-            <Form.Item name="fullName">
-              <Input placeholder="Họ và tên" />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="phoneNumber">
-              <Input
-                maxLength={10}
-                placeholder="Số điện thoại"
-                inputMode="numeric"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="email">
-              <Input placeholder="Email" type="email" />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="idCardNumber">
-              <Input placeholder="Số CMND/CCCD" inputMode="numeric" />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row justify="end" gutter={8}>
-          <Col>
-            <Button htmlType="reset" onClick={() => formInstance.resetFields()}>
-              Reset
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{
-                backgroundColor: VietBusTheme.primary,
-                color: VietBusTheme.white,
-              }}
-              onClick={handleSearch}
-            >
-              Tìm kiếm
-            </Button>
-          </Col>
-        </Row>
+            <Col span={6}>
+              <Form.Item name="fullName">
+                <Input placeholder="Họ và tên" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="phoneNumber">
+                <Input
+                  maxLength={10}
+                  placeholder="Số điện thoại"
+                  inputMode="numeric"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="email">
+                <Input placeholder="Email" type="email" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="idCardNumber">
+                <Input placeholder="Số CMND/CCCD" inputMode="numeric" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row justify="end" gutter={8}>
+            <Col>
+              <Button
+                htmlType="reset"
+                onClick={() => formInstance.resetFields()}
+              >
+                Reset
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  backgroundColor: VietBusTheme.primary,
+                  color: VietBusTheme.white,
+                }}
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+            </Col>
+          </Row>
         </Form>
       </Card>
       {user?.role === "ROLE_ADMIN" ? (
