@@ -10,21 +10,38 @@ import {
 } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { VietBusTheme } from "../constants/VietBusTheme";
 
 const { Title, Text } = Typography;
 
 const Login = () => {
-  const { login, loading } = useAuth();
+  const { login, loading, token } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getRedirectPath = () => {
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get("redirect");
+    // Chỉ chấp nhận internal paths (bắt đầu bằng /), bỏ qua nếu là external URL
+    if (redirect && redirect.startsWith("/") && !redirect.startsWith("//")) {
+      return redirect;
+    }
+    return "/";
+  };
+
+  React.useEffect(() => {
+    if (token) {
+      navigate(getRedirectPath(), { replace: true });
+    }
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onFinish = async (values) => {
     const success = await login(values.username, values.password);
 
     if (success) {
       message.success("Đăng nhập thành công!");
-      navigate("/");
+      navigate(getRedirectPath(), { replace: true });
     } else {
       message.error("Sai tài khoản hoặc mật khẩu!");
     }
@@ -43,7 +60,7 @@ const Login = () => {
       <div className="min-h-screen flex items-center justify-center bg-[#f0f4f8] p-4">
         <div className="w-full max-w-[760px]">
           <Card
-            bordered={false}
+            variant="borderless"
             className="shadow-2xl overflow-hidden rounded-3xl"
             styles={{ body: { padding: 0 } }}
           >

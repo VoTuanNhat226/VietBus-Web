@@ -1,4 +1,4 @@
-import api from "../api/api";
+import api from "./axiosInstance";
 
 export const getAllAccount = async (params) => {
   const response = await api.post("/account/get-all", params);

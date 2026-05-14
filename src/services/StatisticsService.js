@@ -1,4 +1,4 @@
-import api from "../api/api";
+import api from "./axiosInstance";
 
 export const getRevenueByMonth = async (data) => {
   const response = await api.post("/statistics/get-revenue-by-month", data);

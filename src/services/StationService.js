@@ -1,4 +1,4 @@
-import api from "../api/api";
+import api from "./axiosInstance";
 
 export const getAllStation = async (params) => {
   const response = await api.post("/station/get-all", params);
