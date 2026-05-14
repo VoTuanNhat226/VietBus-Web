@@ -102,6 +102,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       clearState();
     }
+  };
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, logoutAll, loading }}>
