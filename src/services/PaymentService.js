@@ -1,4 +1,4 @@
-import api from "../api/api";
+import api from "./axiosInstance";
 
 export const getAllPayment = async (params) => {
   const response = await api.post("/payment/get-all", params);
