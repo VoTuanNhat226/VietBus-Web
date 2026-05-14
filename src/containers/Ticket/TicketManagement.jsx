@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getAllTicket } from "../../services/TicketService";
-import { getAllTripOpenBooking } from "../../services/TripService";
+import { getAllTrip, getAllTripOpenBooking } from "../../services/TripService";
 import { Button, Card, Col, Form, Input, Row, Select, Table, Tag } from "antd";
 import {
   PAYMENT_METHOD_OPTION,
@@ -12,6 +12,7 @@ import { VietBusTheme } from "../../constants/VietBusTheme";
 import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { useNavigate } from "react-router-dom";
 import AddTicketModal from "./Modal/AddTicketModal";
+import TicketDetailModal from "./Modal/TicketDetailModal";
 
 const TicketManagement = () => {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ const TicketManagement = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
 
   const [listTicket, setListTicket] = useState([]);
   const [listTrip, setListTrip] = useState([]);
@@ -45,7 +47,7 @@ const TicketManagement = () => {
       const res = await getAllTrip({});
       setListTrip(res?.data || []);
     };
-    // fetchTrips();
+    fetchTrips();
   }, []);
 
   const handleSearch = async () => {
@@ -156,6 +158,19 @@ const TicketManagement = () => {
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly gap-2">
+            <i
+              className="fa-solid fa-eye"
+              style={{
+                color: VietBusTheme.primary,
+                fontSize: 18,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setSelectedTicket(record);
+                setOpenDetailModal(true);
+              }}
+              title="Xem chi tiết"
+            />
             <i
               className="fa-solid fa-angles-right"
               style={{
@@ -279,6 +294,17 @@ const TicketManagement = () => {
           onClose={() => setOpenAddModal(false)}
           onSuccess={() => fetchTickets()}
           trip={selectedTripForAdd}
+        />
+      )}
+
+      {openDetailModal && (
+        <TicketDetailModal
+          open={openDetailModal}
+          onClose={() => {
+            setOpenDetailModal(false);
+            setSelectedTicket(null);
+          }}
+          ticket={selectedTicket}
         />
       )}
     </>
