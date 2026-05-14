@@ -186,7 +186,7 @@ const PendingTicket = () => {
                 }}
                 onClick={handleSearch}
               >
-                Tìm kiếm
+                Search
               </Button>
             </Col>
           </Row>

@@ -83,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   const logout = async () => {
     try {
       await publicApi.post("/auth/logout");
@@ -101,7 +102,6 @@ export const AuthProvider = ({ children }) => {
     } finally {
       clearState();
     }
-  };
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, logoutAll, loading }}>

@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import AccountDetailModal from "../containers/Account/Modal/AccountDetailModal";
-import { MenuItem } from "./MenuItem.js";
+import { MenuItem } from "../constants/MenuItem.js";
 
 const SideBar = ({ collapsed, onToggle }) => {
   const location = useLocation();

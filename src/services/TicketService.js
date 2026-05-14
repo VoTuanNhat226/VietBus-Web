@@ -10,6 +10,11 @@ export const updateTicket = async (params) => {
   return response.data;
 };
 
+export const getAllTicket = async (params) => {
+  const response = await api.post("/ticket/get-all", params);
+  return response.data;
+};
+
 export const getAllTicketsUnpaid = async (params) => {
   const response = await api.post("/ticket/get-all-ticket-unpaid", params);
   return response.data;

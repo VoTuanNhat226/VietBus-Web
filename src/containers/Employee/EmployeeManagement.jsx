@@ -101,6 +101,8 @@ const EmployeeManagement = () => {
         dataIndex: "position",
         key: "position",
         align: "center",
+        render: (value) =>
+          ROLE_OPTIONS.find((opt) => opt.value === value)?.label || value,
       },
       {
         title: "Trạng thái",
@@ -239,7 +241,7 @@ const EmployeeManagement = () => {
                 }}
                 onClick={handleSearch}
               >
-                Tìm kiếm
+                Search
               </Button>
             </Col>
           </Row>

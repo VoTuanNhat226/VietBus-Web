@@ -20,15 +20,19 @@ import {
   RocketOutlined,
   FileProtectOutlined,
   ArrowUpOutlined,
-  EnvironmentOutlined,
   CarOutlined,
   NotificationOutlined,
   ArrowRightOutlined,
   PieChartOutlined,
+  NumberOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { VietBusTheme } from "../constants/VietBusTheme";
 import { useAuth } from "../context/AuthContext";
 import * as StatisticsService from "../services/StatisticsService";
+import * as TripService from "../services/TripService";
+import * as TripSeatService from "../services/TripSeatService";
+import * as TicketService from "../services/TicketService";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -49,12 +53,11 @@ const Home = () => {
     totalPassenger: 0,
     totalPassengerPrev: 0,
     growthPassengerPercent: 0,
-    totalVehicleActive: 0,
-    totalVehicleInActive: 0,
   });
 
   const [tripDeparted, setTripDeparted] = useState([]);
-  const [topRoutes, setTopRoutes] = useState([]);
+  const [tripSelling, setTripSelling] = useState([]);
+  const [totalUnpaidTicket, setTotalUnpaidTicket] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,16 +70,16 @@ const Home = () => {
           tripRes,
           tripDepartedRes,
           passengerRes,
-          vehicleRes,
-          ticketPerRouteRes,
+          tripSellingRes,
+          unpaidTicketRes,
         ] = await Promise.all([
           StatisticsService.getRevenueByMonth({ month: currentMonth }),
           StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
           StatisticsService.getTotalTripByMonth({ month: currentMonth }),
           StatisticsService.getAllTripDeparted({}),
           StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
-          StatisticsService.getTotalVehicle({}),
-          StatisticsService.getTotalTicketPerRoute({ month: currentMonth }),
+          TripService.getAllTripOpenBooking({}),
+          TicketService.getAllTicketsUnpaid({}),
         ]);
 
         setStatistics((prev) => {
@@ -121,31 +124,49 @@ const Home = () => {
               }
             });
           }
-          if (vehicleRes?.data) {
-            Object.keys(vehicleRes.data).forEach((key) => {
-              if (
-                vehicleRes.data[key] !== null &&
-                vehicleRes.data[key] !== undefined
-              ) {
-                newState[key] = vehicleRes.data[key];
-              }
-            });
-          }
           return newState;
         });
-        if (tripDepartedRes?.data) {
-          setTripDeparted(tripDepartedRes.data);
+        if (unpaidTicketRes?.data) {
+          setTotalUnpaidTicket(
+            Array.isArray(unpaidTicketRes.data)
+              ? unpaidTicketRes.data.length
+              : unpaidTicketRes.data,
+          );
         }
-        if (ticketPerRouteRes?.data) {
-          const sortedRoutes = [...ticketPerRouteRes.data].sort(
-            (a, b) => b.total - a.total,
+        if (tripDepartedRes?.data) {
+          const tripsWithSeats = await Promise.all(
+            tripDepartedRes.data.map(async (trip) => {
+              try {
+                const soldRes = await TripSeatService.countTripSeatSoldByTripId(
+                  {
+                    tripId: trip.tripId,
+                  },
+                );
+                return { ...trip, tripSeatSold: soldRes.data };
+              } catch (e) {
+                return trip;
+              }
+            }),
           );
-          setTopRoutes(
-            sortedRoutes.map((item) => ({
-              name: `${item.fromStation} - ${item.toStation}`,
-              bookings: item.total,
-            })),
+          setTripDeparted(tripsWithSeats);
+        }
+
+        if (tripSellingRes?.data) {
+          const tripsWithSeats = await Promise.all(
+            tripSellingRes.data.map(async (trip) => {
+              try {
+                const soldRes = await TripSeatService.countTripSeatSoldByTripId(
+                  {
+                    tripId: trip.tripId,
+                  },
+                );
+                return { ...trip, tripSeatSold: soldRes.data };
+              } catch (e) {
+                return trip;
+              }
+            }),
           );
+          setTripSelling(tripsWithSeats);
         }
       } catch (error) {
         console.error("Lấy dữ liệu thống kê thất bại:", error);
@@ -173,6 +194,14 @@ const Home = () => {
       trend: `${statistics.growthTicketPercent > 0 ? "+" : ""}${statistics.growthTicketPercent}%`,
     },
     {
+      title: "Vé chưa thanh toán",
+      value: totalUnpaidTicket,
+      prefix: <ExclamationCircleOutlined />,
+      color: "#faad14",
+      trend: `${totalUnpaidTicket} vé`,
+      trendType: "warning",
+    },
+    {
       title: "Chuyến xe",
       value: statistics.totalTrip,
       prefix: <RocketOutlined />,
@@ -185,84 +214,6 @@ const Home = () => {
       prefix: <UserOutlined />,
       color: "#722ed1",
       trend: `${statistics.growthPassengerPercent > 0 ? "+" : ""}${statistics.growthPassengerPercent}%`,
-    },
-    {
-      title: "Tình trạng đội xe",
-      value: statistics.totalVehicleActive,
-      suffix: "hoạt động",
-      prefix: <CarOutlined />,
-      color: "#fa8c16",
-      trend: `${statistics.totalVehicleInActive} bảo trì`,
-    },
-  ];
-
-  const recentBookings = [
-    {
-      key: "1",
-      customer: "Nguyễn Văn A",
-      trip: "Hà Nội - Hải Phòng",
-      time: "10:30 20/04/2026",
-      amount: "250,000 VNĐ",
-      status: "Thành công",
-    },
-    {
-      key: "2",
-      customer: "Trần Thị B",
-      trip: "Sài Gòn - Đà Lạt",
-      time: "14:15 20/04/2026",
-      amount: "350,000 VNĐ",
-      status: "Chờ thanh toán",
-    },
-    {
-      key: "3",
-      customer: "Lê Văn C",
-      trip: "Đà Nẵng - Huế",
-      time: "08:00 21/04/2026",
-      amount: "120,000 VNĐ",
-      status: "Thành công",
-    },
-  ];
-
-  const columns = [
-    {
-      title: "Khách hàng",
-      dataIndex: "customer",
-      key: "customer",
-      render: (text) => <Text strong>{text}</Text>,
-    },
-    {
-      title: "Chuyến xe",
-      dataIndex: "trip",
-      key: "trip",
-      render: (text) => (
-        <span>
-          <EnvironmentOutlined
-            style={{ marginRight: 8, color: VietBusTheme.primary }}
-          />
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: "Thời gian",
-      dataIndex: "time",
-      key: "time",
-    },
-    {
-      title: "Số tiền",
-      dataIndex: "amount",
-      key: "amount",
-      align: "right",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === "Thành công" ? "success" : "warning"}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
     },
   ];
 
@@ -316,16 +267,22 @@ const Home = () => {
                     </div>
                     <div className="mt-2">
                       <Tag
-                        color={item.trend.startsWith("+") ? "success" : "error"}
+                        color={
+                          item.trendType === "warning"
+                            ? "warning"
+                            : item.trend.startsWith("+")
+                              ? "success"
+                              : "error"
+                        }
                         className="rounded-full border-none px-2 font-bold"
                       >
                         {item.trend}
                       </Tag>
-                      {item.title !== "Tình trạng đội xe" && (
-                        <Text className="text-[12px] text-gray-400 ml-1">
-                          tháng này
-                        </Text>
-                      )}
+                      {item.title !== "Vé chưa thanh toán" && (
+                          <Text className="text-[12px] text-gray-400 ml-1">
+                            tháng này
+                          </Text>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -335,120 +292,190 @@ const Home = () => {
         </Row>
 
         <Row gutter={[24, 24]}>
-          {/* Left Column: Recent Bookings */}
-          <Col xs={24} xl={16}>
+          {/* Active Trips List */}
+          <Col xs={24} xl={12}>
             <Card
               title={
                 <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                  Giao dịch gần đây
+                  Chuyến đang chạy
                 </Title>
               }
               bordered={false}
               className="rounded-3xl shadow-sm"
-              extra={
-                <Button type="link" className="font-bold">
-                  Tất cả <ArrowRightOutlined />
-                </Button>
-              }
+              extra={<Tag color="processing">{tripDeparted.length} chuyến</Tag>}
             >
-              <Table
-                columns={columns}
-                dataSource={recentBookings}
-                pagination={false}
-                className="custom-table"
+              <List
+                dataSource={tripDeparted}
+                renderItem={(item) => (
+                  <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
+                    <div className="flex justify-between items-start mb-2">
+                      <Text strong className="text-base">
+                        {item.fromStation} - {item.toStation}
+                      </Text>
+                      <div className="flex flex-col items-end">
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.departureTime).format(
+                            "HH:mm DD-MM-YYYY",
+                          )}
+                        </Text>
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.arrivalTime).format("HH:mm DD-MM-YYYY")}
+                        </Text>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<NumberOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Mã chuyến: {item.tripCode}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Tài xế: {item.driverNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Phụ xe: {item.assistantNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        size="small"
+                        icon={<CarOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-orange-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Biển số: {item.licensePlate}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Avatar
+                        size="small"
+                        icon={<PieChartOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Ghế: {item.tripSeatSold || 0}/{item.totalSeat || 0}
+                      </Text>
+                    </div>
+                  </div>
+                )}
               />
             </Card>
           </Col>
 
-          {/* Right Column: Statistics & Status */}
-          <Col xs={24} xl={8}>
-            <Space direction="vertical" size={24} style={{ width: "100%" }}>
-              {/* Active Trips List */}
-              <Card
-                title={
-                  <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                    Chuyến đang chạy
-                  </Title>
-                }
-                bordered={false}
-                className="rounded-3xl shadow-sm"
-                extra={
-                  <Tag color="processing">{tripDeparted.length} chuyến</Tag>
-                }
-              >
-                <List
-                  dataSource={tripDeparted}
-                  renderItem={(item) => (
-                    <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
-                      <div className="flex justify-between items-start mb-2">
-                        <Text strong className="text-base">
-                          {item.fromStation} - {item.toStation}
+          {/* Trips Open for Booking */}
+          <Col xs={24} xl={12}>
+            <Card
+              title={
+                <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
+                  Chuyến đang mở bán
+                </Title>
+              }
+              bordered={false}
+              className="rounded-3xl shadow-sm"
+              extra={<Tag color="processing">{tripSelling.length} chuyến</Tag>}
+            >
+              <List
+                dataSource={tripSelling}
+                renderItem={(item) => (
+                  <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
+                    <div className="flex justify-between items-start mb-2">
+                      <Text strong className="text-base">
+                        {item.fromStation} - {item.toStation}
+                      </Text>
+                      <div className="flex flex-col items-end">
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.departureTime).format(
+                            "HH:mm DD-MM-YYYY",
+                          )}
                         </Text>
-                        <Text className="text-blue-600 font-bold">
-                          {moment(item.departureTime).format("HH:mm")} -{" "}
-                          {moment(item.arrivalTime).format("HH:mm")}
-                        </Text>
-                      </div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <Avatar
-                          size="small"
-                          icon={<UserOutlined style={{ color: "#1890ff" }} />}
-                          className="bg-blue-50"
-                        />
-                        <Text className="text-xs font-medium text-gray-700">
-                          Tài xế: {item.driverNames?.join(", ")}
-                        </Text>
-                      </div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <Avatar
-                          size="small"
-                          icon={<UserOutlined style={{ color: "#1890ff" }} />}
-                          className="bg-blue-50"
-                        />
-                        <Text className="text-xs font-medium text-gray-700">
-                          Phụ xe: {item.assistantNames?.join(", ")}
-                        </Text>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          size="small"
-                          icon={<CarOutlined style={{ color: "#1890ff" }} />}
-                          className="bg-orange-50"
-                        />
-                        <Text className="text-xs font-medium text-gray-700">
-                          Biển số: {item.licensePlate}
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.arrivalTime).format("HH:mm DD-MM-YYYY")}
                         </Text>
                       </div>
                     </div>
-                  )}
-                />
-              </Card>
-
-              {/* Top Routes */}
-              <Card
-                title={
-                  <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
-                    Tuyến xe phổ biến
-                  </Title>
-                }
-                bordered={false}
-                className="rounded-3xl shadow-sm"
-              >
-                <List
-                  dataSource={topRoutes}
-                  renderItem={(item) => (
-                    <List.Item className="border-none px-0">
-                      <div className="w-full">
-                        <div className="flex justify-between mb-1">
-                          <Text strong>{item.name}</Text>
-                          <Text type="secondary">{item.bookings} vé</Text>
-                        </div>
-                      </div>
-                    </List.Item>
-                  )}
-                />
-              </Card>
-            </Space>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<NumberOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Mã chuyến: {item.tripCode}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Tài xế: {item.driverNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Phụ xe: {item.assistantNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        size="small"
+                        icon={<CarOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Biển số: {item.licensePlate}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Avatar
+                        size="small"
+                        icon={<PieChartOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Ghế: {item.tripSeatSold || 0}/{item.totalSeat || 0}
+                      </Text>
+                    </div>
+                  </div>
+                )}
+              />
+            </Card>
           </Col>
         </Row>
       </div>

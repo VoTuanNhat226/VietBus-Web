@@ -14,16 +14,16 @@ import { useEffect, useState } from "react";
 import { getListTripSeatAvailableByTripId } from "../../../services/TripSeatService";
 import TextArea from "antd/es/input/TextArea";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
-import { getApiErrorMessage } from "../../../utils/Utils";
+import { formatVND, getApiErrorMessage } from "../../../utils/Utils";
 import { PAYMENT_METHOD_OPTION } from "../../../constants/Constants";
 import { createTicket } from "../../../services/TicketService";
-
-const formatVND = (value) => value.toLocaleString("vi-VN") + " VNĐ";
+import { getAllPassenger } from "../../../services/PassengerService";
 
 const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [listPassenger, setListPassenger] = useState([]);
   const [listTripSeatCanSell, setListTripSeatCanSell] = useState([]);
 
   useEffect(() => {
@@ -35,27 +35,45 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
       tripPrice: formatVND(trip?.price),
     });
 
-    const fetchListTripSeatCanSell = async () => {
-      setIsLoading(true);
-      const tripSeats = await getListTripSeatAvailableByTripId({
-        tripId: selectedTripId,
-      });
-      const options = (tripSeats?.data || [])
-        .sort((a, b) =>
-          a.seatNumber.localeCompare(b.seatNumber, undefined, {
-            numeric: true,
-            sensitivity: "base",
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        const [tripSeats, passengers] = await Promise.all([
+          getListTripSeatAvailableByTripId({
+            tripId: selectedTripId,
           }),
-        )
-        .map((item) => ({
-          value: item.tripSeatId,
-          label: `${item.seatNumber}`,
-        }));
-      setListTripSeatCanSell(options);
-      setIsLoading(false);
+          getAllPassenger({}),
+        ]);
+
+        const seatOptions = (tripSeats?.data || [])
+          .sort((a, b) =>
+            a.seatNumber.localeCompare(b.seatNumber, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            }),
+          )
+          .map((item) => ({
+            value: item.tripSeatId,
+            label: item.seatNumber,
+          }));
+
+        setListTripSeatCanSell(seatOptions);
+
+        if (passengers?.statusCode === 200) {
+          const passengerOptions = (passengers.data || []).map((item) => ({
+            value: item.passengerId,
+            label: `${item.fullName} - ${item.phoneNumber}`,
+          }));
+
+          setListPassenger(passengerOptions);
+        }
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchListTripSeatCanSell();
+    fetchData();
   }, [trip?.tripId]);
 
   const handleSubmit = async () => {
@@ -106,7 +124,12 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="passengerId" label="Khách hàng">
-                <Select options={[]} placeholder="Chọn khách hàng" />
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  options={listPassenger}
+                  placeholder="Chọn khách hàng"
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -182,7 +205,8 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
           <div className="flex justify-end gap-2">
             <Button
               onClick={() => {
-                (form.resetFields(), onClose());
+                form.resetFields();
+                onClose();
               }}
             >
               Hủy
