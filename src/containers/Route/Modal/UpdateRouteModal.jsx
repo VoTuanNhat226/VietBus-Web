@@ -45,7 +45,11 @@ const UpdateRouteModal = ({ route, open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="CẬP NHẬT TUYẾN XE"
+      title={
+        <div style={{ color: VietBusTheme.primary, fontSize: "20px" }}>
+          CẬP NHẬT TUYẾN XE
+        </div>
+      }
       open={open}
       onCancel={onClose}
       footer={null}

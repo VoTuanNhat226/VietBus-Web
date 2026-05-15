@@ -24,3 +24,9 @@ export const updateTrip = async (params) => {
   const response = await api.post("/trip/update", params);
   return response.data;
 };
+
+// History
+export const getTripHistoryByTripId = async (params) => {
+  const response = await api.post("/trip-history/get-by-trip-id", params);
+  return response.data;
+};

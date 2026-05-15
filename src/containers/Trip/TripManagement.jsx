@@ -31,7 +31,7 @@ const TripManagement = () => {
         setIsLoading(true);
         const [tripRes, stationRes, employeeRes, vehicleRes] =
           await Promise.all([
-            getAllTrip({}),
+            getAllTrip({ status: "OPEN_FOR_BOOKING" }),
             getAllStation({}),
             getAllEmployee({}),
             getAllVehicle({}),
@@ -215,12 +215,16 @@ const TripManagement = () => {
     <>
       <Card>
         <h2>Search area</h2>
-        <Form form={formInstance}>
+        <Form
+          form={formInstance}
+          initialValues={{ status: "OPEN_FOR_BOOKING" }}
+        >
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item name="fromStationId">
                 <Select
                   showSearch
+                  allowClear
                   placeholder="Chọn điểm đi"
                   options={stationOptions}
                   filterOption={(input, option) =>
@@ -235,6 +239,7 @@ const TripManagement = () => {
               <Form.Item name="toStationId">
                 <Select
                   showSearch
+                  allowClear
                   placeholder="Chọn điểm đến"
                   options={stationOptions}
                   filterOption={(input, option) =>
@@ -249,6 +254,7 @@ const TripManagement = () => {
               <Form.Item name="driverId">
                 <Select
                   showSearch
+                  allowClear
                   placeholder="Chọn tài xế"
                   options={driverOptions}
                   filterOption={(input, option) =>
@@ -263,6 +269,7 @@ const TripManagement = () => {
               <Form.Item name="vehicleId">
                 <Select
                   showSearch
+                  allowClear
                   placeholder="Chọn xe"
                   options={vehicleOptions}
                   filterOption={(input, option) =>
@@ -277,6 +284,7 @@ const TripManagement = () => {
               <Form.Item name="status">
                 <Select
                   showSearch
+                  allowClear
                   placeholder="Chọn trạng thái"
                   options={STATUS_TRIP_OPTIONS}
                   filterOption={(input, option) =>
@@ -289,7 +297,7 @@ const TripManagement = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="tripCode">
-                <Input placeholder="Nhập mã chuyến"></Input>
+                <Input allowClear placeholder="Nhập mã chuyến"></Input>
               </Form.Item>
             </Col>
           </Row>
@@ -336,10 +344,7 @@ const TripManagement = () => {
         <AddTripModal
           open={openAddModal}
           onClose={() => setOpenAddModal(false)}
-          onSuccess={async () => {
-            const res = await getAllTrip({});
-            setListTrip(res?.data);
-          }}
+          onSuccess={handleSearch}
         />
       )}
     </>

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { VietBusTheme } from "../../constants/VietBusTheme";
 import { Button, Card, Divider, Dropdown, Spin, Table } from "antd";
 
-import { getTripById } from "../../services/TripService";
+import { getTripById, getTripHistoryByTripId } from "../../services/TripService";
 import {
   countTripSeatSoldByTripId,
   getAllTripSeatByTripId,
@@ -16,6 +16,7 @@ import {
   CarOutlined,
   FileExcelOutlined,
   FilePdfOutlined,
+  HistoryOutlined,
   PrinterOutlined,
 } from "@ant-design/icons";
 import {
@@ -27,6 +28,7 @@ import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 import AddTicketModal from "../Ticket/Modal/AddTicketModal.jsx";
 import SeatMap24 from "../Vehicle/Seat/SeatMap24.jsx";
 import { getAllTicketsByTripId } from "../../services/TicketService.js";
+import TripHistoryModal from "./Modal/TripHistoryModal.jsx";
 import { formatDateTime } from "../../utils/Utils.js";
 
 const TripDetail = () => {
@@ -37,6 +39,7 @@ const TripDetail = () => {
 
   const [openAddTicketModal, setOpenAddTicketModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [openHistoryModal, setOpenHistoryModal] = useState(false);
 
   const [trip, setTrip] = useState(null);
   const [listTripSeat, setListTripSeat] = useState([]);
@@ -117,6 +120,19 @@ const TripDetail = () => {
             Cập nhật
           </Button>
         )}
+        <Button
+          style={{
+            backgroundColor: "#faad14",
+            color: VietBusTheme.white,
+            borderColor: "#faad14",
+          }}
+          icon={<HistoryOutlined />}
+          onClick={() => {
+            setOpenHistoryModal(true);
+          }}
+        >
+          Lịch sử
+        </Button>
       </div>,
     );
   }, [trip?.status, canUpdate, canCreateTicket]);
@@ -453,6 +469,12 @@ const TripDetail = () => {
           const res = await getTripById({ tripId });
           setTrip(res?.data);
         }}
+      />
+      {/* HISTORY Modal */}
+      <TripHistoryModal
+        open={openHistoryModal}
+        onClose={() => setOpenHistoryModal(false)}
+        tripId={tripId}
       />
     </Spin>
   );

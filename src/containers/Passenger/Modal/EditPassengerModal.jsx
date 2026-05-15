@@ -1,4 +1,15 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Spin, message, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Spin,
+  message,
+  Table,
+} from "antd";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
@@ -46,7 +57,11 @@ const EditPassengerModal = ({
 
   return (
     <Modal
-      title="CẬP NHẬT HÀNH KHÁCH"
+      title={
+        <div style={{ color: VietBusTheme.primary, fontSize: "20px" }}>
+          CẬP NHẬT THÔNG TIN KHÁCH HÀNG
+        </div>
+      }
       open={openEditModal}
       onOk={handleSubmit}
       onCancel={onCancel}

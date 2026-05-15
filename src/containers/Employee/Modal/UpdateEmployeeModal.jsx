@@ -106,7 +106,11 @@ const UpdateEmployeeModal = ({ employee, open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="CẬP NHẬT NHÂN VIÊN"
+      title={
+        <div style={{ color: VietBusTheme.primary, fontSize: "20px" }}>
+          CẬP NHẬT NHÂN VIÊN
+        </div>
+      }
       open={open}
       onCancel={onClose}
       footer={null}

@@ -45,7 +45,11 @@ const UpdateAccountModal = ({ account, open, onClose, onSuccess }) => {
 
   return (
     <Modal
-      title="CẬP NHẬT TÀI KHOẢN"
+      title={
+        <div style={{ color: VietBusTheme.primary, fontSize: "20px" }}>
+          CẬP NHẬT TÀI KHOẢN
+        </div>
+      }
       open={open}
       onCancel={onClose}
       footer={null}
