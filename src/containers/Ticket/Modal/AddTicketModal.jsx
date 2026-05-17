@@ -164,19 +164,9 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
               <Form.Item
                 name="paymentMethod"
                 label="Phương thức thanh toán"
-                rules={[
-                  { required: paymentType === "PAY_NOW", message: "Bắt buộc" },
-                ]}
+                rules={[{ required: true, message: "Bắt buộc" }]}
               >
-                <Select
-                  options={PAYMENT_METHOD_OPTION}
-                  disabled={paymentType !== "PAY_NOW"}
-                  placeholder={
-                    paymentType === "PAY_NOW"
-                      ? "Chọn phương thức thanh toán"
-                      : "Chỉ áp dụng khi trả ngay"
-                  }
-                />
+                <Select options={PAYMENT_METHOD_OPTION} />
               </Form.Item>
             </Col>
             <Col span={12}>

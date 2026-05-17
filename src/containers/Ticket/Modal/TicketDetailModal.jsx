@@ -50,7 +50,7 @@ const TicketDetailModal = ({ open, onClose, ticket }) => {
           Đóng
         </Button>,
       ]}
-      width={750}
+      width={760}
       centered
       styles={{
         header: {
@@ -67,7 +67,7 @@ const TicketDetailModal = ({ open, onClose, ticket }) => {
           size="middle"
           labelStyle={{
             fontWeight: "600",
-            width: "160px",
+            width: "180px",
             background: "#f9f9f9",
           }}
           contentStyle={{ background: "#fff" }}
@@ -129,11 +129,18 @@ const TicketDetailModal = ({ open, onClose, ticket }) => {
             {ticket.passengerPhone}
           </Descriptions.Item>
 
+          <Descriptions.Item label="Ghi chú khách hàng" span={2}>
+            {ticket.passengerNote || "-"}
+          </Descriptions.Item>
+
           <Descriptions.Item label="Người bán" span={1}>
             {ticket.ticketSoldBy}
           </Descriptions.Item>
           <Descriptions.Item label="Thời gian bán" span={1}>
             {ticket.ticketSoldAt ? formatDateTime(ticket.ticketSoldAt) : "-"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Ghi chú vé" span={2}>
+            {ticket.ticketNote || "-"}
           </Descriptions.Item>
         </Descriptions>
       </div>

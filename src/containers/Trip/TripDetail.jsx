@@ -5,7 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { VietBusTheme } from "../../constants/VietBusTheme";
 import { Button, Card, Divider, Dropdown, Spin, Table } from "antd";
 
-import { getTripById, getTripHistoryByTripId } from "../../services/TripService";
+import {
+  getTripById,
+  getTripHistoryByTripId,
+} from "../../services/TripService";
 import {
   countTripSeatSoldByTripId,
   getAllTripSeatByTripId,
@@ -28,6 +31,7 @@ import SeatMap34 from "../Vehicle/Seat/SeatMap34.jsx";
 import AddTicketModal from "../Ticket/Modal/AddTicketModal.jsx";
 import SeatMap24 from "../Vehicle/Seat/SeatMap24.jsx";
 import { getAllTicketsByTripId } from "../../services/TicketService.js";
+import TicketDetailModal from "../Ticket/Modal/TicketDetailModal.jsx";
 import TripHistoryModal from "./Modal/TripHistoryModal.jsx";
 import { formatDateTime } from "../../utils/Utils.js";
 
@@ -40,6 +44,8 @@ const TripDetail = () => {
   const [openAddTicketModal, setOpenAddTicketModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [openHistoryModal, setOpenHistoryModal] = useState(false);
+  const [openTicketDetailModal, setOpenTicketDetailModal] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   const [trip, setTrip] = useState(null);
   const [listTripSeat, setListTripSeat] = useState([]);
@@ -232,8 +238,8 @@ const TripDetail = () => {
       },
       {
         title: "Ghi chú",
-        dataIndex: "note",
-        key: "note",
+        dataIndex: "ticketNote",
+        key: "ticketNote",
         ellipsis: true,
         align: "center",
       },
@@ -445,6 +451,15 @@ const TripDetail = () => {
               pagination={false}
               scroll={{ y: 468 }}
               size="middle"
+              onRow={(record) => {
+                return {
+                  onClick: () => {
+                    setSelectedTicket(record);
+                    setOpenTicketDetailModal(true);
+                  },
+                  style: { cursor: "pointer" },
+                };
+              }}
             />
           </Card>
         </div>
@@ -475,6 +490,15 @@ const TripDetail = () => {
         open={openHistoryModal}
         onClose={() => setOpenHistoryModal(false)}
         tripId={tripId}
+      />
+      {/* TICKET DETAIL Modal */}
+      <TicketDetailModal
+        open={openTicketDetailModal}
+        onClose={() => {
+          setOpenTicketDetailModal(false);
+          setSelectedTicket(null);
+        }}
+        ticket={selectedTicket}
       />
     </Spin>
   );
