@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getAllTicketsUnpaid } from "../../services/TicketService";
 import { Button, Card, Col, Form, Input, Row, Select, Table } from "antd";
@@ -11,6 +12,7 @@ import UpdatePendingTicketModal from "./Modal/UpdatePendingTicketModal";
 
 const PendingTicket = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [formInstance] = Form.useForm();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -120,11 +122,11 @@ const PendingTicket = () => {
         align: "center",
       },
       {
-        title: "Cập nhật",
+        title: "Thao tác",
         key: "action",
         align: "center",
         render: (_, record) => (
-          <div className="flex justify-evenly">
+          <div className="flex justify-evenly gap-2">
             <i
               className="fa-regular fa-pen-to-square"
               style={{
@@ -136,6 +138,17 @@ const PendingTicket = () => {
                 setSelectedTicket(record);
                 setOpenUpdateModal(true);
               }}
+              title="Cập nhật"
+            />
+            <i
+              className="fa-solid fa-angles-right"
+              style={{
+                color: VietBusTheme.primary,
+                fontSize: 18,
+                cursor: "pointer",
+              }}
+              onClick={() => navigate(`/trip/${record.tripId}`)}
+              title="Xem chuyến xe"
             />
           </div>
         ),

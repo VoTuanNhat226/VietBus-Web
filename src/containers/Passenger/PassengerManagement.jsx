@@ -120,7 +120,7 @@ const PassengerManagement = () => {
       key: "action",
       align: "center",
       render: (_, record) => (
-        <div className="flex justify-evenly">
+        <div className="flex justify-evenly gap-2">
           <i
             className="fa-regular fa-pen-to-square"
             style={{
@@ -132,6 +132,7 @@ const PassengerManagement = () => {
               setSelectedPassenger(record);
               setOpenEditModal(true);
             }}
+            title="Chỉnh sửa"
           />
           {user.role === "ROLE_ADMIN" ? (
             <i
@@ -145,6 +146,7 @@ const PassengerManagement = () => {
                 setSelectedPassenger(record);
                 setOpenDeleteModal(true);
               }}
+              title="Xóa"
             />
           ) : null}
         </div>

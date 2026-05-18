@@ -149,14 +149,9 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
       className="rounded-xl overflow-hidden"
     >
       <Spin spinning={isLoading}>
-        <Form
-          layout="vertical"
-          form={form}
-          disabled={isLoading}
-          className="mt-4"
-        >
-          {/* Section 1: Thông tin khách hàng & Chỗ ngồi */}
-          <div className="mb-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100 shadow-sm">
+        <Form layout="vertical" form={form} disabled={isLoading}>
+          <div className="mb-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100 shadow-sm">
+            {/* Section 1: Thông tin khách hàng & Chỗ ngồi */}
             <h3 className="text-blue-800 font-semibold mb-3 flex items-center gap-2 text-base">
               <UserOutlined /> Thông tin Khách hàng & Chỗ ngồi
             </h3>
@@ -202,10 +197,7 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
                 </Form.Item>
               </Col>
             </Row>
-          </div>
-
-          {/* Section 2: Thông tin thanh toán */}
-          <div className="mb-3 p-4 bg-blue-50/50 rounded-xl border border-emerald-100 shadow-sm">
+            {/* Section 2: Thông tin thanh toán */}
             <h3 className="text-blue-800 font-semibold mb-3 flex items-center gap-2 text-base">
               <CreditCardOutlined /> Chi tiết Thanh toán
             </h3>
@@ -290,10 +282,7 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
                 </Form.Item>
               </Col>
             </Row>
-          </div>
-
-          {/* Section 3: Ghi chú */}
-          <div className="mb-6 p-4 bg-blue-50/50 rounded-xl border border-gray-200 shadow-sm">
+            {/* Section 3: Ghi chú */}
             <h3 className="text-blue-700 font-semibold mb-3 flex items-center gap-2 text-base">
               <FileTextOutlined /> Ghi chú bổ sung
             </h3>
