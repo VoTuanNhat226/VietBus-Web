@@ -1,4 +1,9 @@
-import { Button, Modal, Table, Tag } from "antd";
+import {
+  CloseOutlined,
+  HistoryOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
+import { Button, Divider, Modal, Table } from "antd";
 import { useEffect, useState } from "react";
 import { getTripHistoryByTripId } from "../../../services/TripService";
 import { formatDateTime } from "../../../utils/Utils";
@@ -56,34 +61,63 @@ const TripHistoryModal = ({ open, onClose, tripId }) => {
       align: "center",
       render: (status) => {
         const option = STATUS_TRIP_OPTIONS.find((opt) => opt.value === status);
-        return <div>{option?.label || status}</div>;
+        return <div className="font-medium">{option?.label || status}</div>;
       },
     },
   ];
 
+  const modalTitle = (
+    <div className="flex items-center gap-3 pb-3">
+      <div
+        className="flex items-center justify-center w-10 h-10 rounded-full"
+        style={{
+          backgroundColor: `${VietBusTheme.primary}15`,
+          color: VietBusTheme.primary,
+        }}
+      >
+        <HistoryOutlined className="text-xl" />
+      </div>
+      <span className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+        Lịch sử cập nhật trạng thái
+      </span>
+    </div>
+  );
+
   return (
     <Modal
-      title={
-        <div style={{ color: VietBusTheme.primary, fontSize: "20px" }}>
-          LỊCH SỬ CẬP NHẬT TRẠNG THÁI CHUYẾN XE
-        </div>
-      }
+      title={modalTitle}
       open={open}
       onCancel={onClose}
-      footer={[
-        <Button key="close" onClick={onClose}>
-          Đóng
-        </Button>,
-      ]}
+      footer={null}
       width={800}
+      centered
+      className="rounded-xl overflow-hidden"
+      closeIcon={
+        <div className="bg-gray-100 hover:bg-gray-200 p-1.5 rounded-full transition-colors flex items-center justify-center">
+          <CloseOutlined className="text-gray-500 text-sm" />
+        </div>
+      }
+      destroyOnClose
     >
-      <Table
-        loading={isLoading}
-        dataSource={historyData}
-        columns={columns}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <div className="mb-4 p-4 rounded-xl border shadow-sm bg-blue-50/50 border-blue-100">
+        <Table
+          loading={isLoading}
+          dataSource={historyData}
+          columns={columns}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+        />
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <Button
+          size="large"
+          className="px-6 rounded-lg font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-gray-300"
+          onClick={onClose}
+        >
+          Đóng
+        </Button>
+      </div>
     </Modal>
   );
 };

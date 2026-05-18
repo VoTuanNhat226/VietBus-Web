@@ -9,7 +9,15 @@ import {
   Row,
   Select,
   Spin,
+  Divider,
 } from "antd";
+import {
+  UserOutlined,
+  CreditCardOutlined,
+  FileTextOutlined,
+  TagsOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getListTripSeatAvailableByTripId } from "../../../services/TripSeatService";
 import TextArea from "antd/es/input/TextArea";
@@ -110,106 +118,223 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
 
   return (
     <Modal
-      title="TẠO VÉ"
+      title={
+        <div className="flex items-center gap-2 pb-3">
+          <div
+            className="flex items-center justify-center w-8 h-8 rounded-full"
+            style={{ backgroundColor: `${VietBusTheme.primary}20` }}
+          >
+            <TagsOutlined
+              style={{ color: VietBusTheme.primary, fontSize: "16px" }}
+            />
+          </div>
+          <span className="text-lg font-bold text-gray-800 tracking-wide">
+            TẠO VÉ MỚI
+          </span>
+        </div>
+      }
       open={open}
       onCancel={() => {
         form.resetFields();
         onClose();
       }}
       footer={null}
-      width={750}
+      width={780}
+      centered
+      closeIcon={
+        <div className="bg-gray-100 hover:bg-gray-200 p-1.5 rounded-full transition-colors flex items-center justify-center">
+          <CloseOutlined className="text-gray-500 text-sm" />
+        </div>
+      }
+      className="rounded-xl overflow-hidden"
     >
       <Spin spinning={isLoading}>
-        <Form layout="vertical" form={form} disabled={isLoading}>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="passengerId" label="Khách hàng">
-                <Select
-                  showSearch
-                  optionFilterProp="label"
-                  options={listPassenger}
-                  placeholder="Chọn khách hàng"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="tripSeatId"
-                label="Giường"
-                rules={[{ required: true, message: "Bắt buộc" }]}
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="label"
-                  options={listTripSeatCanSell}
-                  placeholder="Chọn giường"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="tripPrice" label="Giá niêm yết">
-                <Input disabled={true} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="ticketPrice"
-                label="Giá vé"
-                rules={[{ required: true, message: "Bắt buộc" }]}
-              >
-                <Input placeholder="Nhập giá vé" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="paymentMethod"
-                label="Phương thức thanh toán"
-                rules={[{ required: true, message: "Bắt buộc" }]}
-              >
-                <Select options={PAYMENT_METHOD_OPTION} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="paymentType"
-                label="Hình thức thanh toán"
-                rules={[{ required: true, message: "Bắt buộc" }]}
-              >
-                <Radio.Group>
-                  <Radio value="PAY_NOW">Trả ngay</Radio>
-                  <Radio value="PAY_LATER">Trả sau</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="note" label="Ghi chú">
-                <TextArea
-                  rows={4}
-                  placeholder="Nhập ghi chú..."
-                  showCount
-                  maxLength={500}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <div className="flex justify-end gap-2">
+        <Form
+          layout="vertical"
+          form={form}
+          disabled={isLoading}
+          className="mt-4"
+        >
+          {/* Section 1: Thông tin khách hàng & Chỗ ngồi */}
+          <div className="mb-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100 shadow-sm">
+            <h3 className="text-blue-800 font-semibold mb-3 flex items-center gap-2 text-base">
+              <UserOutlined /> Thông tin Khách hàng & Chỗ ngồi
+            </h3>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  name="passengerId"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Khách hàng
+                    </span>
+                  }
+                >
+                  <Select
+                    showSearch
+                    optionFilterProp="label"
+                    options={listPassenger}
+                    placeholder="Chọn khách hàng"
+                    size="large"
+                    className="rounded-md"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="tripSeatId"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Giường / Ghế
+                    </span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng chọn chỗ ngồi!" },
+                  ]}
+                >
+                  <Select
+                    showSearch
+                    optionFilterProp="label"
+                    options={listTripSeatCanSell}
+                    placeholder="Chọn giường/ghế"
+                    size="large"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          {/* Section 2: Thông tin thanh toán */}
+          <div className="mb-3 p-4 bg-blue-50/50 rounded-xl border border-emerald-100 shadow-sm">
+            <h3 className="text-blue-800 font-semibold mb-3 flex items-center gap-2 text-base">
+              <CreditCardOutlined /> Chi tiết Thanh toán
+            </h3>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  name="tripPrice"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Giá niêm yết
+                    </span>
+                  }
+                >
+                  <Input
+                    disabled={true}
+                    size="large"
+                    className="bg-gray-100 text-gray-500 font-semibold"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="ticketPrice"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Giá bán thực tế
+                    </span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng nhập giá bán!" },
+                  ]}
+                >
+                  <Input
+                    placeholder="Nhập giá vé bán ra"
+                    size="large"
+                    className="font-semibold text-emerald-600"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="paymentType"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Hình thức thanh toán
+                    </span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng chọn hình thức!" },
+                  ]}
+                >
+                  <Radio.Group className="flex gap-4">
+                    <Radio value="PAY_NOW" className="font-medium">
+                      Trả ngay
+                    </Radio>
+                    <Radio value="PAY_LATER" className="font-medium">
+                      Trả sau
+                    </Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="paymentMethod"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Phương thức thanh toán
+                    </span>
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn phương thức!",
+                    },
+                  ]}
+                >
+                  <Select
+                    options={PAYMENT_METHOD_OPTION}
+                    placeholder="Chọn phương thức"
+                    size="large"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          {/* Section 3: Ghi chú */}
+          <div className="mb-6 p-4 bg-blue-50/50 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-blue-700 font-semibold mb-3 flex items-center gap-2 text-base">
+              <FileTextOutlined /> Ghi chú bổ sung
+            </h3>
+            <Row gutter={24}>
+              <Col span={24}>
+                <Form.Item name="note" className="mb-0">
+                  <TextArea
+                    rows={3}
+                    placeholder="Nhập bất kỳ ghi chú nào cho vé này..."
+                    showCount
+                    maxLength={500}
+                    className="rounded-lg p-3 text-gray-700"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          <div className="flex justify-end gap-3 pb-2">
             <Button
+              size="large"
+              className="px-6 rounded-lg font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-gray-300"
               onClick={() => {
                 form.resetFields();
                 onClose();
               }}
             >
-              Hủy
+              Hủy Bỏ
             </Button>
             <Button
               type="primary"
+              size="large"
+              className="px-8 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
               style={{
                 backgroundColor: VietBusTheme.primary,
+                borderColor: VietBusTheme.primary,
                 color: VietBusTheme.white,
               }}
               onClick={handleSubmit}
             >
-              Tạo
+              Tạo Vé
             </Button>
           </div>
         </Form>

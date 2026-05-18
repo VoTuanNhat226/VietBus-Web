@@ -1,4 +1,19 @@
-import { Button, Col, Form, message, Modal, Row, Select, Spin } from "antd";
+import {
+  CloseOutlined,
+  EditOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  Divider,
+  Form,
+  message,
+  Modal,
+  Row,
+  Select,
+  Spin,
+} from "antd";
 import { useEffect, useState } from "react";
 
 import { STATUS_TRIP_OPTIONS } from "../../../constants/Constants";
@@ -16,16 +31,7 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
         status: trip?.status,
       });
     }
-  }, [trip, open]);
-
-  // Chỉ cho phép chọn trạng thái từ hiện tại trở đi (không được chọn ngược lại)
-  // const allowedStatusOptions = useMemo(() => {
-  //   const currentIndex = STATUS_TRIP_OPTIONS.findIndex(
-  //     (opt) => opt.value === trip?.status,
-  //   );
-  //   if (currentIndex === -1) return STATUS_TRIP_OPTIONS;
-  //   return STATUS_TRIP_OPTIONS.slice(currentIndex);
-  // }, [trip?.status]);
+  }, [trip, open, form]);
 
   const allowedStatusOptions = STATUS_TRIP_OPTIONS;
 
@@ -54,35 +60,83 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
     }
   };
 
+  const modalTitle = (
+    <div className="flex items-center gap-3 pb-3">
+      <div
+        className="flex items-center justify-center w-10 h-10 rounded-full"
+        style={{
+          backgroundColor: `${VietBusTheme.primary}15`,
+          color: VietBusTheme.primary,
+        }}
+      >
+        <EditOutlined className="text-xl" />
+      </div>
+      <span className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+        Cập nhật chuyến xe
+      </span>
+    </div>
+  );
+
   return (
     <Modal
-      title="CẬP NHẬT CHUYẾN XE"
+      title={modalTitle}
       open={open}
       onCancel={onClose}
       footer={null}
-      width={400}
+      width={700}
+      centered
+      className="rounded-xl overflow-hidden"
+      closeIcon={
+        <div className="bg-gray-100 hover:bg-gray-200 p-1.5 rounded-full transition-colors flex items-center justify-center">
+          <CloseOutlined className="text-gray-500 text-sm" />
+        </div>
+      }
       destroyOnClose
     >
       <Spin spinning={isLoading}>
         <Form layout="vertical" form={form}>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item
-                name="status"
-                label="Trạng thái"
-                rules={[{ required: true }]}
-              >
-                <Select options={allowedStatusOptions} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <div className="flex justify-end gap-2">
-            <Button onClick={onClose}>Đóng</Button>
+          <div className="mb-4 p-4 rounded-xl border shadow-sm bg-blue-50/50 border-blue-100">
+            <h3 className="text-base font-semibold mb-3 text-blue-700 flex items-center gap-2">
+              <InfoCircleOutlined /> Thông tin trạng thái
+            </h3>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item
+                  name="status"
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Trạng thái chuyến xe
+                    </span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng chọn trạng thái!" },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={allowedStatusOptions}
+                    placeholder="Chọn trạng thái"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button
+              size="large"
+              className="px-6 rounded-lg font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-gray-300"
+              onClick={onClose}
+            >
+              Hủy bỏ
+            </Button>
             <Button
               type="primary"
+              size="large"
+              className="px-8 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
               style={{
                 backgroundColor: VietBusTheme.primary,
-                color: VietBusTheme.white,
+                borderColor: VietBusTheme.primary,
               }}
               onClick={handleSubmit}
               loading={isLoading}

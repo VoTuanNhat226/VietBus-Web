@@ -1,4 +1,14 @@
-import { Button, Col, Form, Input, message, Modal, Row, Select, Spin } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Spin,
+} from "antd";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import { useEffect, useState } from "react";
 import {
@@ -18,6 +28,7 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
         ticketCode: ticket?.ticketCode,
         tripCode: ticket?.tripCode,
         ticketStatus: ticket?.ticketStatus,
+        paymentMethod: ticket?.ticketPaymentMethod,
       });
     }
   }, [ticket, open, form]);
@@ -84,42 +95,8 @@ const UpdatePendingTicketModal = ({ ticket, open, onClose, onSuccess }) => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                shouldUpdate={(prev, cur) =>
-                  prev.ticketStatus !== cur.ticketStatus
-                }
-                noStyle
-              >
-                {({ getFieldValue }) => {
-                  const isPaid = getFieldValue("ticketStatus") === "PAID";
-
-                  return (
-                    <Form.Item
-                      label="Phương thức thanh toán"
-                      name="paymentMethod"
-                      rules={
-                        isPaid
-                          ? [
-                              {
-                                required: true,
-                                message: "Vui lòng chọn phương thức thanh toán",
-                              },
-                            ]
-                          : []
-                      }
-                    >
-                      <Select
-                        options={PAYMENT_METHOD_OPTION}
-                        disabled={!isPaid}
-                        placeholder={
-                          isPaid
-                            ? "Chọn phương thức thanh toán"
-                            : "Chỉ chọn khi vé đã thanh toán"
-                        }
-                      />
-                    </Form.Item>
-                  );
-                }}
+              <Form.Item label="Phương thức thanh toán" name="paymentMethod">
+                <Select options={PAYMENT_METHOD_OPTION} disabled />
               </Form.Item>
             </Col>
           </Row>
