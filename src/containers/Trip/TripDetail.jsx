@@ -46,6 +46,7 @@ const TripDetail = () => {
   const [openHistoryModal, setOpenHistoryModal] = useState(false);
   const [openTicketDetailModal, setOpenTicketDetailModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [selectedSeatForAdd, setSelectedSeatForAdd] = useState(null);
 
   const [trip, setTrip] = useState(null);
   const [listTripSeat, setListTripSeat] = useState([]);
@@ -150,18 +151,54 @@ const TripDetail = () => {
     STATUS_TRIP_OPTIONS.find((opt) => opt.value === trip?.status)?.label ||
     trip?.status;
 
+  const handleSeatClick = (seatNumber, status) => {
+    if (status === "AVAILABLE") {
+      const tripSeat = listTripSeat.find(
+        (ts) => ts.seat.seatNumber === seatNumber,
+      );
+      if (tripSeat) {
+        setSelectedSeatForAdd(tripSeat.id);
+      }
+      setOpenAddTicketModal(true);
+    } else if (status === "HOLD" || status === "SOLD") {
+      const ticket = listTickets.find((t) => t.seatNumber === seatNumber);
+      if (ticket) {
+        setSelectedTicket(ticket);
+        setOpenTicketDetailModal(true);
+      }
+    }
+  };
+
   const renderSeatMap = useMemo(() => {
     switch (trip?.totalSeat) {
       case 40:
-        return <SeatMap40 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
+        return (
+          <SeatMap40
+            listTripSeat={listTripSeat}
+            title="TÌNH TRẠNG VÉ"
+            onSeatClick={handleSeatClick}
+          />
+        );
       case 34:
-        return <SeatMap34 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
+        return (
+          <SeatMap34
+            listTripSeat={listTripSeat}
+            title="TÌNH TRẠNG VÉ"
+            onSeatClick={handleSeatClick}
+          />
+        );
       case 24:
-        return <SeatMap24 listTripSeat={listTripSeat} title="TÌNH TRẠNG VÉ" />;
+        return (
+          <SeatMap24
+            listTripSeat={listTripSeat}
+            title="TÌNH TRẠNG VÉ"
+            onSeatClick={handleSeatClick}
+          />
+        );
       default:
         return null;
     }
-  }, [trip?.totalSeat, listTripSeat]);
+  }, [trip?.totalSeat, listTripSeat, listTickets]);
 
   const columns = useMemo(
     () => [
@@ -468,9 +505,13 @@ const TripDetail = () => {
       {openAddTicketModal && (
         <AddTicketModal
           open={openAddTicketModal}
-          onClose={() => setOpenAddTicketModal(false)}
+          onClose={() => {
+            setOpenAddTicketModal(false);
+            setSelectedSeatForAdd(null);
+          }}
           trip={trip}
           fetchTripById={fetchData}
+          initialSeatId={selectedSeatForAdd}
         />
       )}
       {/* UPDATE Modal */}

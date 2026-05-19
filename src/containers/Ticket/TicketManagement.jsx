@@ -13,6 +13,7 @@ import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { useNavigate } from "react-router-dom";
 import AddTicketModal from "./Modal/AddTicketModal";
 import TicketDetailModal from "./Modal/TicketDetailModal";
+import { DoubleRightOutlined, EyeOutlined } from "@ant-design/icons";
 
 const TicketManagement = () => {
   const { user } = useAuth();
@@ -158,8 +159,7 @@ const TicketManagement = () => {
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly gap-2">
-            <i
-              className="fa-solid fa-eye"
+            <EyeOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
@@ -171,8 +171,7 @@ const TicketManagement = () => {
               }}
               title="Xem chi tiết"
             />
-            <i
-              className="fa-solid fa-angles-right"
+            <DoubleRightOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,

@@ -19,6 +19,7 @@ import { getAllStation } from "../../services/StationService";
 import AddRouteModal from "./Modal/AddRouteModal";
 import UpdateRouteModal from "./Modal/UpdateRouteModal";
 import { formatDateTime } from "../../utils/Utils.js";
+import { EditOutlined } from "@ant-design/icons";
 
 const RouteManagement = () => {
   const { user } = useAuth();
@@ -139,18 +140,18 @@ const RouteManagement = () => {
         render: (value) => (value ? formatDateTime(value) : ""),
       },
       {
-        title: "Chỉnh sửa",
+        title: "Thao tác",
         key: "action",
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly">
-            <i
-              className="fa-regular fa-pen-to-square"
+            <EditOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
                 cursor: "pointer",
               }}
+              title="Cập nhật"
               onClick={() => {
                 setSelectedRoute(record);
                 setOpenUpdateModal(true);

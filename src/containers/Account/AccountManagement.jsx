@@ -7,6 +7,7 @@ import AddAccountModal from "./Modal/AddAccountModal";
 import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Constants.js";
 import UpdateAccountModal from "./Modal/UpdateAccountModal";
 import { formatDateTime } from "../../utils/Utils.js";
+import { EditOutlined } from "@ant-design/icons";
 
 const AccountManagement = () => {
   const { user } = useAuth();
@@ -113,18 +114,18 @@ const AccountManagement = () => {
         render: (value) => (value ? formatDateTime(value) : ""),
       },
       {
-        title: "Hành động",
+        title: "Thao tác",
         key: "action",
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly">
-            <i
-              className="fa-regular fa-pen-to-square"
+            <EditOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
                 cursor: "pointer",
               }}
+              title="Cập nhật"
               onClick={() => {
                 setSelectedAccount(record);
                 setOpenUpdateModal(true);

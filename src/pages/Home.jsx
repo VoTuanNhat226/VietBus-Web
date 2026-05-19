@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
@@ -39,6 +40,7 @@ const { Title, Text } = Typography;
 
 const Home = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [statistics, setStatistics] = useState({
     revenue: 0,
@@ -279,10 +281,10 @@ const Home = () => {
                         {item.trend}
                       </Tag>
                       {item.title !== "Vé chưa thanh toán" && (
-                          <Text className="text-[12px] text-gray-400 ml-1">
-                            tháng này
-                          </Text>
-                        )}
+                        <Text className="text-[12px] text-gray-400 ml-1">
+                          tháng này
+                        </Text>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -307,7 +309,10 @@ const Home = () => {
               <List
                 dataSource={tripDeparted}
                 renderItem={(item) => (
-                  <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
+                  <div
+                    className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer"
+                    onClick={() => navigate(`/trip/${item.tripId}`)}
+                  >
                     <div className="flex justify-between items-start mb-2">
                       <Text strong className="text-base">
                         {item.fromStation} - {item.toStation}
@@ -400,7 +405,10 @@ const Home = () => {
               <List
                 dataSource={tripSelling}
                 renderItem={(item) => (
-                  <div className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer">
+                  <div
+                    className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer"
+                    onClick={() => navigate(`/trip/${item.tripId}`)}
+                  >
                     <div className="flex justify-between items-start mb-2">
                       <Text strong className="text-base">
                         {item.fromStation} - {item.toStation}

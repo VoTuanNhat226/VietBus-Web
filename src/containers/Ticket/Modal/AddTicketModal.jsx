@@ -27,7 +27,14 @@ import { PAYMENT_METHOD_OPTION } from "../../../constants/Constants";
 import { createTicket } from "../../../services/TicketService";
 import { getAllPassenger } from "../../../services/PassengerService";
 
-const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
+const AddTicketModal = ({
+  open,
+  onClose,
+  onSuccess,
+  trip,
+  fetchTripById,
+  initialSeatId,
+}) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,6 +49,10 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
       tripId: trip?.tripId,
       tripPrice: formatVND(trip?.price),
     });
+
+    if (initialSeatId) {
+      form.setFieldValue("tripSeatId", initialSeatId);
+    }
 
     const fetchData = async () => {
       try {
@@ -82,7 +93,7 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
     };
 
     fetchData();
-  }, [trip?.tripId]);
+  }, [trip?.tripId, initialSeatId, form]);
 
   const handleSubmit = async () => {
     try {
@@ -108,13 +119,6 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
       setIsLoading(false);
     }
   };
-
-  const paymentType = Form.useWatch("paymentType", form);
-  useEffect(() => {
-    if (paymentType !== "PAY_NOW") {
-      form.setFieldValue("paymentMethod", undefined);
-    }
-  }, [paymentType]);
 
   return (
     <Modal
@@ -193,6 +197,7 @@ const AddTicketModal = ({ open, onClose, onSuccess, trip, fetchTripById }) => {
                     options={listTripSeatCanSell}
                     placeholder="Chọn giường/ghế"
                     size="large"
+                    disabled={!!initialSeatId}
                   />
                 </Form.Item>
               </Col>

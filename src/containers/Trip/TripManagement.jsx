@@ -10,6 +10,7 @@ import { getAllVehicle } from "../../services/VehicleService.js";
 import { STATUS_TRIP_OPTIONS } from "../../constants/Constants.js";
 import { useNavigate } from "react-router-dom";
 import { formatDateTime } from "../../utils/Utils.js";
+import { DoubleRightOutlined } from "@ant-design/icons";
 
 const TripManagement = () => {
   const { user } = useAuth();
@@ -168,14 +169,14 @@ const TripManagement = () => {
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly">
-            <i
-              className="fa-solid fa-angles-right"
+            <DoubleRightOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
                 cursor: "pointer",
               }}
               onClick={() => navigate(`/trip/${record.tripId}`)}
+              title="Chi tiết"
             />
           </div>
         ),

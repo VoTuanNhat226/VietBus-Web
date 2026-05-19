@@ -16,17 +16,19 @@ import DeletePassengerModal from "./Modal/DeletePassengerModal.jsx";
 import EditPassengerModal from "./Modal/EditPassengerModal.jsx";
 import CreatePassengerModal from "./Modal/CreatePassengerModal.jsx";
 import { searchPassenger } from "../../services/PassengerService.js";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const PassengerManagement = () => {
-  const [formInstance] = Form.useForm();
   const { user } = useAuth();
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [selectedPassenger, setSelectedPassenger] = useState(null);
-  const [openEditModal, setOpenEditModal] = useState(false);
+  const [formInstance] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const [passengers, setPassengers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [selectedPassenger, setSelectedPassenger] = useState(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -116,13 +118,12 @@ const PassengerManagement = () => {
       align: "center",
     },
     {
-      title: "Hành động",
+      title: "Thao tác",
       key: "action",
       align: "center",
       render: (_, record) => (
         <div className="flex justify-evenly gap-2">
-          <i
-            className="fa-regular fa-pen-to-square"
+          <EditOutlined
             style={{
               color: VietBusTheme.primary,
               fontSize: 18,
@@ -132,11 +133,10 @@ const PassengerManagement = () => {
               setSelectedPassenger(record);
               setOpenEditModal(true);
             }}
-            title="Chỉnh sửa"
+            title="Cập nhật"
           />
           {user.role === "ROLE_ADMIN" ? (
-            <i
-              className="fa-regular fa-trash-can"
+            <DeleteOutlined
               style={{
                 color: VietBusTheme.error,
                 fontSize: 18,

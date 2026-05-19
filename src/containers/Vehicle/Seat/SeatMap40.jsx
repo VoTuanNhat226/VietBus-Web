@@ -2,7 +2,7 @@ import Seat from "./Seat";
 import {VietBusTheme} from "../../../constants/VietBusTheme";
 import {useMemo} from "react";
 
-const SeatMap40 = ({listTripSeat = [], title}) => {
+const SeatMap40 = ({listTripSeat = [], title, onSeatClick}) => {
     // map nhanh để lookup
     const seatStatusMap = useMemo(() => {
         const map = {};
@@ -13,7 +13,12 @@ const SeatMap40 = ({listTripSeat = [], title}) => {
     }, [listTripSeat]);
 
     const renderSeat = (code) => (
-        <Seat key={code} code={code} status={seatStatusMap[code] || "AVAILABLE"}/>
+        <Seat 
+            key={code} 
+            code={code} 
+            status={seatStatusMap[code] || "AVAILABLE"}
+            onClick={onSeatClick}
+        />
     );
 
     return (

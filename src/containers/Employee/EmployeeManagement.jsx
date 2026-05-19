@@ -22,6 +22,7 @@ import UpdateEmployeeModal from "./Modal/UpdateEmployeeModal.jsx";
 import { ACTIVE_OPTIONS, ROLE_OPTIONS } from "../../constants/Constants.js";
 import { usePageTitle } from "../../context/PageTitleContext.jsx";
 import { formatDateTime } from "../../utils/Utils.js";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const EmployeeManagement = () => {
   const { user } = useAuth();
@@ -147,31 +148,31 @@ const EmployeeManagement = () => {
         render: (value) => (value ? formatDateTime(value) : ""),
       },
       {
-        title: "Hành động",
+        title: "Thao tác",
         key: "action",
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly">
-            <i
-              className="fa-regular fa-pen-to-square"
+            <EditOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
                 cursor: "pointer",
               }}
+              title="Cập nhật"
               onClick={() => {
                 setSelectedEmployee(record);
                 setOpenUpdateModal(true);
               }}
             />
             {user.role === "ROLE_ADMIN" ? (
-              <i
-                className="fa-regular fa-trash-can"
+              <DeleteOutlined
                 style={{
                   color: VietBusTheme.error,
                   fontSize: 18,
                   cursor: "pointer",
                 }}
+                title="Xóa"
                 onClick={() => {
                   setSelectedEmployee(record);
                   setOpenDeleteModal(true);

@@ -9,6 +9,7 @@ import {
 } from "../../constants/Constants";
 import { VietBusTheme } from "../../constants/VietBusTheme";
 import UpdatePendingTicketModal from "./Modal/UpdatePendingTicketModal";
+import { DoubleRightOutlined, EditOutlined } from "@ant-design/icons";
 
 const PendingTicket = () => {
   const { user } = useAuth();
@@ -127,8 +128,7 @@ const PendingTicket = () => {
         align: "center",
         render: (_, record) => (
           <div className="flex justify-evenly gap-2">
-            <i
-              className="fa-regular fa-pen-to-square"
+            <EditOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
@@ -140,8 +140,7 @@ const PendingTicket = () => {
               }}
               title="Cập nhật"
             />
-            <i
-              className="fa-solid fa-angles-right"
+            <DoubleRightOutlined
               style={{
                 color: VietBusTheme.primary,
                 fontSize: 18,
