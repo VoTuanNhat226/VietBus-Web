@@ -97,7 +97,7 @@ const UpdateTripModal = ({ trip, open, onClose, onSuccess }) => {
         <Form layout="vertical" form={form}>
           <div className="mb-4 p-4 rounded-xl border shadow-sm bg-blue-50/50 border-blue-100">
             <h3 className="text-base font-semibold mb-3 text-blue-700 flex items-center gap-2">
-              <InfoCircleOutlined /> Thông tin trạng thái
+              <InfoCircleOutlined /> Thông tin
             </h3>
             <Row gutter={16}>
               <Col span={24}>

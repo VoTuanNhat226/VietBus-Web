@@ -540,6 +540,8 @@ const TripDetail = () => {
           setSelectedTicket(null);
         }}
         ticket={selectedTicket}
+        tripStatus={trip?.status}
+        onSuccess={fetchData}
       />
     </Spin>
   );

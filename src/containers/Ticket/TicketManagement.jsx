@@ -304,6 +304,8 @@ const TicketManagement = () => {
             setSelectedTicket(null);
           }}
           ticket={selectedTicket}
+          tripStatus={listTrip.find((t) => t.tripId === selectedTicket?.tripId)?.status}
+          onSuccess={() => fetchTickets()}
         />
       )}
     </>

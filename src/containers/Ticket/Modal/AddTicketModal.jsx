@@ -236,9 +236,9 @@ const AddTicketModal = ({
                   ]}
                 >
                   <Input
-                    placeholder="Nhập giá vé bán ra"
+                    placeholder="Nhập giá bán"
                     size="large"
-                    className="font-semibold text-emerald-600"
+                    className="font-semibold"
                   />
                 </Form.Item>
               </Col>
