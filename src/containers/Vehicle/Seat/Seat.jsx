@@ -7,6 +7,8 @@ const Seat = ({ code, status, onClick }) => {
         return "text-green-600";
       case "HOLD":
         return "text-red-500";
+      case "SELECTED":
+        return "text-blue-500";
       default:
         return "text-gray-400";
     }

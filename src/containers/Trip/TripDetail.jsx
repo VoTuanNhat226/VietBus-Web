@@ -46,7 +46,8 @@ const TripDetail = () => {
   const [openHistoryModal, setOpenHistoryModal] = useState(false);
   const [openTicketDetailModal, setOpenTicketDetailModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [selectedSeatForAdd, setSelectedSeatForAdd] = useState(null);
+  const [selectedSeatNumbers, setSelectedSeatNumbers] = useState([]);
+  const [selectedTripSeatIds, setSelectedTripSeatIds] = useState([]);
 
   const [trip, setTrip] = useState(null);
   const [listTripSeat, setListTripSeat] = useState([]);
@@ -152,14 +153,23 @@ const TripDetail = () => {
     trip?.status;
 
   const handleSeatClick = (seatNumber, status) => {
-    if (status === "AVAILABLE") {
+    if (status === "AVAILABLE" || status === "SELECTED") {
       const tripSeat = listTripSeat.find(
         (ts) => ts.seat.seatNumber === seatNumber,
       );
       if (tripSeat) {
-        setSelectedSeatForAdd(tripSeat.id);
+        if (selectedSeatNumbers.includes(seatNumber)) {
+          setSelectedSeatNumbers((prev) =>
+            prev.filter((s) => s !== seatNumber),
+          );
+          setSelectedTripSeatIds((prev) =>
+            prev.filter((id) => id !== tripSeat.id),
+          );
+        } else {
+          setSelectedSeatNumbers((prev) => [...prev, seatNumber]);
+          setSelectedTripSeatIds((prev) => [...prev, tripSeat.id]);
+        }
       }
-      setOpenAddTicketModal(true);
     } else if (status === "HOLD" || status === "SOLD") {
       const ticket = listTickets.find((t) => t.seatNumber === seatNumber);
       if (ticket) {
@@ -177,6 +187,7 @@ const TripDetail = () => {
             listTripSeat={listTripSeat}
             title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
+            selectedSeats={selectedSeatNumbers}
           />
         );
       case 34:
@@ -185,6 +196,7 @@ const TripDetail = () => {
             listTripSeat={listTripSeat}
             title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
+            selectedSeats={selectedSeatNumbers}
           />
         );
       case 24:
@@ -193,12 +205,13 @@ const TripDetail = () => {
             listTripSeat={listTripSeat}
             title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
+            selectedSeats={selectedSeatNumbers}
           />
         );
       default:
         return null;
     }
-  }, [trip?.totalSeat, listTripSeat, listTickets]);
+  }, [trip?.totalSeat, listTripSeat, listTickets, selectedSeatNumbers]);
 
   const columns = useMemo(
     () => [
@@ -288,12 +301,33 @@ const TripDetail = () => {
     <Spin spinning={isLoading}>
       <div className="flex justify-evenly">
         <div className="w-3/12 mr-5">
-          <Card className="rounded-xl hover:shadow-xl">{renderSeatMap}</Card>
+          <Card className="rounded-xl hover:shadow-xl mb-4">
+            {renderSeatMap}
+            {selectedSeatNumbers.length > 0 && (
+              <div className="mt-4 pt-4 border-t flex flex-col gap-2">
+                <div className="text-center text-sm font-semibold text-gray-600">
+                  Đã chọn: {selectedSeatNumbers.join(", ")}
+                </div>
+                <Button
+                  type="primary"
+                  style={{ backgroundColor: VietBusTheme.primary }}
+                  className="w-full h-10 font-bold"
+                  onClick={() => setOpenAddTicketModal(true)}
+                >
+                  Tạo vé cho {selectedSeatNumbers.length} ghế
+                </Button>
+              </div>
+            )}
+          </Card>
           <Card className="rounded-xl hover:shadow-xl">
             <div className="flex justify-between">
               <div className="flex flex-col justify-center items-center">
                 <CarOutlined className="text-2xl text-gray-400" />
                 <div>Trống</div>
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <CarOutlined className="text-2xl text-blue-500" />
+                <div>Đang chọn</div>
               </div>
               <div className="flex flex-col justify-center items-center">
                 <CarOutlined className="text-2xl text-red-500" />
@@ -507,11 +541,12 @@ const TripDetail = () => {
           open={openAddTicketModal}
           onClose={() => {
             setOpenAddTicketModal(false);
-            setSelectedSeatForAdd(null);
+            setSelectedSeatNumbers([]);
+            setSelectedTripSeatIds([]);
           }}
           trip={trip}
           fetchTripById={fetchData}
-          initialSeatId={selectedSeatForAdd}
+          initialSeatIds={selectedTripSeatIds}
         />
       )}
       {/* UPDATE Modal */}

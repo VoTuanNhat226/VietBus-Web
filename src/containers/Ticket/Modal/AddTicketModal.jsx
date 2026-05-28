@@ -33,7 +33,7 @@ const AddTicketModal = ({
   onSuccess,
   trip,
   fetchTripById,
-  initialSeatId,
+  initialSeatIds,
 }) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,8 +50,8 @@ const AddTicketModal = ({
       tripPrice: formatVND(trip?.price),
     });
 
-    if (initialSeatId) {
-      form.setFieldValue("tripSeatId", initialSeatId);
+    if (initialSeatIds && initialSeatIds.length > 0) {
+      form.setFieldValue("tripSeatIds", initialSeatIds);
     }
 
     const fetchData = async () => {
@@ -93,7 +93,7 @@ const AddTicketModal = ({
     };
 
     fetchData();
-  }, [trip?.tripId, initialSeatId, form]);
+  }, [trip?.tripId, initialSeatIds, form]);
 
   const handleSubmit = async () => {
     try {
@@ -102,7 +102,9 @@ const AddTicketModal = ({
       const payload = {
         tripId: trip?.tripId,
         passengerId: values.passengerId || null,
-        tripSeatId: values.tripSeatId,
+        tripSeatIds: Array.isArray(values.tripSeatIds)
+          ? values.tripSeatIds
+          : [values.tripSeatIds],
         ticketPrice: values.ticketPrice,
         paymentType: values.paymentType,
         paymentMethod: values.paymentMethod,
@@ -181,7 +183,7 @@ const AddTicketModal = ({
               </Col>
               <Col span={12}>
                 <Form.Item
-                  name="tripSeatId"
+                  name="tripSeatIds"
                   label={
                     <span className="font-medium text-gray-600">
                       Giường / Ghế
@@ -192,12 +194,12 @@ const AddTicketModal = ({
                   ]}
                 >
                   <Select
+                    mode="multiple"
                     showSearch
                     optionFilterProp="label"
                     options={listTripSeatCanSell}
                     placeholder="Chọn giường/ghế"
                     size="large"
-                    disabled={!!initialSeatId}
                   />
                 </Form.Item>
               </Col>
