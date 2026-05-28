@@ -55,7 +55,7 @@ const TripHistoryModal = ({ open, onClose, tripId }) => {
       align: "center",
     },
     {
-      title: "Trạng thái mới",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       align: "center",
