@@ -154,6 +154,7 @@ const TripDetail = () => {
 
   const handleSeatClick = (seatNumber, status) => {
     if (status === "AVAILABLE" || status === "SELECTED") {
+      if (trip?.status !== "OPEN_FOR_BOOKING") return;
       const tripSeat = listTripSeat.find(
         (ts) => ts.seat.seatNumber === seatNumber,
       );
@@ -300,47 +301,44 @@ const TripDetail = () => {
   return (
     <Spin spinning={isLoading}>
       <div className="flex justify-evenly">
-        <div className="w-3/12 mr-5">
+        <div className="w-2/12 mr-5">
           <Card className="rounded-xl hover:shadow-xl mb-4">
             {renderSeatMap}
-            {selectedSeatNumbers.length > 0 && (
-              <div className="mt-4 pt-4 border-t flex flex-col gap-2">
-                <div className="text-center text-sm font-semibold text-gray-600">
-                  Đã chọn: {selectedSeatNumbers.join(", ")}
+            {trip?.status === "OPEN_FOR_BOOKING" &&
+              selectedSeatNumbers.length > 0 && (
+                <div className="mt-4 pt-4 border-t flex flex-col gap-2">
+                  <div className="text-center text-sm font-semibold text-gray-600">
+                    Đã chọn: {selectedSeatNumbers.join(", ")}
+                  </div>
+                  <Button
+                    type="primary"
+                    style={{ backgroundColor: VietBusTheme.primary }}
+                    className="w-full h-10 font-bold"
+                    onClick={() => setOpenAddTicketModal(true)}
+                  >
+                    Tạo vé cho {selectedSeatNumbers.length} ghế
+                  </Button>
                 </div>
-                <Button
-                  type="primary"
-                  style={{ backgroundColor: VietBusTheme.primary }}
-                  className="w-full h-10 font-bold"
-                  onClick={() => setOpenAddTicketModal(true)}
-                >
-                  Tạo vé cho {selectedSeatNumbers.length} ghế
-                </Button>
-              </div>
-            )}
+              )}
           </Card>
           <Card className="rounded-xl hover:shadow-xl">
             <div className="flex justify-between">
               <div className="flex flex-col justify-center items-center">
-                <CarOutlined className="text-2xl text-gray-400" />
+                <i className="fa-solid fa-couch text-2xl text-gray-400" />
                 <div>Trống</div>
               </div>
               <div className="flex flex-col justify-center items-center">
-                <CarOutlined className="text-2xl text-blue-500" />
+                <i className="fa-solid fa-couch text-2xl text-blue-500" />
                 <div>Đang chọn</div>
               </div>
               <div className="flex flex-col justify-center items-center">
-                <CarOutlined className="text-2xl text-red-500" />
-                <div>Đang giữ</div>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <CarOutlined className="text-2xl text-green-600" />
-                <div>Đã đặt</div>
+                <i className="fa-solid fa-couch text-2xl text-green-600" />
+                <div>Đã bán</div>
               </div>
             </div>
           </Card>
         </div>
-        <div className="w-9/12">
+        <div className="w-10/12">
           <Card className="rounded-xl hover:shadow-xl mb-2">
             <div className="flex justify-between">
               <div className="flex">

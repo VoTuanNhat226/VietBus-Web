@@ -4,9 +4,8 @@ const Seat = ({ code, status, onClick }) => {
   const getColor = () => {
     switch (status) {
       case "SOLD":
-        return "text-green-600";
       case "HOLD":
-        return "text-red-500";
+        return "text-green-600";
       case "SELECTED":
         return "text-blue-500";
       default:
@@ -15,11 +14,11 @@ const Seat = ({ code, status, onClick }) => {
   };
 
   return (
-    <div 
+    <div
       className={`flex flex-col items-center cursor-pointer ${getColor()}`}
       onClick={() => onClick && onClick(code, status)}
     >
-      <CarOutlined className="text-2xl" />
+      <i className="fa-solid fa-couch text-2xl" />
       <span className="text-xs mt-1 font-bold">{code}</span>
     </div>
   );

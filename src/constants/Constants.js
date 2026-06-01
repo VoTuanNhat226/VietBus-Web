@@ -37,6 +37,7 @@ export const TRIP_SEAT_STATUS_OPTION = [
 export const TICKET_STATUS_OPTION = [
   { value: "PAID", label: "Đã thanh toán" },
   { value: "UNPAID", label: "Chưa thanh toán" },
+  { value: "CANCELED", label: "Đã hủy" },
 ];
 
 export const PAYMENT_METHOD_OPTION = [
