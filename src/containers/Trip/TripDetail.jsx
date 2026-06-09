@@ -186,7 +186,6 @@ const TripDetail = () => {
         return (
           <SeatMap40
             listTripSeat={listTripSeat}
-            title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
             selectedSeats={selectedSeatNumbers}
           />
@@ -195,7 +194,6 @@ const TripDetail = () => {
         return (
           <SeatMap34
             listTripSeat={listTripSeat}
-            title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
             selectedSeats={selectedSeatNumbers}
           />
@@ -204,7 +202,6 @@ const TripDetail = () => {
         return (
           <SeatMap24
             listTripSeat={listTripSeat}
-            title="TÌNH TRẠNG VÉ"
             onSeatClick={handleSeatClick}
             selectedSeats={selectedSeatNumbers}
           />
@@ -227,7 +224,7 @@ const TripDetail = () => {
         title: "Mã vé",
         dataIndex: "ticketCode",
         key: "ticketCode",
-        width: 120,
+        width: 160,
         align: "center",
       },
       {

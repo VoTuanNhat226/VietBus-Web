@@ -58,6 +58,7 @@ const Home = () => {
   });
 
   const [tripDeparted, setTripDeparted] = useState([]);
+  const [tripToday, setTripToday] = useState([]);
   const [tripSelling, setTripSelling] = useState([]);
   const [totalUnpaidTicket, setTotalUnpaidTicket] = useState(0);
 
@@ -74,6 +75,7 @@ const Home = () => {
           passengerRes,
           tripSellingRes,
           unpaidTicketRes,
+          allTripRes,
         ] = await Promise.all([
           StatisticsService.getRevenueByMonth({ month: currentMonth }),
           StatisticsService.getTotalTicketByMonth({ month: currentMonth }),
@@ -82,6 +84,7 @@ const Home = () => {
           StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
           TripService.getAllTripOpenBooking({}),
           TicketService.getAllTicketsUnpaid({}),
+          TripService.getAllTrip({}),
         ]);
 
         setStatistics((prev) => {
@@ -169,6 +172,28 @@ const Home = () => {
             }),
           );
           setTripSelling(tripsWithSeats);
+        }
+
+        if (allTripRes?.data) {
+          const today = moment().startOf("day");
+          const tripsTodayData = allTripRes.data.filter((trip) =>
+            moment(trip.departureTime).isSame(today, "day"),
+          );
+          const tripsTodayWithSeats = await Promise.all(
+            tripsTodayData.map(async (trip) => {
+              try {
+                const soldRes = await TripSeatService.countTripSeatSoldByTripId(
+                  {
+                    tripId: trip.tripId,
+                  },
+                );
+                return { ...trip, tripSeatSold: soldRes.data };
+              } catch (e) {
+                return trip;
+              }
+            }),
+          );
+          setTripToday(tripsTodayWithSeats);
         }
       } catch (error) {
         console.error("Lấy dữ liệu thống kê thất bại:", error);
@@ -295,7 +320,7 @@ const Home = () => {
 
         <Row gutter={[24, 24]}>
           {/* Active Trips List */}
-          <Col xs={24} xl={12}>
+          <Col xs={24} xl={8}>
             <Card
               title={
                 <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
@@ -390,8 +415,104 @@ const Home = () => {
             </Card>
           </Col>
 
+          {/* Trips Today */}
+          <Col xs={24} xl={8}>
+            <Card
+              title={
+                <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
+                  Chuyến xuất phát trong hôm nay
+                </Title>
+              }
+              bordered={false}
+              className="rounded-3xl shadow-sm"
+              extra={<Tag color="processing">{tripToday.length} chuyến</Tag>}
+            >
+              <List
+                dataSource={tripToday}
+                renderItem={(item) => (
+                  <div
+                    className="mb-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:border-blue-200 hover:bg-white transition-all cursor-pointer"
+                    onClick={() => navigate(`/trip/${item.tripId}`)}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <Text strong className="text-base">
+                        {item.fromStation} - {item.toStation}
+                      </Text>
+                      <div className="flex flex-col items-end">
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.departureTime).format(
+                            "HH:mm DD-MM-YYYY",
+                          )}
+                        </Text>
+                        <Text
+                          style={{ color: "#1890ff" }}
+                          className="font-bold"
+                        >
+                          {moment(item.arrivalTime).format("HH:mm DD-MM-YYYY")}
+                        </Text>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<NumberOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Mã chuyến: {item.tripCode}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Tài xế: {item.driverNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Avatar
+                        size="small"
+                        icon={<UserOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Phụ xe: {item.assistantNames?.join(", ")}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        size="small"
+                        icon={<CarOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Biển số: {item.licensePlate}
+                      </Text>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Avatar
+                        size="small"
+                        icon={<PieChartOutlined style={{ color: "#1890ff" }} />}
+                        className="bg-blue-50"
+                      />
+                      <Text className="text-xs font-medium text-gray-700">
+                        Ghế: {item.tripSeatSold || 0}/{item.totalSeat || 0}
+                      </Text>
+                    </div>
+                  </div>
+                )}
+              />
+            </Card>
+          </Col>
+
           {/* Trips Open for Booking */}
-          <Col xs={24} xl={12}>
+          <Col xs={24} xl={8}>
             <Card
               title={
                 <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
