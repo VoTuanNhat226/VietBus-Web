@@ -19,3 +19,7 @@ export const updateAccount = async (params) => {
   const response = await api.post("/account/update", params);
   return response.data;
 };
+export const changePassword = async (params) => {
+  const response = await api.post("/account/change-password", params);
+  return response.data;
+};

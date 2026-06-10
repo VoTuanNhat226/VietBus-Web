@@ -297,16 +297,13 @@ const TripDetail = () => {
 
   return (
     <Spin spinning={isLoading}>
-      <div className="flex justify-evenly">
-        <div className="w-2/12 mr-5">
+      <div className="flex gap-5 w-full items-start">
+        <div className="w-2/12 shrink-0">
           <Card className="rounded-xl hover:shadow-xl mb-4">
             {renderSeatMap}
             {trip?.status === "OPEN_FOR_BOOKING" &&
               selectedSeatNumbers.length > 0 && (
                 <div className="mt-4 pt-4 border-t flex flex-col gap-2">
-                  <div className="text-center text-sm font-semibold text-gray-600">
-                    Đã chọn: {selectedSeatNumbers.join(", ")}
-                  </div>
                   <Button
                     type="primary"
                     style={{ backgroundColor: VietBusTheme.primary }}
@@ -335,7 +332,7 @@ const TripDetail = () => {
             </div>
           </Card>
         </div>
-        <div className="w-10/12">
+        <div className="flex-1 min-w-0">
           <Card className="rounded-xl hover:shadow-xl mb-2">
             <div className="flex justify-between">
               <div className="flex">
@@ -507,7 +504,7 @@ const TripDetail = () => {
                     alignItems: "center",
                   }}
                 >
-                  In file
+                  In danh sách
                 </Button>
               </Dropdown>
             </div>
@@ -515,7 +512,7 @@ const TripDetail = () => {
               columns={columns}
               dataSource={listTickets}
               pagination={false}
-              scroll={{ y: 468 }}
+              scroll={{ y: 550 }}
               size="middle"
               onRow={(record) => {
                 return {
