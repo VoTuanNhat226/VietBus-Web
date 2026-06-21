@@ -1,17 +1,31 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [["babel-plugin-react-compiler"]],
+export default defineConfig(({ mode }) => ({
+  plugins: [react()],
+
+  base: "/",
+
+  build: {
+    outDir: "dist",
+    sourcemap: mode === "development",
+    minify: mode === "production" ? "esbuild" : false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
       },
-    }),
-  ],
-  server: {
-    host: "0.0.0.0",
-    port: 5173,
+    },
   },
-});
+
+  server: {
+    port: 5173,
+    open: true,
+    cors: true,
+  },
+
+  preview: {
+    port: 4173,
+  },
+}));
