@@ -181,6 +181,7 @@ const TripDetail = () => {
         (ts) => ts.seat.seatNumber === seatNumber,
       );
       if (tripSeat) {
+        setIsLoading(true);
         try {
           if (
             selectedSeatNumbers.includes(seatNumber) ||
@@ -223,6 +224,8 @@ const TripDetail = () => {
               error?.response?.data?.message ||
               "Có lỗi xảy ra khi thao tác với ghế này",
           );
+        } finally {
+          setIsLoading(false);
         }
       }
     } else if (status === "HOLD" || status === "SOLD") {
