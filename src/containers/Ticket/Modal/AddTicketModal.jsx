@@ -19,7 +19,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { getListTripSeatAvailableByTripId } from "../../../services/TripSeatService";
+
 import TextArea from "antd/es/input/TextArea";
 import { VietBusTheme } from "../../../constants/VietBusTheme";
 import { formatVND, getApiErrorMessage } from "../../../utils/Utils";
@@ -34,6 +34,7 @@ const AddTicketModal = ({
   trip,
   fetchTripById,
   initialSeatIds,
+  listTripSeat,
 }) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
@@ -58,23 +59,24 @@ const AddTicketModal = ({
       try {
         setIsLoading(true);
 
-        const [tripSeats, passengers] = await Promise.all([
-          getListTripSeatAvailableByTripId({
-            tripId: selectedTripId,
-          }),
-          getAllPassenger({}),
-        ]);
+        const passengers = await getAllPassenger({});
 
-        const seatOptions = (tripSeats?.data || [])
+        const seatOptions = (listTripSeat || [])
+          .filter(
+            (ts) =>
+              ts.status === "AVAILABLE" ||
+              ts.status === "SELECTED" ||
+              (initialSeatIds && initialSeatIds.includes(ts.id))
+          )
           .sort((a, b) =>
-            a.seatNumber.localeCompare(b.seatNumber, undefined, {
+            a.seat.seatNumber.localeCompare(b.seat.seatNumber, undefined, {
               numeric: true,
               sensitivity: "base",
             }),
           )
           .map((item) => ({
-            value: item.tripSeatId,
-            label: item.seatNumber,
+            value: item.id,
+            label: item.seat.seatNumber,
           }));
 
         setListTripSeatCanSell(seatOptions);
@@ -93,7 +95,7 @@ const AddTicketModal = ({
     };
 
     fetchData();
-  }, [trip?.tripId, initialSeatIds, form]);
+  }, [trip?.tripId, initialSeatIds, form, listTripSeat]);
 
   const handleSubmit = async () => {
     try {

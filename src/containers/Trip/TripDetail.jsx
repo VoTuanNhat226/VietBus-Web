@@ -3,7 +3,7 @@ import { usePageTitle } from "../../context/PageTitleContext";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
 import { VietBusTheme } from "../../constants/VietBusTheme";
-import { Button, Card, Divider, Dropdown, Spin, Table } from "antd";
+import { Button, Card, Divider, Dropdown, Spin, Table, message } from "antd";
 
 import {
   getTripById,
@@ -12,6 +12,8 @@ import {
 import {
   countTripSeatSoldByTripId,
   getAllTripSeatByTripId,
+  lockTripSeatById,
+  unlockTripSeatById,
 } from "../../services/TripSeatService";
 import moment from "moment";
 import SeatMap40 from "../Vehicle/Seat/SeatMap40.jsx";
@@ -81,7 +83,22 @@ const TripDetail = () => {
 
     setTrip(tripData);
     setTripSeatSold(soldRes?.data || 0);
-    setListTripSeat(seatRes?.data || []);
+    const rawListTripSeat = seatRes?.data || [];
+    const initialSelectedSeatNumbers = [];
+    const initialSelectedTripSeatIds = [];
+
+    const transformedListTripSeat = rawListTripSeat.map((ts) => {
+      if (ts.status === "BLOCKED" && ts.processingStaff === user?.username) {
+        initialSelectedSeatNumbers.push(ts.seat.seatNumber);
+        initialSelectedTripSeatIds.push(ts.id);
+        return { ...ts, status: "SELECTED" };
+      }
+      return ts;
+    });
+
+    setListTripSeat(transformedListTripSeat);
+    setSelectedSeatNumbers(initialSelectedSeatNumbers);
+    setSelectedTripSeatIds(initialSelectedTripSeatIds);
     setListTickets(ticketRes?.data || []);
 
     const price = tripData?.price || 0;
@@ -96,6 +113,7 @@ const TripDetail = () => {
 
   const canUpdate =
     user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER";
+
   const canCreateTicket =
     user?.role === "ROLE_ADMIN" ||
     user?.role === "ROLE_MANAGER" ||
@@ -152,23 +170,59 @@ const TripDetail = () => {
     STATUS_TRIP_OPTIONS.find((opt) => opt.value === trip?.status)?.label ||
     trip?.status;
 
-  const handleSeatClick = (seatNumber, status) => {
-    if (status === "AVAILABLE" || status === "SELECTED") {
+  const handleSeatClick = async (seatNumber, status) => {
+    if (
+      status === "AVAILABLE" ||
+      status === "SELECTED" ||
+      status === "BLOCKED"
+    ) {
       if (trip?.status !== "OPEN_FOR_BOOKING") return;
       const tripSeat = listTripSeat.find(
         (ts) => ts.seat.seatNumber === seatNumber,
       );
       if (tripSeat) {
-        if (selectedSeatNumbers.includes(seatNumber)) {
-          setSelectedSeatNumbers((prev) =>
-            prev.filter((s) => s !== seatNumber),
+        try {
+          if (
+            selectedSeatNumbers.includes(seatNumber) ||
+            status === "BLOCKED"
+          ) {
+            await unlockTripSeatById({ tripSeatId: tripSeat.id });
+            setSelectedSeatNumbers((prev) =>
+              prev.filter((s) => s !== seatNumber),
+            );
+            setSelectedTripSeatIds((prev) =>
+              prev.filter((id) => id !== tripSeat.id),
+            );
+            setListTripSeat((prev) =>
+              prev.map((ts) =>
+                ts.id === tripSeat.id ? { ...ts, status: "AVAILABLE" } : ts,
+              ),
+            );
+          } else {
+            await lockTripSeatById({ tripSeatId: tripSeat.id });
+            setSelectedSeatNumbers((prev) => [...prev, seatNumber]);
+            setSelectedTripSeatIds((prev) => [...prev, tripSeat.id]);
+            setListTripSeat((prev) =>
+              prev.map((ts) =>
+                ts.id === tripSeat.id ? { ...ts, status: "SELECTED" } : ts,
+              ),
+            );
+          }
+        } catch (error) {
+          const status =
+            error?.response?.data?.statusCode || error?.response?.status;
+          if (status === 423) {
+            setListTripSeat((prev) =>
+              prev.map((ts) =>
+                ts.id === tripSeat.id ? { ...ts, status: "BLOCKED" } : ts,
+              ),
+            );
+          }
+          message.error(
+            error?.response?.data?.description ||
+              error?.response?.data?.message ||
+              "Có lỗi xảy ra khi thao tác với ghế này",
           );
-          setSelectedTripSeatIds((prev) =>
-            prev.filter((id) => id !== tripSeat.id),
-          );
-        } else {
-          setSelectedSeatNumbers((prev) => [...prev, seatNumber]);
-          setSelectedTripSeatIds((prev) => [...prev, tripSeat.id]);
         }
       }
     } else if (status === "HOLD" || status === "SOLD") {
@@ -328,6 +382,10 @@ const TripDetail = () => {
               <div className="flex flex-col justify-center items-center">
                 <i className="fa-solid fa-couch text-2xl text-green-600" />
                 <div>Đã bán</div>
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <i className="fa-solid fa-couch text-2xl text-red-600" />
+                <div>Bị khóa</div>
               </div>
             </div>
           </Card>
@@ -539,6 +597,7 @@ const TripDetail = () => {
           trip={trip}
           fetchTripById={fetchData}
           initialSeatIds={selectedTripSeatIds}
+          listTripSeat={listTripSeat}
         />
       )}
       {/* UPDATE Modal */}

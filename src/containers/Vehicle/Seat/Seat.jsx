@@ -8,6 +8,8 @@ const Seat = ({ code, status, onClick }) => {
         return "text-green-600";
       case "SELECTED":
         return "text-blue-500";
+      case "BLOCKED":
+        return "text-red-600";
       default:
         return "text-gray-400";
     }
