@@ -83,7 +83,7 @@ const Home = () => {
           StatisticsService.getAllTripDeparted({}),
           StatisticsService.getTotalPassengerByMonth({ month: currentMonth }),
           TripService.getAllTripOpenBooking({}),
-          TicketService.getAllTicketsUnpaid({}),
+          TicketService.countAllTicketsUnpaid({}),
           TripService.getAllTrip({}),
         ]);
 
@@ -132,11 +132,7 @@ const Home = () => {
           return newState;
         });
         if (unpaidTicketRes?.data) {
-          setTotalUnpaidTicket(
-            Array.isArray(unpaidTicketRes.data)
-              ? unpaidTicketRes.data.length
-              : unpaidTicketRes.data,
-          );
+          setTotalUnpaidTicket(unpaidTicketRes.data);
         }
         if (tripDepartedRes?.data) {
           const tripsWithSeats = await Promise.all(
