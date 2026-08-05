@@ -8,4 +8,7 @@ export const getApiErrorMessage = (err) =>
 export const formatDateTime = (value) =>
   value ? moment(value).format("DD-MM-YYYY HH:mm") : "";
 
+export const formatDate = (value) =>
+  value ? moment(value).format("DD-MM-YYYY") : "";
+
 export const formatVND = (value) => value.toLocaleString("vi-VN") + " VNĐ";

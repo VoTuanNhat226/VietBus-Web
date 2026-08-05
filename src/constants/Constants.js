@@ -59,3 +59,19 @@ export const PAYMENT_STATUS_OPTION = [
   { value: "FAILED", label: "Thất bại" },
   { value: "REFUNDED", label: "Đã hoàn tiền" },
 ];
+
+export const MAINTENANCE_TYPE_OPTIONS = [
+  { value: "PERIODIC_MAINTENANCE", label: "Bảo dưỡng định kỳ" },
+  { value: "REPAIR", label: "Sửa chữa" },
+  { value: "INSPECTION", label: "Đăng kiểm" },
+  { value: "ACCIDENT", label: "Tai nạn / Sự cố" },
+  { value: "TIRE_REPLACEMENT", label: "Thay lốp" },
+  { value: "OTHER", label: "Khác" },
+];
+
+export const MAINTENANCE_STATUS_OPTIONS = [
+  { value: "SCHEDULED", label: "Đã lên lịch" },
+  { value: "IN_PROGRESS", label: "Đang thực hiện" },
+  { value: "COMPLETED", label: "Hoàn thành" },
+  { value: "CANCELLED", label: "Đã hủy" },
+];

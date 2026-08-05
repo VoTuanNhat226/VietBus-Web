@@ -34,15 +34,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeAuth = () => {
       try {
-        const response = await publicApi.post("/auth/refresh");
-        const newAccessToken = response.data.accessToken;
-        if (newAccessToken) {
-          processToken(newAccessToken);
+        const storedToken = tokenStore.getToken();
+        if (storedToken) {
+          const decoded = jwtDecode(storedToken);
+          const currentTime = Date.now() / 1000;
+          if (decoded.exp && decoded.exp < currentTime) {
+            clearState();
+          } else {
+            processToken(storedToken);
+          }
+        } else {
+          clearState();
         }
       } catch (err) {
-        // Refresh failed (e.g. no cookie, expired cookie)
         clearState();
       } finally {
         setLoading(false);
